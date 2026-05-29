@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Barber {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  phone String?
+  avatarUrl String?
+  isActive Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  barberService BarberService[]
+  appointments Appointment[]
+
+  @@map("barbers")
+}
+
+model Client {
+  id String @id @default(uuid())
+  name String
+  email String? @unique
+  phone String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointments Appointment[]
+
+  @@map("clients")
+}
+
+model Service {
+  id String @id @default(uuid())
+  name String
+  description String?
+  durationMinutes String?
+  price Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  barberServices BarberService[]
+
+  @@map("services")
+}
+
+model BarberService {
+  id String @id @default(uuid())
+  barberId String
+  serviceId String
+  durationMinutes Int
+  price Decimal @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+
+  barber  Barber  @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  appointments Appointment[]
+
+  @@unique([barberId, serviceId])
+  @@map("barber_services")
+}
+
+model Appointment {
+  id String @id @default(uuid())
+  barberId String
+  clientId String
+  barberServiceId String
+  startsAt DateTime
+  endsAt DateTime
+  status AppointmentStatus @default(SCHEDULED)
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  barber        Barber        @relation(fields: [barberId], references: [id], onDelete: Restrict)
+  client        Client        @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  barberService BarberService @relation(fields: [barberServiceId], references: [id], onDelete: Restrict)
+
+  @@index([barberId, startsAt])
+  @@index([clientId, startsAt])
+  @@index([startsAt])
+  @@map("appointments")
+}
+
+enum AppointmentStatus {
+  SCHEDULED  // agendado (padrão)
+  CONFIRMED  // confirmado pelo cliente/barbeiro
+  COMPLETED  // serviço realizado
+  CANCELLED  // cancelado
+  NO_SHOW    // cliente não compareceu
+
+  @@map("appointment_status")
+}
