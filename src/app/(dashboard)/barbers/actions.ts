@@ -3,6 +3,11 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export type ActionResponse = {
+  success: boolean;
+  error?: string;
+};
+
 interface CreateBarberInput {
   name: string;
   email: string;
@@ -20,7 +25,7 @@ interface SetBarberStatusInput {
   isActive: boolean;
 }
 
-export async function createBarberAction(data: CreateBarberInput) {
+export async function createBarberAction(data: CreateBarberInput): Promise<ActionResponse> {
   try {
     // Basic validation
     if (!data.name || !data.name.trim()) {
@@ -61,7 +66,7 @@ export async function createBarberAction(data: CreateBarberInput) {
   }
 }
 
-export async function DeleteBarberAction(barberId: string) {
+export async function deleteBarberAction(barberId: string) {
   if(!barberId) return { success: false, error: "O id do barbeiro é obrigatório." }
 
   const existingBarber = await prisma.barber.findUnique({
@@ -75,7 +80,7 @@ export async function DeleteBarberAction(barberId: string) {
   });
 }
 
-export async function EditBarberAction(data: UpdateBarberInput) {
+export async function updateBarberAction(data: UpdateBarberInput): Promise<ActionResponse> {
   await prisma.barber.update({
     where: {
       id: data.id,
@@ -92,7 +97,7 @@ export async function EditBarberAction(data: UpdateBarberInput) {
   return { success: true }
 }
 
-export async function SetBarberStatusAction(data: SetBarberStatusInput) {
+export async function setBarberStatusAction(data: SetBarberStatusInput): Promise<ActionResponse> {
   try {
     const barber = await prisma.barber.findUnique({
       where: {

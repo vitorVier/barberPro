@@ -9,16 +9,21 @@ import {
   ToggleRight,
   Pencil,
   Trash2,
-  X,
   Loader2,
   Mail,
   Phone,
   User,
-  Image,
+  Image as ImageIcon, // Renomeado para evitar conflito de nome, se necessário
 } from "lucide-react";
 import Link from "next/link";
-import { createBarberAction, DeleteBarberAction, SetBarberStatusAction } from "../actions";
+import { 
+  createBarberAction, 
+  deleteBarberAction, 
+  setBarberStatusAction,
+  updateBarberAction
+} from "../actions";
 import { FormInput } from "../../components/input";
+import { ModalBarber } from "../../components/modal-barber";
 
 interface BarberWithCounts {
   id: string;
@@ -44,6 +49,9 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Estado para rastrear se estamos editando um barbeiro específico
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form Fields
   const [name, setName] = useState("");
@@ -52,13 +60,23 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
 
-  // Open & Close Handlers
-  const handleOpenModal = () => {
-    setName("");
-    setEmail("");
-    setPhone("");
-    setAvatarUrl("");
-    setIsActive(true);
+  // Abre o modal para Criação (vazio) ou Edição (com dados)
+  const handleOpenModal = (barber?: BarberWithCounts) => {
+    if (barber) {
+      setEditingId(barber.id);
+      setName(barber.name);
+      setEmail(barber.email);
+      setPhone(barber.phone || "");
+      setAvatarUrl(barber.avatarUrl || "");
+      setIsActive(barber.isActive);
+    } else {
+      setEditingId(null);
+      setName("");
+      setEmail("");
+      setPhone("");
+      setAvatarUrl("");
+      setIsActive(true);
+    }
     setError(null);
     setIsModalOpen(true);
   };
@@ -66,6 +84,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   const handleCloseModal = () => {
     if (isPending) return;
     setIsModalOpen(false);
+    setTimeout(() => setEditingId(null), 200); 
   };
 
   // Submit Handler
@@ -83,13 +102,26 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
     }
 
     startTransition(async () => {
-      const res = await createBarberAction({
-        name,
-        email,
-        phone,
-        avatarUrl,
-        isActive,
-      });
+      let res;
+      
+      if (editingId) {
+        res = await updateBarberAction({
+          id: editingId,
+          name,
+          email,
+          phone,
+          avatarUrl,
+          isActive,
+        });
+      } else {
+        res = await createBarberAction({
+          name,
+          email,
+          phone,
+          avatarUrl,
+          isActive,
+        });
+      }
 
       if (res.success) {
         setIsModalOpen(false);
@@ -101,44 +133,49 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   };
 
   function handleSetStatus(barberId: string, status: boolean) {
-    const changedStatus = !status
+    const changedStatus = !status;
 
     startTransition(async () => {
-     const res = await SetBarberStatusAction({
-      barberId,
-      isActive: changedStatus
-     });
+      const res = await setBarberStatusAction({
+        barberId,
+        isActive: changedStatus,
+      });
 
-     if(res.success) router.refresh()
-    })
+      if (res.success) router.refresh();
+    });
   }
 
   function handleDeleteBarber(barberId: string) {
-    const confirmed = window.confirm(
-      "Deseja realmente excluir este barbeiro?"
-    );
+    const confirmed = window.confirm("Deseja realmente excluir este barbeiro?");
 
     if (!confirmed) return;
 
     startTransition(async () => {
-      await DeleteBarberAction(barberId);
+      await deleteBarberAction(barberId);
       router.refresh();
     });
   }
+
+  const isEditing = !!editingId;
+  const modalTitle = isEditing ? "Editar Barbeiro" : "Novo Barbeiro";
+  const ModalIcon = isEditing ? Pencil : Scissors;
 
   return (
     <main className="flex-1 p-8 space-y-6">
       {/* Title and Action Button Row */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">Barbeiros</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            Barbeiros
+          </h1>
           <p className="text-sm text-slate-500 mt-1">
-            {initialBarbers.length} {initialBarbers.length === 1 ? "cadastrado" : "cadastrados"}
+            {initialBarbers.length}{" "}
+            {initialBarbers.length === 1 ? "cadastrado" : "cadastrados"}
           </p>
         </div>
         <button
           type="button"
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal()} 
           className="inline-flex items-center gap-2 rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-navy-light shadow-sm cursor-pointer"
         >
           <Plus className="h-4 w-4" />
@@ -159,7 +196,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             </p>
             <button
               type="button"
-              onClick={handleOpenModal}
+              onClick={() => handleOpenModal()}
               className="mt-4 inline-flex items-center gap-2 rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-navy-light shadow-sm cursor-pointer"
             >
               <Plus className="h-4 w-4" />
@@ -171,27 +208,18 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             <table className="w-full min-w-200 border-collapse text-left">
               <thead>
                 <tr className="border-b border-border bg-slate-50/50">
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Barbeiro
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Contato
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Serviços
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Agendamentos
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Status
-                  </th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Barbeiro</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Contato</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Serviços</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Agendamentos</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
                   <th className="px-6 py-4 text-right"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {initialBarbers.map((barber) => (
                   <tr key={barber.id} className="hover:bg-slate-50/30 transition-colors">
+                    
                     {/* BARBEIRO */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -242,7 +270,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                     </td>
 
                     {/* STATUS */}
-                    <td className="px-6 py-4" onClick={() => handleSetStatus(barber.id, barber.isActive)}>
+                    <td className="px-6 py-4 cursor-pointer" onClick={() => handleSetStatus(barber.id, barber.isActive)}>
                       {barber.isActive ? (
                         <div className="inline-flex items-center gap-1.5 text-success">
                           <ToggleRight className="h-5 w-5 stroke-[1.75]" />
@@ -255,12 +283,13 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                         </div>
                       )}
                     </td>
-
+                    
                     {/* ACTIONS */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
                         <button
                           type="button"
+                          onClick={() => handleOpenModal(barber)} 
                           className="p-1 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                           title="Editar barbeiro"
                         >
@@ -284,147 +313,134 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
         )}
       </div>
 
-      {/* Creation Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-xl border border-border w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-border bg-slate-50/50">
-              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-                <Scissors className="h-5 w-5 text-amber" />
-                Novo Barbeiro
-              </h2>
-              <button
-                type="button"
-                onClick={handleCloseModal}
-                disabled={isPending}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer disabled:opacity-50"
-              >
-                <X className="h-5 w-5" />
-              </button>
+      {/* Modal Dinâmico (Criação / Edição) */}
+      <ModalBarber
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={modalTitle}
+        icon={ModalIcon}
+        disabled={isPending}
+      >
+        <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-4">
+          {error && (
+            <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600 font-medium">
+              {error}
             </div>
+          )}
 
-            {/* Modal Form */}
-            <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-4">
-              {error && (
-                <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600 font-medium">
-                  {error}
-                </div>
-              )}
-
-              {/* Nome */}
-              <div className="space-y-1.5">
-                <FormInput
-                  id="name"
-                  label="Nome"
-                  icon={User}
-                  type="text"
-                  required
-                  placeholder="Ex: João Silva"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={isPending}
-                />
-              </div>
-
-              {/* Email */}
-              <div className="space-y-1.5">
-                <FormInput
-                  id="email"
-                  label="E-mail"
-                  icon={Mail}
-                  type="email"
-                  required
-                  placeholder="Ex: joao@barberpro.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isPending}
-                />
-              </div>
-
-              {/* Telefone */}
-              <div className="space-y-1.5">
-                <FormInput
-                  id="phone"
-                  label="Telefone"
-                  icon={Phone}
-                  type="tel"
-                  optional
-                  placeholder="Ex: (11) 99999-1111"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  disabled={isPending}
-                />
-              </div>
-
-              {/* URL Avatar */}
-              <div className="space-y-1.5">
-                <FormInput
-                  id="avatarUrl"
-                  label="URL do Avatar"
-                  icon={Image}
-                  type="url"
-                  optional
-                  placeholder="Ex: https://images.unsplash.com/..."
-                  value={avatarUrl}
-                  onChange={(e) => setAvatarUrl(e.target.value)}
-                  disabled={isPending}
-                />
-              </div>
-
-              {/* Status Toggle */}
-              <div className="flex items-center justify-between rounded-lg border border-border p-3.5 bg-slate-50/50">
-                <div className="space-y-0.5 pr-2">
-                  <label className="text-sm font-semibold text-slate-800">Barbeiro Ativo</label>
-                  <p className="text-xs text-slate-500">
-                    Determina se o barbeiro estará disponível para agendamentos.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsActive(!isActive)}
-                  disabled={isPending}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
-                    isActive ? "bg-success" : "bg-slate-200"
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      isActive ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Modal Actions */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  disabled={isPending}
-                  className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all cursor-pointer disabled:opacity-50"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={isPending}
-                  className="px-4 py-2 text-sm font-semibold text-white bg-navy hover:bg-navy-light rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50"
-                >
-                  {isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Salvando...
-                    </>
-                  ) : (
-                    "Salvar"
-                  )}
-                </button>
-              </div>
-            </form>
+          {/* Nome */}
+          <div className="space-y-1.5">
+            <FormInput
+              id="name"
+              label="Nome"
+              icon={User}
+              type="text"
+              required
+              placeholder="Ex: João Silva"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={isPending}
+            />
           </div>
-        </div>
-      )}
+
+          {/* Email */}
+          <div className="space-y-1.5">
+            <FormInput
+              id="email"
+              label="E-mail"
+              icon={Mail}
+              type="email"
+              required
+              placeholder="Ex: joao@barberpro.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isPending}
+            />
+          </div>
+
+          {/* Telefone */}
+          <div className="space-y-1.5">
+            <FormInput
+              id="phone"
+              label="Telefone"
+              icon={Phone}
+              type="tel"
+              optional
+              placeholder="Ex: (11) 99999-1111"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              disabled={isPending}
+            />
+          </div>
+
+          {/* URL Avatar */}
+          <div className="space-y-1.5">
+            <FormInput
+              id="avatarUrl"
+              label="URL do Avatar"
+              icon={ImageIcon}
+              type="url"
+              optional
+              placeholder="Ex: https://images.unsplash.com/..."
+              value={avatarUrl}
+              onChange={(e) => setAvatarUrl(e.target.value)}
+              disabled={isPending}
+            />
+          </div>
+
+          {/* Status Toggle */}
+          <div className="flex items-center justify-between rounded-lg border border-border p-3.5 bg-slate-50/50">
+            <div className="space-y-0.5 pr-2">
+              <label className="text-sm font-semibold text-slate-800">
+                Barbeiro Ativo
+              </label>
+              <p className="text-xs text-slate-500">
+                Determina se o barbeiro estará disponível para agendamentos.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsActive(!isActive)}
+              disabled={isPending}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
+                isActive ? "bg-success" : "bg-slate-200"
+              }`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  isActive ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Form Actions */}
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+            <button
+              type="button"
+              onClick={handleCloseModal}
+              disabled={isPending}
+              className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={isPending}
+              className="px-4 py-2 text-sm font-semibold text-white bg-navy hover:bg-navy-light rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                "Salvar"
+              )}
+            </button>
+          </div>
+        </form>
+      </ModalBarber>
     </main>
   );
 }
