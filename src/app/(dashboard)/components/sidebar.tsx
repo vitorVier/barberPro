@@ -12,10 +12,10 @@ import {
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/barbeiros", label: "Barbeiros", icon: Scissors },
-  { href: "/clientes", label: "Clientes", icon: Users },
-  { href: "/servicos", label: "Serviços", icon: Sparkles },
-  { href: "/agendamentos", label: "Agendamentos", icon: CalendarDays },
+  { href: "/barbers", label: "Barbeiros", icon: Scissors },
+  { href: "/customers", label: "Clientes", icon: Users },
+  { href: "/services", label: "Serviços", icon: Sparkles },
+  { href: "/appointments", label: "Agendamentos", icon: CalendarDays },
 ];
 
 export function Sidebar() {

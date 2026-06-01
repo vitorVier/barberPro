@@ -8,6 +8,8 @@ import {
   CardAction,
 } from "@/components/ui/card";
 
+import { Header } from "@/components/header";
+
 import {
   getBarberStats,
   getClientsCount,
@@ -43,10 +45,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top Bar */}
-      <header className="flex items-center gap-2 border-b border-border bg-white px-6 py-3">
-        <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium text-foreground">Dashboard</span>
-      </header>
+      <Header icon={LayoutDashboard} span="Dashboard" />
 
       {/* Content */}
       <div className="flex-1 space-y-6 p-6">
