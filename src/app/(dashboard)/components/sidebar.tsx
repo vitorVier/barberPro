@@ -6,15 +6,18 @@ import {
   LayoutDashboard,
   Scissors,
   Users,
-  Sparkles,
   CalendarDays,
+  Contact,
 } from "lucide-react";
+
+import Image from "next/image";
+import logoImg from "@/assets/logoImg2.png";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/barbers", label: "Barbeiros", icon: Scissors },
+  { href: "/barbers", label: "Barbeiros", icon: Contact },
   { href: "/customers", label: "Clientes", icon: Users },
-  { href: "/services", label: "Serviços", icon: Sparkles },
+  { href: "/services", label: "Serviços", icon: Scissors },
   { href: "/appointments", label: "Agendamentos", icon: CalendarDays },
 ];
 
@@ -24,15 +27,24 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-50 flex w-55 flex-col bg-navy text-sidebar-foreground">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber text-white font-bold text-sm">
-          <Scissors className="h-5 w-5" />
+      <div className="flex flex-col items-center text-center px-5 pt-8 pb-5 select-none border-b border-sidebar-border/20 mb-3">
+        <div className="mb-1 transition-transform duration-300 hover:scale-105">
+          <Image
+            src={logoImg}
+            alt="BarberPro Logo"
+            width={100}
+            height={100}
+            className="object-contain"
+            priority
+            quality={100}
+          />
         </div>
+        
         <div>
-          <h1 className="text-sm font-bold text-white leading-tight">
+          <h1 className="text-base font-bold text-white tracking-wide">
             BarberPro
           </h1>
-          <p className="text-[11px] text-sidebar-foreground/60 leading-tight">
+          <p className="text-[11px] text-sidebar-foreground/50 uppercase tracking-widest mt-0.5">
             Gestão de Barbearia
           </p>
         </div>

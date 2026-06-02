@@ -13,7 +13,8 @@ import {
   Mail,
   Phone,
   User,
-  Image as ImageIcon, // Renomeado para evitar conflito de nome, se necessário
+  Image as ImageIcon,
+  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import { 
@@ -57,8 +58,28 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(""); // Armazenará a URL ou o Base64 da foto
   const [isActive, setIsActive] = useState(true);
+
+  // Função para ler o arquivo e converter em Base64
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validação simples de tamanho (ex: limite de 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setError("A imagem deve ter no máximo 2MB.");
+      return;
+    }
+
+    setError(null);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // O result será uma string em formato DataURL/Base64
+      setAvatarUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Abre o modal para Criação (vazio) ou Edição (com dados)
   const handleOpenModal = (barber?: BarberWithCounts) => {
@@ -221,22 +242,37 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                   <tr key={barber.id} className="hover:bg-slate-50/30 transition-colors">
                     
                     {/* BARBEIRO */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {barber.avatarUrl ? (
-                          <img
-                            src={barber.avatarUrl}
-                            alt={barber.name}
-                            className="h-10 w-10 rounded-full object-cover border border-border"
-                          />
-                        ) : (
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy text-amber">
-                            <Scissors className="h-4.5 w-4.5" />
-                          </div>
-                        )}
-                        <span className="text-sm font-semibold text-foreground">
-                          {barber.name}
-                        </span>
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-4.5">
+                        
+                        {/* CONTAINER DO AVATAR */}
+                        <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
+                          {barber.avatarUrl ? (
+                            <img
+                              src={barber.avatarUrl}
+                              alt={barber.name}
+                              className="h-full w-full object-cover object-center select-none"
+                              style={{ imageRendering: "auto" }}
+                            />
+                          ) : (
+                            /* PLACEHOLDER HUMANIZADO (Iniciais em vez de ícone rígido) */
+                            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-sm tracking-wider">
+                              {barber.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* INFORMAÇÕES DO TEXTO */}
+                        <div className="flex flex-col justify-center">
+                          <span className="text-sm font-bold text-slate-950 tracking-tight leading-none">
+                            {barber.name}
+                          </span>
+                          {/* Opcional: Você pode trazer o e-mail ou cargo para baixo do nome para criar um bloco rico */}
+                          <span className="text-xs text-slate-400 mt-1 md:hidden">
+                            {barber.email}
+                          </span>
+                        </div>
+
                       </div>
                     </td>
 
@@ -270,18 +306,24 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                     </td>
 
                     {/* STATUS */}
-                    <td className="px-6 py-4 cursor-pointer" onClick={() => handleSetStatus(barber.id, barber.isActive)}>
-                      {barber.isActive ? (
-                        <div className="inline-flex items-center gap-1.5 text-success">
-                          <ToggleRight className="h-5 w-5 stroke-[1.75]" />
-                          <span className="text-sm font-medium">Ativo</span>
-                        </div>
-                      ) : (
-                        <div className="inline-flex items-center gap-1.5 text-slate-400">
-                          <ToggleLeft className="h-5 w-5 stroke-[1.75]" />
-                          <span className="text-sm font-medium">Inativo</span>
-                        </div>
-                      )}
+                    <td className="px-6 py-4">
+                      <div
+                        onClick={() => handleSetStatus(barber.id, barber.isActive)}
+                        title={barber.isActive ? "Clique para desativar" : "Clique para ativar"}
+                        className="inline-flex items-center gap-1.5 cursor-pointer group select-none transition-opacity duration-150 active:opacity-75"
+                      >
+                        {barber.isActive ? (
+                          <div className="flex items-center gap-1.5 text-success transition-colors duration-200 group-hover:text-emerald-600">
+                            <ToggleRight className="h-5 w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-110" />
+                            <span className="text-sm font-medium">Ativo</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-200 group-hover:text-slate-500">
+                            <ToggleLeft className="h-5 w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-110" />
+                            <span className="text-sm font-medium">Inativo</span>
+                          </div>
+                        )}
+                      </div>
                     </td>
                     
                     {/* ACTIONS */}
@@ -373,19 +415,57 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             />
           </div>
 
-          {/* URL Avatar */}
+          {/* NOVO: Upload de Imagem customizado com Preview */}
           <div className="space-y-1.5">
-            <FormInput
-              id="avatarUrl"
-              label="URL do Avatar"
-              icon={ImageIcon}
-              type="url"
-              optional
-              placeholder="Ex: https://images.unsplash.com/..."
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
-              disabled={isPending}
-            />
+            <label className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+              <ImageIcon className="h-4 w-4 text-slate-400" />
+              Foto do Barbeiro
+              <span className="text-xs font-normal text-slate-400">(Opcional)</span>
+            </label>
+            
+            <div className="flex items-center gap-4 p-4 border border-border rounded-lg bg-slate-50/50">
+              {/* Preview Circle */}
+              <div className="relative group h-16 w-16 shrink-0 rounded-full overflow-hidden border border-border bg-slate-200 flex items-center justify-center shadow-inner">
+                {avatarUrl ? (
+                  <>
+                    <img 
+                      src={avatarUrl} 
+                      alt="Preview do Barbeiro" 
+                      className="h-full w-full object-cover" 
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setAvatarUrl("")}
+                      disabled={isPending}
+                      className="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:opacity-0"
+                      title="Remover foto"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </>
+                ) : (
+                  <User className="h-8 w-8 text-slate-400" />
+                )}
+              </div>
+
+              {/* Upload Button */}
+              <div className="flex-1 space-y-1">
+                <label className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-sm transition-all active:scale-[0.98]">
+                  <Upload className="h-3.5 w-3.5 text-slate-500" />
+                  {avatarUrl ? "Alterar imagem" : "Escolher imagem"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={isPending}
+                    onChange={handleImageChange}
+                  />
+                </label>
+                <p className="text-[11px] text-slate-400">
+                  Formatos aceitos: JPG, PNG. Máx: 2MB.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Status Toggle */}

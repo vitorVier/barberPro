@@ -8,7 +8,7 @@ import {
   CardAction,
 } from "@/components/ui/card";
 
-import { Header } from "@/components/header";
+import { Header } from "@/app/(dashboard)/components/topbar";
 
 import {
   getBarberStats,

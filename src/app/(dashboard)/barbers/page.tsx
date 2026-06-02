@@ -1,5 +1,5 @@
-import { Header } from "@/components/header";
-import { Scissors } from "lucide-react";
+import { Header } from "@/app/(dashboard)/components/topbar";
+import { Contact } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { BarbersClient } from "./components/barbers-client";
 
@@ -25,7 +25,7 @@ export default async function BarbersPage() {
   return (
     <div className="flex flex-col min-h-screen bg-surface">
       {/* Top Bar */}
-      <Header icon={Scissors} span="Barbeiros" />
+      <Header icon={Contact} span="Barbeiros" />
 
       {/* Main Content Area */}
       <BarbersClient initialBarbers={barbers} />

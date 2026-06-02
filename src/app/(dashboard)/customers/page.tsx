@@ -1,4 +1,4 @@
-import { Header } from "@/components/header";
+import { Header } from "@/app/(dashboard)/components/topbar";
 import { Users } from "lucide-react";
 
 export default function CustomersPage() {
