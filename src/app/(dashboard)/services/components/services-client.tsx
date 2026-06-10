@@ -175,7 +175,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
         <button
           type="button"
           onClick={() => handleOpenModal()}
-          className="inline-flex items-center gap-2 rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-navy-light shadow-sm cursor-pointer"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           Novo Serviço
@@ -198,7 +198,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
             <button
               type="button"
               onClick={() => handleOpenModal()}
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-navy-light shadow-sm cursor-pointer"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               Cadastrar Primeiro Serviço
@@ -434,7 +434,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 text-sm font-semibold text-white bg-navy hover:bg-navy-light rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 text-sm font-bold text-navy-dark bg-gradient-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
             >
               {isPending ? (
                 <>
