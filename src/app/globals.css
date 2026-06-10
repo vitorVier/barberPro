@@ -82,7 +82,8 @@
   --chart-4: #3B82F6;
   --chart-5: #6B7280;
   --radius: 0.75rem;
-  --sidebar: #1B2138;
+  --sidebar: #0F172B;
+  /* --sidebar: #1B2138; */
   --sidebar-foreground: #94A3B8;
   --sidebar-primary: #F59E0B;
   --sidebar-primary-foreground: #ffffff;
@@ -103,5 +104,9 @@
 
   html {
     @apply font-sans;
+  }
+
+  button {
+    cursor: pointer;
   }
 }

@@ -20,6 +20,7 @@ import {
 } from "../actions";
 import { FormInput } from "../../components/input";
 import { ModalBarber } from "../../components/modal-barber";
+import { formatDate, formatPhone } from "@/utils/formaters";
 
 interface CustomerWithCounts {
   id: string;
@@ -155,14 +156,6 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
   const modalTitle = isEditing ? "Editar Cliente" : "Novo Cliente";
   const ModalIcon = isEditing ? Pencil : Users;
 
-  function formatDate(date: Date) {
-    return new Date(date).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  }
-
   return (
     <main className="flex-1 p-8 space-y-6">
       {/* Title and Action Button Row */}
@@ -287,7 +280,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
                     {/* TELEFONE */}
                     <td className="px-6 py-4">
                       <span className="text-sm text-slate-600">
-                        {customer.phone || "—"}
+                        {formatPhone(customer.phone) || "—"}
                       </span>
                     </td>
 

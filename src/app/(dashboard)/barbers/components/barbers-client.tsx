@@ -25,6 +25,7 @@ import {
 } from "../actions";
 import { FormInput } from "../../components/input";
 import { ModalBarber } from "../../components/modal-barber";
+import { formatPhone } from "@/utils/formaters";
 
 interface BarberWithCounts {
   id: string;
@@ -281,7 +282,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                       <div className="flex flex-col">
                         <span className="text-sm text-slate-600">{barber.email}</span>
                         {barber.phone && (
-                          <span className="text-xs text-slate-400 mt-0.5">{barber.phone}</span>
+                          <span className="text-xs text-slate-400 mt-0.5">{formatPhone(barber.phone)}</span>
                         )}
                       </div>
                     </td>
