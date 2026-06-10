@@ -46,7 +46,7 @@ export default async function CustomersPage() {
   return (
     <div className="flex flex-col min-h-screen bg-surface">
       {/* Top Bar */}
-      <Header icon={Users} span="Clientes" />
+      <Header icon={Users} span="CLIENTES" />
 
       {/* Main Content Area */}
       <CustomersClient initialCustomers={customers} />

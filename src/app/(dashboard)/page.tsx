@@ -45,7 +45,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top Bar */}
-      <Header icon={LayoutDashboard} span="Dashboard" />
+      <Header icon={LayoutDashboard} span="DASHBOARD" />
 
       {/* Content */}
       <div className="flex-1 space-y-6 p-6">

@@ -25,7 +25,7 @@ export default async function BarbersPage() {
   return (
     <div className="flex flex-col min-h-screen bg-surface">
       {/* Top Bar */}
-      <Header icon={Contact} span="Barbeiros" />
+      <Header icon={Contact} span="BARBEIROS" />
 
       {/* Main Content Area */}
       <BarbersClient initialBarbers={barbers} />

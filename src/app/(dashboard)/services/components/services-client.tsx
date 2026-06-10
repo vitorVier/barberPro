@@ -175,7 +175,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
         <button
           type="button"
           onClick={() => handleOpenModal()}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
+          className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           Novo Serviço
@@ -198,7 +198,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
             <button
               type="button"
               onClick={() => handleOpenModal()}
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               Cadastrar Primeiro Serviço
@@ -210,15 +210,13 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
           {initialServices.map((service) => (
             <div
               key={service.id}
-              className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 overflow-hidden flex flex-col transition-all duration-300 ${
-                !service.isActive ? "opacity-80 grayscale-30" : ""
-              }`}
+              className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 overflow-hidden flex flex-col transition-all duration-300 ${!service.isActive ? "opacity-80 grayscale-30" : ""
+                }`}
             >
               {/* Top Accent Line */}
-              <div 
-                className={`h-1 w-full transition-colors duration-300 ${
-                  service.isActive ? "bg-linear-to-r from-amber to-amber-light" : "bg-slate-200"
-                }`} 
+              <div
+                className={`h-1 w-full transition-colors duration-300 ${service.isActive ? "bg-linear-to-r from-amber to-amber-light" : "bg-slate-200"
+                  }`}
               />
 
               {/* Card Main Content */}
@@ -230,18 +228,17 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-amber/10 to-amber/5 text-amber border border-amber/20 shadow-inner group-hover:scale-105 transition-transform duration-300">
                       <Store className="h-6 w-6 drop-shadow-sm" />
                     </div>
-                    
+
                     {/* Title and Status Badge */}
                     <div>
                       <h3 className="text-base font-bold text-slate-900 leading-tight truncate max-w-37.5 sm:max-w-45">
                         {service.name}
                       </h3>
                       <div className="flex items-center gap-2 mt-1.5">
-                        <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-                          service.isActive 
-                            ? "bg-success/10 text-success" 
+                        <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${service.isActive
+                            ? "bg-success/10 text-success"
                             : "bg-slate-100 text-slate-500"
-                        }`}>
+                          }`}>
                           <span className={`h-1.5 w-1.5 rounded-full ${service.isActive ? "bg-success" : "bg-slate-400"}`}></span>
                           {service.isActive ? "Ativo" : "Inativo"}
                         </span>
@@ -409,14 +406,12 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
               type="button"
               onClick={() => setIsActive(!isActive)}
               disabled={isPending}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
-                isActive ? "bg-success" : "bg-slate-200"
-              }`}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${isActive ? "bg-success" : "bg-slate-200"
+                }`}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  isActive ? "translate-x-5" : "translate-x-0"
-                }`}
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isActive ? "translate-x-5" : "translate-x-0"
+                  }`}
               />
             </button>
           </div>
@@ -434,7 +429,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 text-sm font-bold text-navy-dark bg-gradient-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
+              className="px-4 py-2 text-sm font-bold text-navy-dark bg-linear-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
             >
               {isPending ? (
                 <>

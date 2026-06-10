@@ -17,9 +17,9 @@ import {
   Upload,
 } from "lucide-react";
 import Link from "next/link";
-import { 
-  createBarberAction, 
-  deleteBarberAction, 
+import {
+  createBarberAction,
+  deleteBarberAction,
   setBarberStatusAction,
   updateBarberAction
 } from "../actions";
@@ -51,7 +51,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Estado para rastrear se estamos editando um barbeiro específico
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -106,7 +106,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   const handleCloseModal = () => {
     if (isPending) return;
     setIsModalOpen(false);
-    setTimeout(() => setEditingId(null), 200); 
+    setTimeout(() => setEditingId(null), 200);
   };
 
   // Submit Handler
@@ -125,7 +125,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
 
     startTransition(async () => {
       let res;
-      
+
       if (editingId) {
         res = await updateBarberAction({
           id: editingId,
@@ -197,8 +197,8 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
         </div>
         <button
           type="button"
-          onClick={() => handleOpenModal()} 
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
+          onClick={() => handleOpenModal()}
+          className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           Novo Barbeiro
@@ -219,7 +219,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             <button
               type="button"
               onClick={() => handleOpenModal()}
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               Cadastrar Primeiro Barbeiro
@@ -241,11 +241,11 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
               <tbody className="divide-y divide-border">
                 {initialBarbers.map((barber) => (
                   <tr key={barber.id} className="hover:bg-slate-50/30 transition-colors">
-                    
+
                     {/* BARBEIRO */}
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-4.5">
-                        
+
                         {/* CONTAINER DO AVATAR */}
                         <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
                           {barber.avatarUrl ? (
@@ -326,13 +326,13 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                         )}
                       </div>
                     </td>
-                    
+
                     {/* ACTIONS */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
                         <button
                           type="button"
-                          onClick={() => handleOpenModal(barber)} 
+                          onClick={() => handleOpenModal(barber)}
                           className="p-1 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                           title="Editar barbeiro"
                         >
@@ -423,16 +423,16 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
               Foto do Barbeiro
               <span className="text-xs font-normal text-slate-400">(Opcional)</span>
             </label>
-            
+
             <div className="flex items-center gap-4 p-4 border border-border rounded-lg bg-slate-50/50">
               {/* Preview Circle */}
               <div className="relative group h-16 w-16 shrink-0 rounded-full overflow-hidden border border-border bg-slate-200 flex items-center justify-center shadow-inner">
                 {avatarUrl ? (
                   <>
-                    <img 
-                      src={avatarUrl} 
-                      alt="Preview do Barbeiro" 
-                      className="h-full w-full object-cover" 
+                    <img
+                      src={avatarUrl}
+                      alt="Preview do Barbeiro"
+                      className="h-full w-full object-cover"
                     />
                     <button
                       type="button"
@@ -483,14 +483,12 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
               type="button"
               onClick={() => setIsActive(!isActive)}
               disabled={isPending}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
-                isActive ? "bg-success" : "bg-slate-200"
-              }`}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${isActive ? "bg-success" : "bg-slate-200"
+                }`}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  isActive ? "translate-x-5" : "translate-x-0"
-                }`}
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isActive ? "translate-x-5" : "translate-x-0"
+                  }`}
               />
             </button>
           </div>
@@ -508,7 +506,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 text-sm font-bold text-navy-dark bg-gradient-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
+              className="px-4 py-2 text-sm font-bold text-navy-dark bg-linear-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
             >
               {isPending ? (
                 <>

@@ -186,7 +186,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
           <button
             type="button"
             onClick={() => handleOpenModal()}
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             Novo Cliente
@@ -208,7 +208,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
             <button
               type="button"
               onClick={() => handleOpenModal()}
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               Cadastrar Primeiro Cliente
@@ -416,7 +416,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 text-sm font-bold text-navy-dark bg-gradient-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
+              className="px-4 py-2 text-sm font-bold text-navy-dark bg-linear-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
             >
               {isPending ? (
                 <>

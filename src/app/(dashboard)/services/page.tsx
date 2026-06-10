@@ -30,7 +30,7 @@ export default async function ServicesPage() {
   return (
     <div className="flex flex-col min-h-screen bg-surface">
       {/* Top Bar */}
-      <Header icon={Scissors} span="Serviços" />
+      <Header icon={Scissors} span="SERVIÇOS" />
 
       {/* Main Content Area */}
       <ServicesClient initialServices={services} />
