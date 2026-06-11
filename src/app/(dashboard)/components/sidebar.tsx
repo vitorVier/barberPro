@@ -26,7 +26,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-navy-dark text-slate-300 border-r border-white/5 shadow-2xl shadow-navy-dark/50">
+    <aside className="hidden md:flex fixed inset-y-0 left-0 z-50 w-64 flex-col bg-navy-dark text-slate-300 border-r border-white/5 shadow-2xl shadow-navy-dark/50">
 
       {/* Decorative Glow */}
       <div className="absolute top-0 left-0 w-full h-64 bg-amber/5 blur-[80px] pointer-events-none rounded-full -translate-y-1/2" />

@@ -165,7 +165,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
   const activeServicesCount = initialServices.filter((s) => s.isActive).length;
 
   return (
-    <main className="flex-1 p-8 space-y-6">
+    <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6">
       {/* Title and Action Button Row */}
       <PageHeader
         title="Serviços"
@@ -190,11 +190,11 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
           </EmptyState>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           {initialServices.map((service) => (
             <div
               key={service.id}
-              className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 overflow-hidden flex flex-col transition-all duration-300 ${!service.isActive ? "opacity-80 grayscale-30" : ""
+              className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl overflow-hidden flex flex-col transition-all duration-300 ${!service.isActive ? "opacity-80 grayscale-30" : ""
                 }`}
             >
               {/* Top Accent Line */}
@@ -234,7 +234,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
                   <button
                     type="button"
                     onClick={() => handleSetStatus(service.id, service.isActive)}
-                    className="shrink-0 transition-transform active:scale-95 hover:scale-105"
+                    className="shrink-0 transition-transform active:scale-95"
                     title={service.isActive ? "Desativar serviço" : "Ativar serviço"}
                   >
                     {service.isActive ? (

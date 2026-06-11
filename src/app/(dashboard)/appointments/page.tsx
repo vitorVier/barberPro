@@ -73,14 +73,14 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
       <Header icon={CalendarDays} span="AGENDAMENTOS" />
 
       {/* Content */}
-      <div className="flex-1 space-y-5 p-6">
+      <div className="flex-1 space-y-4 sm:space-y-5 p-3 sm:p-4 md:p-6 lg:p-8">
         {/* Page Header Row */}
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex items-start justify-between gap-3 sm:gap-4 flex-wrap">
           <div>
-            <h2 className="text-xl font-bold text-foreground tracking-tight">
+            <h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight">
               Agendamentos
             </h2>
-            <p className="text-sm text-muted-foreground mt-0.5">
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               <span className="font-semibold text-navy">
                 {appointments.length}
               </span>{" "}
@@ -107,7 +107,7 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
         {/* Main Timeline Card */}
         <div className="rounded-2xl bg-white border border-slate-200/60 shadow-sm overflow-hidden">
           {/* Card Header: Date Nav + Legend */}
-          <div className="flex flex-col gap-4 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 sm:gap-4 border-b border-slate-100 px-3 sm:px-4 md:px-5 py-3 sm:py-4 sm:flex-row sm:items-center sm:justify-between">
             <Suspense fallback={null}>
               <DateNavigator currentDate={dateISO} />
             </Suspense>
@@ -116,14 +116,14 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
 
           {/* Quick Stats Pills */}
           {appointments.length > 0 && (
-            <div className="flex items-center gap-2 px-5 py-3 border-b border-slate-50 bg-slate-50/50 flex-wrap">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
+            <div className="flex items-center gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-3 border-b border-slate-50 bg-slate-50/50 flex-wrap">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
                 Resumo:
               </span>
               {Object.entries(statusCounts).map(([status, count]) => (
                 <span
                   key={status}
-                  className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200/80"
+                  className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200/80"
                 >
                   {count}{" "}
                   {status === "SCHEDULED"

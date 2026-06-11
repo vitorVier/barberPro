@@ -188,7 +188,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   const ModalIcon = isEditing ? Pencil : Scissors;
 
   return (
-    <main className="flex-1 p-8 space-y-6">
+    <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6">
       {/* Title and Action Button Row */}
       <PageHeader
         title="Barbeiros"
@@ -216,12 +216,12 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             <table className="w-full min-w-200 border-collapse text-left">
               <thead>
                 <tr className="border-b border-border bg-slate-50/50">
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Barbeiro</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Contato</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Serviços</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Agendamentos</th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
-                  <th className="px-6 py-4 text-right"></th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Barbeiro</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Contato</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Serviços</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Agendamentos</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -229,11 +229,11 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                   <tr key={barber.id} className="hover:bg-slate-50/30 transition-colors">
 
                     {/* BARBEIRO */}
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4.5">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-5">
+                      <div className="flex items-center gap-2 sm:gap-4">
 
                         {/* CONTAINER DO AVATAR */}
-                        <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
+                        <div className="relative h-10 sm:h-12 w-10 sm:w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
                           {barber.avatarUrl ? (
                             <img
                               src={barber.avatarUrl}
@@ -243,7 +243,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                             />
                           ) : (
                             /* PLACEHOLDER HUMANIZADO (Iniciais em vez de ícone rígido) */
-                            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-sm tracking-wider">
+                            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-xs sm:text-sm tracking-wider">
                               {barber.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
                             </div>
                           )}
@@ -251,11 +251,11 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
 
                         {/* INFORMAÇÕES DO TEXTO */}
                         <div className="flex flex-col justify-center">
-                          <span className="text-sm font-bold text-slate-950 tracking-tight leading-none">
+                          <span className="text-xs sm:text-sm font-bold text-slate-950 tracking-tight leading-none">
                             {barber.name}
                           </span>
                           {/* Opcional: Você pode trazer o e-mail ou cargo para baixo do nome para criar um bloco rico */}
-                          <span className="text-xs text-slate-400 mt-1 md:hidden">
+                          <span className="text-xs text-slate-400 mt-0.5 hidden sm:inline">
                             {barber.email}
                           </span>
                         </div>
@@ -264,9 +264,9 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                     </td>
 
                     {/* CONTATO */}
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
                       <div className="flex flex-col">
-                        <span className="text-sm text-slate-600">{barber.email}</span>
+                        <span className="text-xs sm:text-sm text-slate-600">{barber.email}</span>
                         {barber.phone && (
                           <span className="text-xs text-slate-400 mt-0.5">{formatPhone(barber.phone)}</span>
                         )}
@@ -274,10 +274,10 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                     </td>
 
                     {/* SERVIÇOS */}
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
                       <Link
                         href={`/barbeiros/${barber.id}/servicos`}
-                        className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                        className="inline-flex items-center text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
                       >
                         {barber._count.barberService}{" "}
                         {barber._count.barberService === 1 ? "serviço" : "serviços"}{" "}
@@ -286,36 +286,36 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                     </td>
 
                     {/* AGENDAMENTOS */}
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-slate-700">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <span className="text-xs sm:text-sm font-medium text-slate-700">
                         {barber._count.appointments}
                       </span>
                     </td>
 
                     {/* STATUS */}
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
                       <div
                         onClick={() => handleSetStatus(barber.id, barber.isActive)}
                         title={barber.isActive ? "Clique para desativar" : "Clique para ativar"}
                         className="inline-flex items-center gap-1.5 cursor-pointer group select-none transition-opacity duration-150 active:opacity-75"
                       >
                         {barber.isActive ? (
-                          <div className="flex items-center gap-1.5 text-success transition-colors duration-200 group-hover:text-emerald-600">
-                            <ToggleRight className="h-5 w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-110" />
-                            <span className="text-sm font-medium">Ativo</span>
+                          <div className="flex items-center gap-1 sm:gap-1.5 text-success transition-colors duration-200 group-hover:text-emerald-600">
+                            <ToggleRight className="h-4 sm:h-5 w-4 sm:w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-105 ease-linear" />
+                            <span className="text-xs sm:text-sm font-medium hidden sm:inline">Ativo</span>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-200 group-hover:text-slate-500">
-                            <ToggleLeft className="h-5 w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-110" />
-                            <span className="text-sm font-medium">Inativo</span>
+                          <div className="flex items-center gap-1 sm:gap-1.5 text-slate-400 transition-colors duration-200 group-hover:text-slate-500">
+                            <ToggleLeft className="h-4 sm:h-5 w-4 sm:w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-105 ease-linear" />
+                            <span className="text-xs sm:text-sm font-medium hidden sm:inline">Inativo</span>
                           </div>
                         )}
                       </div>
                     </td>
 
                     {/* ACTIONS */}
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-3">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 sm:gap-3">
                         <button
                           type="button"
                           onClick={() => handleOpenModal(barber)}
@@ -350,7 +350,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
         icon={ModalIcon}
         disabled={isPending}
       >
-        <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 p-4 sm:p-6 space-y-4">
           {error && (
             <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600 font-medium">
               {error}
@@ -410,7 +410,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
               <span className="text-xs font-normal text-slate-400">(Opcional)</span>
             </label>
 
-            <div className="flex items-center gap-4 p-4 border border-border rounded-lg bg-slate-50/50">
+            <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border border-border rounded-lg bg-slate-50/50">
               {/* Preview Circle */}
               <div className="relative group h-16 w-16 shrink-0 rounded-full overflow-hidden border border-border bg-slate-200 flex items-center justify-center shadow-inner">
                 {avatarUrl ? (

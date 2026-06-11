@@ -48,18 +48,18 @@ export default async function DashboardPage() {
       <Header icon={LayoutDashboard} span="DASHBOARD" />
 
       {/* Content */}
-      <div className="flex-1 space-y-6 p-6">
+      <div className="flex-1 space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6 lg:p-8">
         {/* Section Header */}
         <div>
-          <h2 className="text-xl font-bold text-foreground">Visão Geral</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
+          <h2 className="text-lg sm:text-xl font-bold text-foreground">Visão Geral</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">{today}</p>
         </div>
 
         {/* Main Grid: Left Column and Right Column */}
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_340px]">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-[1fr_340px]">
           
           {/* Left Column */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* KPI Cards (3 columns) */}
             <StatsCards
               activeBarbers={barberStats.active}
@@ -72,7 +72,7 @@ export default async function DashboardPage() {
             {/* Bar Chart */}
             <Card className="border-none shadow-sm ring-0">
               <CardHeader>
-                <CardTitle className="text-base font-bold text-foreground">
+                <CardTitle className="text-sm sm:text-base font-bold text-foreground">
                   Agendamentos — Últimos 7 Dias
                 </CardTitle>
               </CardHeader>
@@ -84,7 +84,7 @@ export default async function DashboardPage() {
             {/* Recent Appointments Table */}
             <Card className="border-none shadow-sm ring-0">
               <CardHeader>
-                <CardTitle className="text-base font-bold text-foreground">
+                <CardTitle className="text-sm sm:text-base font-bold text-foreground">
                   Agendamentos Recentes
                 </CardTitle>
               </CardHeader>
@@ -95,7 +95,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:gap-6">
             {/* Receita Estimada */}
             <Card className="border-none shadow-sm ring-0 bg-amber text-white">
               <CardHeader>
@@ -109,7 +109,7 @@ export default async function DashboardPage() {
                 </CardAction>
               </CardHeader>
               <CardContent className="-mt-1">
-                <p className="text-3xl font-bold text-white">
+                <p className="text-2xl sm:text-3xl font-bold text-white">
                   R${" "}
                   {todayStats.estimatedRevenue.toLocaleString("pt-BR", {
                     minimumFractionDigits: 2,
@@ -124,7 +124,7 @@ export default async function DashboardPage() {
             {/* Today Agenda */}
             <Card className="border-none shadow-sm ring-0 flex flex-col flex-1">
               <CardHeader>
-                <CardTitle className="text-base font-bold text-foreground">
+                <CardTitle className="text-sm sm:text-base font-bold text-foreground">
                   Agenda de Hoje
                 </CardTitle>
               </CardHeader>

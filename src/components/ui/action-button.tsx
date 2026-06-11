@@ -16,7 +16,7 @@ export function ActionButton({
     <button
       type="button"
       className={cn(
-        "inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer",
+        "inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all ease-linear duration-200 hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer",
         className
       )}
       {...props}

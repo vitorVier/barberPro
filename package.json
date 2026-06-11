@@ -2,7 +2,19 @@
   "name": "barberpro",
   "version": "0.1.0",
   "private": true,
+  "description": "A barber application for barbers",
+  "homepage": "https://github.com/vitorVier/barberPro#readme",
+  "bugs": {
+    "url": "https://github.com/vitorVier/barberPro/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitorVier/barberPro.git"
+  },
+  "license": "ISC",
+  "author": "Vier",
   "type": "module",
+  "main": "index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -36,9 +48,5 @@
     "tailwindcss": "^4",
     "tsx": "^4.22.3",
     "typescript": "^5.9.3"
-  },
-  "description": "A barber application for barbers",
-  "main": "index.js",
-  "author": "Vier",
-  "license": "ISC"
+  }
 }

@@ -24,7 +24,7 @@ export function StatsCards({
   completedAppointments,
 }: StatsCardsProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {/* Barbeiros Ativos */}
       <Card className="border-none shadow-sm ring-0">
         <CardHeader>
@@ -38,7 +38,7 @@ export function StatsCards({
           </CardAction>
         </CardHeader>
         <CardContent className="-mt-1">
-          <p className="text-3xl font-bold text-foreground">{activeBarbers}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-foreground">{activeBarbers}</p>
           <CardDescription className="mt-1 text-xs">
             {totalBarbers} cadastrados no total
           </CardDescription>
@@ -58,7 +58,7 @@ export function StatsCards({
           </CardAction>
         </CardHeader>
         <CardContent className="-mt-1">
-          <p className="text-3xl font-bold text-foreground">{totalClients}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-foreground">{totalClients}</p>
           <CardDescription className="mt-1 text-xs">
             clientes cadastrados
           </CardDescription>
@@ -78,7 +78,7 @@ export function StatsCards({
           </CardAction>
         </CardHeader>
         <CardContent className="-mt-1">
-          <p className="text-3xl font-bold text-foreground">
+          <p className="text-2xl sm:text-3xl font-bold text-foreground">
             {todayAppointments}
           </p>
           <CardDescription className="mt-1 text-xs">

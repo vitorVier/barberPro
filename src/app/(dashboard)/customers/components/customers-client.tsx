@@ -161,21 +161,21 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
   const ModalIcon = isEditing ? Pencil : Users;
 
   return (
-    <main className="flex-1 p-8 space-y-6">
+    <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6">
       {/* Title and Action Button Row */}
       <PageHeader
         title="Clientes"
         subtitle={`${initialCustomers.length} ${initialCustomers.length === 1 ? "cadastrado" : "cadastrados"}`}
       >
         {/* Search Input */}
-        <div className="relative">
+        <div className="relative w-full sm:w-56">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             type="text"
             placeholder="Buscar..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-10 w-56 rounded-lg border border-border bg-white pl-10 pr-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-amber focus:border-amber transition-all"
+            className="h-9 sm:h-10 w-full rounded-lg border border-border bg-white pl-10 pr-3 text-xs sm:text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-amber focus:border-amber transition-all"
           />
         </div>
 
@@ -207,33 +207,33 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
             <table className="w-full min-w-200 border-collapse text-left">
               <thead>
                 <tr className="border-b border-border bg-slate-50/50">
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Cliente
                   </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Telefone
                   </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Agendamentos
                   </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Último Serviço
                   </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Cadastro
                   </th>
-                  <th className="px-6 py-4 text-right"></th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredCustomers.map((customer) => (
                   <tr key={customer.id} className="hover:bg-slate-50/30 transition-colors">
                     {/* CLIENTE */}
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4.5">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-5">
+                      <div className="flex items-center gap-2 sm:gap-4">
                         {/* Avatar with initials */}
-                        <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
-                          <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-sm tracking-wider">
+                        <div className="relative h-10 sm:h-12 w-10 sm:w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
+                          <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-xs sm:text-sm tracking-wider">
                             {customer.name
                               .split(" ")
                               .map((n) => n[0])
@@ -245,10 +245,10 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
 
                         {/* Info */}
                         <div className="flex flex-col justify-center">
-                          <span className="text-sm font-bold text-slate-950 tracking-tight leading-none">
+                          <span className="text-xs sm:text-sm font-bold text-slate-950 tracking-tight leading-none">
                             {customer.name}
                           </span>
-                          <span className="text-xs text-slate-400 mt-1">
+                          <span className="text-xs text-slate-400 mt-0.5 hidden sm:inline">
                             {customer.email || "Sem e-mail"}
                           </span>
                         </div>
@@ -256,24 +256,24 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
                     </td>
 
                     {/* TELEFONE */}
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-slate-600">
+                    <td className="px-3 sm:px-4 md:px-6 py-4">
+                      <span className="text-xs sm:text-sm text-slate-600">
                         {formatPhone(customer.phone) || "—"}
                       </span>
                     </td>
 
                     {/* AGENDAMENTOS */}
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-slate-700 text-center block">
+                    <td className="px-3 sm:px-4 md:px-6 py-4">
+                      <span className="text-xs sm:text-sm font-medium text-slate-700 text-center block">
                         {customer._count.appointments}
                       </span>
                     </td>
 
                     {/* ÚLTIMO SERVIÇO */}
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-4 md:px-6 py-4">
                       {customer.lastAppointment ? (
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium text-amber-dark">
+                          <span className="text-xs sm:text-sm font-medium text-amber-dark">
                             {customer.lastAppointment.barberService.service.name}
                           </span>
                           <span className="text-xs text-slate-400 mt-0.5">
@@ -281,20 +281,20 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
                           </span>
                         </div>
                       ) : (
-                        <span className="text-sm text-slate-400">—</span>
+                        <span className="text-xs sm:text-sm text-slate-400">—</span>
                       )}
                     </td>
 
                     {/* CADASTRO */}
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-slate-600">
+                    <td className="px-3 sm:px-4 md:px-6 py-4">
+                      <span className="text-xs sm:text-sm text-slate-600">
                         {formatDate(customer.createdAt)}
                       </span>
                     </td>
 
                     {/* ACTIONS */}
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-3">
+                    <td className="px-3 sm:px-4 md:px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 sm:gap-3">
                         <button
                           type="button"
                           onClick={() => handleOpenModal(customer)}
@@ -329,7 +329,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
         icon={ModalIcon}
         disabled={isPending}
       >
-        <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 p-4 sm:p-6 space-y-4">
           {error && (
             <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600 font-medium">
               {error}

@@ -59,8 +59,8 @@ export function BarberTabs({ barbers, activeId }: BarberTabsProps) {
               cursor-pointer select-none border
               ${
                 isActive
-                  ? "bg-amber text-navy-dark border-amber shadow-lg shadow-amber/25 scale-[1.02]"
-                  : "bg-white text-slate-600 border-slate-200/80 hover:border-amber/40 hover:text-navy hover:shadow-md hover:shadow-amber/10 hover:scale-[1.01]"
+                  ? "bg-amber text-navy-dark border-amber shadow-lg shadow-amber/25"
+                  : "bg-white text-slate-600 border-slate-200/80 hover:border-amber/40 hover:text-navy hover:shadow-md hover:shadow-amber/10"
               }
             `}
           >
@@ -76,15 +76,19 @@ export function BarberTabs({ barbers, activeId }: BarberTabsProps) {
                 }
               `}
             >
-              {getInitials(barber.name)}
+              {barber.avatarUrl ? (
+                <img
+                  src={barber.avatarUrl}
+                  alt={barber.name}
+                  className="h-full w-full rounded-full object-cover object-center select-none"
+                  style={{ imageRendering: "auto" }}
+                />
+              ) : (
+                getInitials(barber.name)
+              )}
             </div>
 
-            <span className="truncate max-w-[120px]">{barber.name}</span>
-
-            {/* Active indicator dot */}
-            {isActive && (
-              <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-white border-2 border-amber shadow-sm" />
-            )}
+            <span className="truncate max-w-30">{barber.name}</span>
           </button>
         );
       })}
