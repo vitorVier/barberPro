@@ -21,6 +21,10 @@ import {
 import { FormInput } from "../../components/input";
 import { ModalBarber } from "../../components/modal-barber";
 import { formatDate, formatPhone } from "@/utils/formaters";
+import { ActionButton } from "@/components/ui/action-button";
+import { ModalFooter } from "@/components/ui/modal-footer";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface CustomerWithCounts {
   id: string;
@@ -159,71 +163,45 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
   return (
     <main className="flex-1 p-8 space-y-6">
       {/* Title and Action Button Row */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">
-            Clientes
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {initialCustomers.length}{" "}
-            {initialCustomers.length === 1 ? "cadastrado" : "cadastrados"}
-          </p>
+      <PageHeader
+        title="Clientes"
+        subtitle={`${initialCustomers.length} ${initialCustomers.length === 1 ? "cadastrado" : "cadastrados"}`}
+      >
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-10 w-56 rounded-lg border border-border bg-white pl-10 pr-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-amber focus:border-amber transition-all"
+          />
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Search Input */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Buscar..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 w-56 rounded-lg border border-border bg-white pl-10 pr-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-amber focus:border-amber transition-all"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => handleOpenModal()}
-            className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
-          >
-            <Plus className="h-4 w-4" />
-            Novo Cliente
-          </button>
-        </div>
-      </div>
+        <ActionButton onClick={() => handleOpenModal()}>
+          Novo Cliente
+        </ActionButton>
+      </PageHeader>
 
       {/* Customers Table */}
       <div className="rounded-xl border border-border bg-white shadow-sm overflow-hidden">
         {initialCustomers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-50 text-slate-400 mb-4 border border-border">
-              <Users className="h-6 w-6" />
-            </div>
-            <h3 className="text-base font-semibold text-slate-800">Nenhum cliente cadastrado</h3>
-            <p className="text-sm text-slate-500 mt-1 max-w-sm">
-              Cadastre clientes para começar a gerenciar seus agendamentos e histórico de serviços.
-            </p>
-            <button
-              type="button"
-              onClick={() => handleOpenModal()}
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
-            >
-              <Plus className="h-4 w-4" />
+          <EmptyState
+            icon={Users}
+            title="Nenhum cliente cadastrado"
+            description="Cadastre clientes para começar a gerenciar seus agendamentos e histórico de serviços."
+          >
+            <ActionButton onClick={() => handleOpenModal()}>
               Cadastrar Primeiro Cliente
-            </button>
-          </div>
+            </ActionButton>
+          </EmptyState>
         ) : filteredCustomers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-50 text-slate-400 mb-4 border border-border">
-              <Search className="h-6 w-6" />
-            </div>
-            <h3 className="text-base font-semibold text-slate-800">Nenhum resultado encontrado</h3>
-            <p className="text-sm text-slate-500 mt-1 max-w-sm">
-              Não encontramos clientes com o termo &ldquo;{searchQuery}&rdquo;. Tente uma busca diferente.
-            </p>
-          </div>
+          <EmptyState
+            icon={Search}
+            title="Nenhum resultado encontrado"
+            description={`Não encontramos clientes com o termo "${searchQuery}". Tente uma busca diferente.`}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-200 border-collapse text-left">
@@ -403,31 +381,12 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
             />
           </div>
 
-          {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-            <button
-              type="button"
-              onClick={handleCloseModal}
-              disabled={isPending}
-              className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all cursor-pointer disabled:opacity-50"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="px-4 py-2 text-sm font-bold text-navy-dark bg-linear-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Salvando...
-                </>
-              ) : (
-                "Salvar"
-              )}
-            </button>
-          </div>
+          <ModalFooter
+            onCancel={handleCloseModal}
+            isPending={isPending}
+            submitLabel="Salvar"
+            cancelLabel="Cancelar"
+          />
         </form>
       </ModalBarber>
     </main>

@@ -23,6 +23,11 @@ import {
 } from "../actions";
 import { FormInput } from "../../components/input";
 import { ModalBarber } from "../../components/modal-barber";
+import { ActionButton } from "@/components/ui/action-button";
+import { ModalFooter } from "@/components/ui/modal-footer";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
+import { StatusToggle } from "@/components/ui/status-toggle";
 
 export interface ServiceWithCounts {
   id: string;
@@ -162,48 +167,27 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
   return (
     <main className="flex-1 p-8 space-y-6">
       {/* Title and Action Button Row */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">
-            Serviços
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {activeServicesCount} ativos de {initialServices.length} cadastrados
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => handleOpenModal()}
-          className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2.5 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber/20 cursor-pointer"
-        >
-          <Plus className="h-4 w-4" />
+      <PageHeader
+        title="Serviços"
+        subtitle={`${activeServicesCount} ativos de ${initialServices.length} cadastrados`}
+      >
+        <ActionButton onClick={() => handleOpenModal()}>
           Novo Serviço
-        </button>
-      </div>
+        </ActionButton>
+      </PageHeader>
 
       {/* Services Grid */}
       {initialServices.length === 0 ? (
         <div className="rounded-xl border border-border bg-white shadow-sm overflow-hidden">
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-50 text-slate-400 mb-4 border border-border">
-              <Scissors className="h-6 w-6" />
-            </div>
-            <h3 className="text-base font-semibold text-slate-800">
-              Nenhum serviço cadastrado
-            </h3>
-            <p className="text-sm text-slate-500 mt-1 max-w-sm">
-              Cadastre os serviços que sua barbearia oferece para que os clientes possam agendar.
-            </p>
-            <button
-              type="button"
-              onClick={() => handleOpenModal()}
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-amber to-amber-light px-4 py-2 text-sm font-bold text-navy-dark transition-all hover:scale-105 hover:shadow-md hover:shadow-amber/20 cursor-pointer"
-            >
-              <Plus className="h-4 w-4" />
+          <EmptyState
+            icon={Scissors}
+            title="Nenhum serviço cadastrado"
+            description="Cadastre os serviços que sua barbearia oferece para que os clientes possam agendar."
+          >
+            <ActionButton onClick={() => handleOpenModal()}>
               Cadastrar Primeiro Serviço
-            </button>
-          </div>
+            </ActionButton>
+          </EmptyState>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -393,54 +377,20 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
           </div>
 
           {/* Status Toggle */}
-          <div className="flex items-center justify-between rounded-lg border border-border p-3.5 bg-slate-50/50">
-            <div className="space-y-0.5 pr-2">
-              <label className="text-sm font-semibold text-slate-800">
-                Serviço Ativo
-              </label>
-              <p className="text-xs text-slate-500">
-                Determina se o serviço estará disponível para novos agendamentos.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsActive(!isActive)}
-              disabled={isPending}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${isActive ? "bg-success" : "bg-slate-200"
-                }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isActive ? "translate-x-5" : "translate-x-0"
-                  }`}
-              />
-            </button>
-          </div>
+          <StatusToggle
+            label="Serviço Ativo"
+            description="Determina se o serviço estará disponível para novos agendamentos."
+            isActive={isActive}
+            onToggle={() => setIsActive(!isActive)}
+            disabled={isPending}
+          />
 
-          {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-            <button
-              type="button"
-              onClick={handleCloseModal}
-              disabled={isPending}
-              className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all cursor-pointer disabled:opacity-50"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="px-4 py-2 text-sm font-bold text-navy-dark bg-linear-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-1.5 justify-center cursor-pointer disabled:opacity-50 disabled:hover:brightness-100 shadow-sm"
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Salvando...
-                </>
-              ) : (
-                "Salvar"
-              )}
-            </button>
-          </div>
+          <ModalFooter
+            onCancel={handleCloseModal}
+            isPending={isPending}
+            submitLabel="Salvar"
+            cancelLabel="Cancelar"
+          />
         </form>
       </ModalBarber>
     </main>

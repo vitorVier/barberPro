@@ -27,7 +27,7 @@ export function Sidebar() {
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-navy-dark text-slate-300 border-r border-white/5 shadow-2xl shadow-navy-dark/50">
-      
+
       {/* Decorative Glow */}
       <div className="absolute top-0 left-0 w-full h-64 bg-amber/5 blur-[80px] pointer-events-none rounded-full -translate-y-1/2" />
 
@@ -46,7 +46,7 @@ export function Sidebar() {
             quality={100}
           />
         </div>
-        
+
         <div>
           <h1 className="text-xl font-bold text-white tracking-wide">
             BarberPro
@@ -64,7 +64,7 @@ export function Sidebar() {
             Menu Principal
           </p>
         </div>
-        
+
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -73,30 +73,27 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`group relative flex items-center justify-between rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 ${
-                isActive
+              className={`group relative flex items-center justify-between rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 ${isActive
                   ? "bg-linear-to-r from-amber/15 to-transparent text-white"
                   : "text-slate-400 hover:text-white hover:bg-white/5"
-              }`}
+                }`}
             >
               {/* Active Indicator Bar */}
               {isActive && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 h-2/3 w-1 bg-amber rounded-r-full shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
               )}
-              
+
               <div className="flex items-center gap-3.5">
-                <div className={`p-1.5 rounded-lg transition-colors duration-300 ${
-                  isActive 
-                    ? "bg-amber/10 text-amber" 
+                <div className={`p-1.5 rounded-lg transition-colors duration-300 ${isActive
+                    ? "bg-amber/10 text-amber"
                     : "text-slate-500 group-hover:text-amber/80 group-hover:bg-amber/5"
-                }`}>
+                  }`}>
                   <Icon className="h-4.5 w-4.5 shrink-0" />
                 </div>
-                <span className={`transition-transform duration-300 ${
-                  isActive 
-                    ? "translate-x-1 font-semibold" 
+                <span className={`transition-transform duration-300 ${isActive
+                    ? "translate-x-1 font-semibold"
                     : "group-hover:translate-x-1"
-                }`}>
+                  }`}>
                   {item.label}
                 </span>
               </div>
