@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ModalFooter } from "@/components/ui/modal-footer";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 
 interface ModalNewAppointmentProps {
   isOpen: boolean;
@@ -34,16 +35,27 @@ export function ModalNewAppointment({
   const [clientId, setClientId] = useState("");
   const [serviceId, setServiceId] = useState("");
   
-  // Format incoming YYYY-MM-DD to DD/MM/YYYY
+  // Store the initial date from the agenda context
   const [dateStr, setDateStr] = useState("");
+  
+  // Format incoming YYYY-MM-DD to DD/MM/YYYY and sync when modal opens
   useEffect(() => {
-    if (defaultDate) {
-      const parts = defaultDate.split("-");
-      if (parts.length === 3) {
-        setDateStr(`${parts[2]}/${parts[1]}/${parts[0]}`);
+    if (isOpen) {
+      if (defaultDate) {
+        const parts = defaultDate.split("-");
+        if (parts.length === 3) {
+          setDateStr(`${parts[2]}/${parts[1]}/${parts[0]}`);
+        }
+      } else {
+        // Fallback to today if no date provided
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const year = today.getFullYear();
+        setDateStr(`${day}/${month}/${year}`);
       }
     }
-  }, [defaultDate]);
+  }, [isOpen, defaultDate]);
 
   const [hour, setHour] = useState("09");
   const [minute, setMinute] = useState("00");
@@ -54,6 +66,17 @@ export function ModalNewAppointment({
   const availableServices = barberServices.filter(
     (bs) => bs.barberId === barberId
   );
+
+  const handleCloseModal = () => {
+    // Reset form fields when closing without saving
+    // This ensures the agenda date context is preserved
+    setClientId("");
+    setServiceId("");
+    setNotes("");
+    setError("");
+    // Note: barberId is kept if pre-selected from current barber filter
+    onClose();
+  };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
@@ -107,7 +130,7 @@ export function ModalNewAppointment({
         setClientId("");
         setServiceId("");
         setNotes("");
-        onClose();
+        handleCloseModal();
       } else {
         setError(res.error || "Ocorreu um erro ao criar o agendamento.");
       }
@@ -181,27 +204,21 @@ export function ModalNewAppointment({
           {/* Row 2: Service */}
           <div className="space-y-1.5">
             <Label htmlFor="service">Serviço *</Label>
-            <select
+            <SearchableSelect
               id="service"
+              options={availableServices.map((bs) => ({
+                id: bs.id,
+                label: `${bs.service.name} (R$ ${Number(bs.price).toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                })})`,
+                value: bs.service.name,
+              }))}
               value={serviceId}
-              onChange={(e) => setServiceId(e.target.value)}
-              className={selectClass}
-              required
+              onChange={setServiceId}
+              placeholder="Selecione um serviço..."
               disabled={!barberId}
-            >
-              <option value="" disabled>
-                Selecione...
-              </option>
-              {availableServices.map((bs) => (
-                <option key={bs.id} value={bs.id}>
-                  {bs.service.name} (R${" "}
-                  {Number(bs.price).toLocaleString("pt-BR", {
-                    minimumFractionDigits: 2,
-                  })}
-                  )
-                </option>
-              ))}
-            </select>
+              required
+            />
           </div>
 
           {/* Row 3: Date & Time */}
@@ -214,7 +231,8 @@ export function ModalNewAppointment({
                 placeholder="DD/MM/AAAA"
                 value={dateStr}
                 onChange={handleDateChange}
-                className="bg-slate-50"
+                className="bg-amber/5 border-amber/30 focus:bg-white focus:border-amber transition-colors"
+                 title="Data selecionada na agenda. Você pode alterar se necessário."
                 required
               />
             </div>
@@ -268,7 +286,7 @@ export function ModalNewAppointment({
 
         {/* Modal Footer */}
         <ModalFooter
-          onCancel={onClose}
+          onCancel={handleCloseModal}
           isPending={isPending}
           submitLabel="Agendar"
           cancelLabel="Cancelar"

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Scissors,
@@ -14,6 +14,7 @@ import {
   DollarSign,
   Clock,
   Users,
+  Search,
 } from "lucide-react";
 import {
   createServiceAction,
@@ -48,6 +49,7 @@ interface ServicesClientProps {
 export function ServicesClient({ initialServices }: ServicesClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -162,7 +164,20 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
   const modalTitle = isEditing ? "Editar Serviço" : "Novo Serviço";
   const ModalIcon = isEditing ? Pencil : Scissors;
 
-  const activeServicesCount = initialServices.filter((s) => s.isActive).length;
+  // Filtered services
+  const filteredServices = useMemo(() => {
+    if (!searchQuery.trim()) return initialServices;
+
+    const query = searchQuery.toLowerCase();
+    return initialServices.filter(
+      (s) =>
+        s.name.toLowerCase().includes(query) ||
+        s.description?.toLowerCase().includes(query) ||
+        s.price.toString().includes(query)
+    );
+  }, [initialServices, searchQuery]);
+
+  const activeServicesCount = filteredServices.filter((s) => s.isActive).length;
 
   return (
     <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6">
@@ -171,6 +186,18 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
         title="Serviços"
         subtitle={`${activeServicesCount} ativos de ${initialServices.length} cadastrados`}
       >
+        {/* Search Input */}
+        <div className="relative w-full sm:w-56">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-9 sm:h-10 w-full rounded-lg border border-border bg-white pl-10 pr-3 text-xs sm:text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-amber focus:border-amber transition-all"
+          />
+        </div>
+
         <ActionButton onClick={() => handleOpenModal()}>
           Novo Serviço
         </ActionButton>
@@ -189,9 +216,17 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
             </ActionButton>
           </EmptyState>
         </div>
+      ) : filteredServices.length === 0 ? (
+        <div className="rounded-xl border border-border bg-white shadow-sm overflow-hidden">
+          <EmptyState
+            icon={Search}
+            title="Nenhum resultado encontrado"
+            description={`Não encontramos serviços com o termo "${searchQuery}". Tente uma busca diferente.`}
+          />
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-          {initialServices.map((service) => (
+          {filteredServices.map((service) => (
             <div
               key={service.id}
               className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl overflow-hidden flex flex-col transition-all duration-300 ${!service.isActive ? "opacity-80 grayscale-30" : ""

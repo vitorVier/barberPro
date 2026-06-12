@@ -119,7 +119,7 @@ export function DateNavigator({ currentDate }: DateNavigatorProps) {
               type="date"
               value={inputValue}
               onChange={handleDateInput}
-              className="h-8 w-[130px] rounded-lg border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-600 transition-all hover:border-amber/40 focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20"
+              className="h-8 w-32.5 rounded-lg border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-600 transition-all hover:border-amber/40 focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/20"
             />
           </div>
         </div>

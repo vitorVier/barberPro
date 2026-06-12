@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Scissors,
@@ -15,6 +15,7 @@ import {
   User,
   Image as ImageIcon,
   Upload,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -51,6 +52,7 @@ interface BarbersClientProps {
 
 export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
   const [isPending, startTransition] = useTransition();
 
   // Modal State
@@ -187,6 +189,19 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
   const modalTitle = isEditing ? "Editar Barbeiro" : "Novo Barbeiro";
   const ModalIcon = isEditing ? Pencil : Scissors;
 
+  // Filtered barbers
+  const filteredBarbers = useMemo(() => {
+    if (!searchQuery.trim()) return initialBarbers;
+
+    const query = searchQuery.toLowerCase();
+    return initialBarbers.filter(
+      (b) =>
+        b.name.toLowerCase().includes(query) ||
+        b.email.toLowerCase().includes(query) ||
+        b.phone?.includes(query)
+    );
+  }, [initialBarbers, searchQuery]);
+
   return (
     <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6">
       {/* Title and Action Button Row */}
@@ -194,6 +209,18 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
         title="Barbeiros"
         subtitle={`${initialBarbers.length} ${initialBarbers.length === 1 ? "cadastrado" : "cadastrados"}`}
       >
+        {/* Search Input */}
+        <div className="relative w-full sm:w-56">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-9 sm:h-10 w-full rounded-lg border border-border bg-white pl-10 pr-3 text-xs sm:text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-amber focus:border-amber transition-all"
+          />
+        </div>
+
         <ActionButton onClick={() => handleOpenModal()}>
           Novo Barbeiro
         </ActionButton>
@@ -211,6 +238,12 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
               Cadastrar Primeiro Barbeiro
             </ActionButton>
           </EmptyState>
+        ) : filteredBarbers.length === 0 ? (
+          <EmptyState
+            icon={Search}
+            title="Nenhum resultado encontrado"
+            description={`Não encontramos barbeiros com o termo "${searchQuery}". Tente uma busca diferente.`}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-200 border-collapse text-left">
@@ -225,7 +258,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {initialBarbers.map((barber) => (
+                {filteredBarbers.map((barber) => (
                   <tr key={barber.id} className="hover:bg-slate-50/30 transition-colors">
 
                     {/* BARBEIRO */}
