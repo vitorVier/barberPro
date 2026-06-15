@@ -96,11 +96,11 @@ export function TimelineGrid({
     ((nowMinutes - startHour * 60) / SLOT_MINUTES) * HOUR_HEIGHT;
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col flex-1 min-h-0 w-full h-full">
       {/* Timeline container */}
       <div
         ref={timelineRef}
-        className="relative flex overflow-y-auto max-h-[calc(100vh-360px)] min-h-[480px] custom-scrollbar"
+        className="relative flex flex-1 min-h-0 overflow-y-auto custom-scrollbar"
       >
         {/* Time labels column */}
         <div className="sticky left-0 z-10 w-[72px] shrink-0 bg-white border-r border-slate-100">
@@ -248,7 +248,7 @@ export function TimelineGrid({
           className="absolute right-4 top-4 z-30 w-[340px] rounded-2xl bg-white border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden animate-in slide-in-from-right-4 fade-in duration-200"
         >
           {/* Header */}
-          <div className="relative px-5 pt-5 pb-4 border-b border-slate-100">
+          <div className="relative px-4 pt-4 pb-3 border-b border-slate-100">
             <button
               id="close-appointment-detail"
               onClick={() => setSelectedId(null)}
@@ -258,7 +258,7 @@ export function TimelineGrid({
             </button>
 
             <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-amber/15 to-amber/5 text-amber font-bold text-sm border border-amber/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-linear-to-br from-amber/15 to-amber/5 text-amber font-bold text-xs border border-amber/20">
                 {selectedAppointment.client.name
                   .split(" ")
                   .map((w) => w[0])
@@ -295,7 +295,7 @@ export function TimelineGrid({
           </div>
 
           {/* Details */}
-          <div className="px-5 py-4 space-y-3">
+          <div className="px-4 py-3 space-y-2.5">
             <DetailRow
               icon={Clock}
               label="Horário"

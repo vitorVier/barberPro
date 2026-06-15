@@ -266,12 +266,12 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             <table className="w-full min-w-200 border-collapse text-left">
               <thead>
                 <tr className="border-b border-border bg-slate-50/50">
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Barbeiro</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Contato</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Serviços</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Agendamentos</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right"></th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Barbeiro</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Contato</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Serviços</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Agendamentos</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Status</th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-right"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -279,11 +279,11 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                   <tr key={barber.id} className="hover:bg-slate-50/30 transition-colors">
 
                     {/* BARBEIRO */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-5">
-                      <div className="flex items-center gap-2 sm:gap-4">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
 
                         {/* CONTAINER DO AVATAR */}
-                        <div className="relative h-10 sm:h-12 w-10 sm:w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
+                        <div className="relative h-8 sm:h-10 w-8 sm:w-10 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-1 ring-border shadow-sm transition-transform hover:scale-105">
                           {barber.avatarUrl ? (
                             <img
                               src={barber.avatarUrl}
@@ -316,9 +316,9 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
                     {/* CONTATO */}
                     <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
                       <div className="flex flex-col">
-                        <span className="text-xs sm:text-sm text-slate-600">{barber.email}</span>
+                        <span className="text-[13px] text-slate-600">{barber.email}</span>
                         {barber.phone && (
-                          <span className="text-xs text-slate-400 mt-0.5">{formatPhone(barber.phone)}</span>
+                          <span className="text-[11px] text-slate-400 mt-0.5">{formatPhone(barber.phone)}</span>
                         )}
                       </div>
                     </td>
@@ -338,7 +338,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
 
                     {/* AGENDAMENTOS */}
                     <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-                      <span className="text-xs sm:text-sm font-medium text-slate-700">
+                      <span className="text-[13px] font-medium text-slate-700">
                         {barber._count.appointments}
                       </span>
                     </td>
@@ -366,7 +366,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
 
                     {/* ACTIONS */}
                     <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 sm:gap-3">
+                      <div className="flex items-center justify-end gap-1.5 sm:gap-2">
                         <button
                           type="button"
                           onClick={() => handleOpenModal(barber)}

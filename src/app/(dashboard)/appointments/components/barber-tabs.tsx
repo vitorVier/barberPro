@@ -54,7 +54,7 @@ export function BarberTabs({ barbers, activeId }: BarberTabsProps) {
             id={`barber-tab-${barber.id}`}
             onClick={() => handleClick(barber.id)}
             className={`
-              group relative flex items-center gap-2.5 rounded-xl px-4 py-2.5
+              group relative flex items-center gap-2 rounded-xl px-3.5 py-2
               text-sm font-semibold transition-all duration-300 ease-out
               cursor-pointer select-none border
               ${
@@ -67,8 +67,8 @@ export function BarberTabs({ barbers, activeId }: BarberTabsProps) {
             {/* Avatar */}
             <div
               className={`
-                flex h-7 w-7 shrink-0 items-center justify-center rounded-lg
-                text-[11px] font-bold tracking-wide transition-all duration-300
+                flex h-6 w-6 shrink-0 items-center justify-center rounded-lg
+                text-[10px] font-bold tracking-wide transition-all duration-300
                 ${
                   isActive
                     ? "bg-navy-dark/20 text-navy-dark"

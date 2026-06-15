@@ -25,7 +25,7 @@ export function DateNavigator({ currentDate }: DateNavigatorProps) {
   const navigateToDate = useCallback(
     (newDate: Date) => {
       const params = new URLSearchParams(searchParams.toString());
-      const isoDate = newDate.toISOString().split("T")[0];
+      const isoDate = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, "0")}-${String(newDate.getDate()).padStart(2, "0")}`;
       params.set("date", isoDate);
       router.push(`${pathname}?${params.toString()}`);
     },

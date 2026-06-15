@@ -207,32 +207,32 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
             <table className="w-full min-w-200 border-collapse text-left">
               <thead>
                 <tr className="border-b border-border bg-slate-50/50">
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Cliente
                   </th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Telefone
                   </th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Agendamentos
                   </th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Último Serviço
                   </th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Cadastro
                   </th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right"></th>
+                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-right"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredCustomers.map((customer) => (
                   <tr key={customer.id} className="hover:bg-slate-50/30 transition-colors">
                     {/* CLIENTE */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-5">
-                      <div className="flex items-center gap-2 sm:gap-4">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
                         {/* Avatar with initials */}
-                        <div className="relative h-10 sm:h-12 w-10 sm:w-12 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-md transition-transform hover:scale-105">
+                        <div className="relative h-8 sm:h-10 w-8 sm:w-10 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-1 ring-border shadow-sm transition-transform hover:scale-105">
                           <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-xs sm:text-sm tracking-wider">
                             {customer.name
                               .split(" ")
@@ -243,12 +243,11 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
                           </div>
                         </div>
 
-                        {/* Info */}
                         <div className="flex flex-col justify-center">
                           <span className="text-xs sm:text-sm font-bold text-slate-950 tracking-tight leading-none">
                             {customer.name}
                           </span>
-                          <span className="text-xs text-slate-400 mt-0.5 hidden sm:inline">
+                          <span className="text-[11px] text-slate-400 mt-0.5 hidden sm:inline">
                             {customer.email || "Sem e-mail"}
                           </span>
                         </div>
@@ -256,45 +255,45 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
                     </td>
 
                     {/* TELEFONE */}
-                    <td className="px-3 sm:px-4 md:px-6 py-4">
-                      <span className="text-xs sm:text-sm text-slate-600">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <span className="text-[13px] text-slate-600">
                         {formatPhone(customer.phone) || "—"}
                       </span>
                     </td>
 
                     {/* AGENDAMENTOS */}
-                    <td className="px-3 sm:px-4 md:px-6 py-4">
-                      <span className="text-xs sm:text-sm font-medium text-slate-700 text-center block">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <span className="text-[13px] font-medium text-slate-700 text-center block">
                         {customer._count.appointments}
                       </span>
                     </td>
 
                     {/* ÚLTIMO SERVIÇO */}
-                    <td className="px-3 sm:px-4 md:px-6 py-4">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
                       {customer.lastAppointment ? (
                         <div className="flex flex-col">
-                          <span className="text-xs sm:text-sm font-medium text-amber-dark">
+                          <span className="text-[13px] font-medium text-amber-dark">
                             {customer.lastAppointment.barberService.service.name}
                           </span>
-                          <span className="text-xs text-slate-400 mt-0.5">
+                          <span className="text-[11px] text-slate-400 mt-0.5">
                             {formatDate(customer.lastAppointment.startsAt)}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-xs sm:text-sm text-slate-400">—</span>
+                        <span className="text-[13px] text-slate-400">—</span>
                       )}
                     </td>
 
                     {/* CADASTRO */}
-                    <td className="px-3 sm:px-4 md:px-6 py-4">
-                      <span className="text-xs sm:text-sm text-slate-600">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <span className="text-[13px] text-slate-600">
                         {formatDate(customer.createdAt)}
                       </span>
                     </td>
 
                     {/* ACTIONS */}
-                    <td className="px-3 sm:px-4 md:px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 sm:gap-3">
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5 sm:gap-2">
                         <button
                           type="button"
                           onClick={() => handleOpenModal(customer)}

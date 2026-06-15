@@ -23,7 +23,10 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
     ? new Date(dateParam + "T12:00:00")
     : new Date();
 
-  const dateISO = selectedDate.toISOString().split("T")[0];
+  // Use local timezone formatting to avoid UTC offset issues at night
+  const dateISO =
+    dateParam ||
+    `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
 
   // Parse barber filter
   const barberId =
@@ -68,14 +71,14 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
   }));
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-[100dvh] overflow-hidden">
       {/* Top Bar */}
       <Header icon={CalendarDays} span="AGENDAMENTOS" />
 
       {/* Content */}
-      <div className="flex-1 space-y-4 sm:space-y-5 p-3 sm:p-4 md:p-6 lg:p-8">
+      <div className="flex-1 flex flex-col min-h-0 gap-4 sm:gap-5 p-3 sm:p-4 md:p-6 lg:p-8">
         {/* Page Header Row */}
-        <div className="flex items-start justify-between gap-3 sm:gap-4 flex-wrap">
+        <div className="shrink-0 flex items-start justify-between gap-3 sm:gap-4 flex-wrap">
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight">
               Agendamentos
@@ -100,14 +103,16 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
         </div>
 
         {/* Barber Filter Tabs */}
-        <Suspense fallback={null}>
-          <BarberTabs barbers={barbers} activeId={barberId ?? null} />
-        </Suspense>
+        <div className="shrink-0">
+          <Suspense fallback={null}>
+            <BarberTabs barbers={barbers} activeId={barberId ?? null} />
+          </Suspense>
+        </div>
 
         {/* Main Timeline Card */}
-        <div className="rounded-2xl bg-white border border-slate-200/60 shadow-sm overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0 rounded-2xl bg-white border border-slate-200/60 shadow-sm overflow-hidden">
           {/* Card Header: Date Nav + Legend */}
-          <div className="flex flex-col gap-3 sm:gap-4 border-b border-slate-100 px-3 sm:px-4 md:px-5 py-3 sm:py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="shrink-0 flex flex-col gap-3 sm:gap-4 border-b border-slate-100 px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 sm:flex-row sm:items-center sm:justify-between">
             <Suspense fallback={null}>
               <DateNavigator currentDate={dateISO} />
             </Suspense>
@@ -116,7 +121,7 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
 
           {/* Quick Stats Pills */}
           {appointments.length > 0 && (
-            <div className="flex items-center gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-3 border-b border-slate-50 bg-slate-50/50 flex-wrap">
+            <div className="shrink-0 flex items-center gap-2 px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 border-b border-slate-50 bg-slate-50/50 flex-wrap">
               <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
                 Resumo:
               </span>
@@ -142,11 +147,15 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
           )}
 
           {/* Timeline or Empty State */}
-          {appointments.length > 0 ? (
-            <TimelineGrid appointments={serializedAppointments} />
-          ) : (
-            <EmptyState />
-          )}
+          <div className="flex-1 flex flex-col min-h-0 relative bg-slate-50/30">
+            {appointments.length > 0 ? (
+              <TimelineGrid appointments={serializedAppointments} />
+            ) : (
+              <div className="flex-1 overflow-y-auto">
+                <EmptyState />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
