@@ -26,6 +26,7 @@ import {
 } from "../actions";
 import { FormInput } from "../../components/input";
 import { ModalBarber } from "../../components/modal-barber";
+import { ModalBarberServices } from "./modal-barber-services";
 import { formatPhone } from "@/utils/formaters";
 import { ActionButton } from "@/components/ui/action-button";
 import { ModalFooter } from "@/components/ui/modal-footer";
@@ -61,6 +62,10 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
 
   // Estado para rastrear se estamos editando um barbeiro específico
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Estados para o Modal de Serviços
+  const [isServicesModalOpen, setIsServicesModalOpen] = useState(false);
+  const [selectedBarberForServices, setSelectedBarberForServices] = useState<{id: string, name: string} | null>(null);
 
   // Form Fields
   const [name, setName] = useState("");
@@ -114,6 +119,18 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
     if (isPending) return;
     setIsModalOpen(false);
     setTimeout(() => setEditingId(null), 200);
+  };
+
+  const handleOpenServicesModal = (barber: BarberWithCounts) => {
+    setSelectedBarberForServices({ id: barber.id, name: barber.name });
+    setIsServicesModalOpen(true);
+  };
+
+  const handleCloseServicesModal = () => {
+    setIsServicesModalOpen(false);
+    setTimeout(() => setSelectedBarberForServices(null), 200);
+    // Refresh to get updated service counts if any changed
+    router.refresh();
   };
 
   // Submit Handler
@@ -308,14 +325,15 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
 
                     {/* SERVIÇOS */}
                     <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-                      <Link
-                        href={`/barbeiros/${barber.id}/servicos`}
-                        className="inline-flex items-center text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                      <button
+                        onClick={() => handleOpenServicesModal(barber)}
+                        className="inline-flex items-center text-xs sm:text-sm font-medium text-amber hover:text-amber-dark transition-colors"
+                        title="Gerenciar serviços do barbeiro"
                       >
                         {barber._count.barberService}{" "}
                         {barber._count.barberService === 1 ? "serviço" : "serviços"}{" "}
-                        <span className="ml-1 text-[10px]">&gt;</span>
-                      </Link>
+                        <Pencil className="ml-1.5 h-3 w-3 opacity-70" />
+                      </button>
                     </td>
 
                     {/* AGENDAMENTOS */}
@@ -505,6 +523,13 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
           />
         </form>
       </ModalBarber>
+
+      {/* Modal de Serviços do Barbeiro */}
+      <ModalBarberServices
+        isOpen={isServicesModalOpen}
+        onClose={handleCloseServicesModal}
+        barber={selectedBarberForServices}
+      />
     </main>
   );
 }

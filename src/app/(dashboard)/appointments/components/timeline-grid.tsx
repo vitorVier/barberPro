@@ -134,7 +134,7 @@ export function TimelineGrid({
               return (
                 <div
                   key={hour}
-                  className="absolute left-0 right-0 border-t border-slate-100/80"
+                  className="absolute left-0 right-0 border-t border-slate-100/50"
                   style={{ top: `${top}px` }}
                 />
               );
@@ -146,7 +146,7 @@ export function TimelineGrid({
               return (
                 <div
                   key={`half-${hour}`}
-                  className="absolute left-0 right-0 border-t border-dashed border-slate-50"
+                  className="absolute left-0 right-0 border-t border-dashed border-slate-100/30"
                   style={{ top: `${top}px` }}
                 />
               );
@@ -158,13 +158,13 @@ export function TimelineGrid({
                 className="absolute left-0 right-0 z-20 flex items-center pointer-events-none"
                 style={{ top: `${nowTop}px` }}
               >
-                <div className="h-2.5 w-2.5 rounded-full bg-red-500 shadow-lg shadow-red-500/30 ml-[5px]" />
-                <div className="flex-1 h-[2px] bg-red-500/70" />
+                <div className="h-2 w-2 rounded-full bg-red-500 shadow-sm ml-[6px]" />
+                <div className="flex-1 h-px bg-red-500/50" />
               </div>
             )}
 
             {/* Appointment blocks */}
-            <div className="absolute inset-0 px-3">
+            <div className="absolute inset-0 px-2 sm:px-3">
               {appointments.map((appt) => {
                 const style = getBlockStyle(appt);
                 const statusKey = appt.status as AppointmentStatusKey;
@@ -180,42 +180,58 @@ export function TimelineGrid({
                   { hour: "2-digit", minute: "2-digit" }
                 );
 
+                const start = new Date(appt.startsAt);
+                const end = new Date(appt.endsAt);
+                const durationMins = (end.getTime() - start.getTime()) / 60000;
+                const isCompact = durationMins <= 30; // Use compact mode for short appointments
+
                 return (
                   <button
                     key={appt.id}
                     id={`appointment-block-${appt.id}`}
                     onClick={() => setSelectedId(isSelected ? null : appt.id)}
                     className={`
-                      absolute left-3 right-3 rounded-xl border-l-[3px] px-4 py-2.5
-                      text-left transition-all duration-200 cursor-pointer group
-                      ${statusCfg.borderColor}
-                      ${isSelected
-                        ? `${statusCfg.colorLight} shadow-lg shadow-slate-200/60 ring-2 ${statusCfg.ringColor} scale-[1.01]`
-                        : `bg-white hover:shadow-md hover:shadow-slate-100/80 hover:scale-[1.005] shadow-sm`
+                        absolute left-2 right-2 sm:left-3 sm:right-3 rounded-lg border-l-[3px] 
+                        text-left transition-all duration-200 cursor-pointer group overflow-hidden
+                        ${statusCfg.borderColor} ${statusCfg.colorLight}
+                        ${isSelected
+                        ? `shadow-md shadow-slate-200/50 ring-1 ${statusCfg.ringColor} z-10`
+                        : `hover:shadow-sm hover:z-10`
                       }
-                    `}
+                      `}
                     style={style}
                   >
-                    <div className="flex items-start justify-between gap-2 h-full">
-                      <div className="min-w-0 flex flex-col justify-center h-full">
-                        <p className="text-sm font-semibold text-navy truncate leading-tight">
-                          {appt.client.name}
-                        </p>
-                        <p className="text-xs text-slate-500 truncate mt-0.5">
-                          {appt.barberService.service.name}
-                        </p>
-                        <p className="text-[11px] text-slate-400 font-medium mt-0.5 tabular-nums">
-                          {startTime} – {endTime}
-                        </p>
-                      </div>
+                    <div className={`flex w-full h-full ${isCompact ? 'flex-row items-center px-3' : 'flex-col items-start px-3 py-2'} gap-1 relative`}>
+                      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-linear-to-r from-transparent to-white/20`} />
 
-                      {/* Status dot + more button */}
-                      <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
-                        <span
-                          className={`h-2 w-2 rounded-full ${statusCfg.color} ring-2 ring-white`}
-                        />
-                        <MoreHorizontal className="h-3.5 w-3.5 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
+                      {isCompact ? (
+                        <p className={`text-xs font-semibold ${statusCfg.textColor} truncate w-full flex items-center gap-1.5 z-10`}>
+                          <span className="shrink-0">{startTime}</span>
+                          <span className="opacity-40 font-normal shrink-0">|</span>
+                          <span className="truncate">
+                            {appt.client.name} <span className="opacity-70 font-normal ml-1">- {appt.barberService.service.name}</span>
+                          </span>
+                        </p>
+                      ) : (
+                        <>
+                          <p className={`text-sm font-bold ${statusCfg.textColor} truncate leading-tight w-full z-10 pr-4`}>
+                            {appt.client.name}
+                          </p>
+                          <p className={`text-xs ${statusCfg.textColor} opacity-80 truncate mt-0.5 w-full z-10`}>
+                            {appt.barberService.service.name}
+                          </p>
+                          <p className={`text-[11px] ${statusCfg.textColor} opacity-70 font-medium mt-auto w-full tabular-nums z-10`}>
+                            {startTime} – {endTime}
+                          </p>
+                        </>
+                      )}
+
+                      {/* More button (only in normal mode to save space) */}
+                      {!isCompact && (
+                        <div className="absolute top-2 right-2 shrink-0 z-10">
+                          <MoreHorizontal className={`h-4 w-4 ${statusCfg.textColor} opacity-0 group-hover:opacity-50 transition-opacity`} />
+                        </div>
+                      )}
                     </div>
                   </button>
                 );
