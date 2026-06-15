@@ -103,7 +103,7 @@ export function TimelineGrid({
         className="relative flex flex-1 min-h-0 overflow-y-auto custom-scrollbar"
       >
         {/* Time labels column */}
-        <div className="sticky left-0 z-10 w-[72px] shrink-0 bg-white border-r border-slate-100">
+        <div className="sticky left-0 z-10 w-18 shrink-0 bg-white border-r border-slate-100">
           <div className="relative" style={{ height: `${hours.length * HOUR_HEIGHT}px` }}>
             {hours.map((hour) => {
               const top = (hour - startHour) * HOUR_HEIGHT;
@@ -158,7 +158,7 @@ export function TimelineGrid({
                 className="absolute left-0 right-0 z-20 flex items-center pointer-events-none"
                 style={{ top: `${nowTop}px` }}
               >
-                <div className="h-2 w-2 rounded-full bg-red-500 shadow-sm ml-[6px]" />
+                <div className="h-2 w-2 rounded-full bg-red-500 shadow-sm ml-1.5" />
                 <div className="flex-1 h-px bg-red-500/50" />
               </div>
             )}
@@ -245,7 +245,7 @@ export function TimelineGrid({
       {selectedAppointment && (
         <div
           ref={detailRef}
-          className="absolute right-4 top-4 z-30 w-[340px] rounded-2xl bg-white border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden animate-in slide-in-from-right-4 fade-in duration-200"
+          className="absolute right-4 top-4 z-30 w-85 rounded-2xl bg-white border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden animate-in slide-in-from-right-4 fade-in duration-200"
         >
           {/* Header */}
           <div className="relative px-4 pt-4 pb-3 border-b border-slate-100">

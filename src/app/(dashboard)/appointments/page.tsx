@@ -71,7 +71,7 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
   }));
 
   return (
-    <div className="flex flex-col h-[100dvh] overflow-hidden">
+    <div className="flex flex-col h-dvh overflow-hidden">
       {/* Top Bar */}
       <Header icon={CalendarDays} span="AGENDAMENTOS" />
 

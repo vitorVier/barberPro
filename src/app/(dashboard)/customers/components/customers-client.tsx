@@ -233,7 +233,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
                       <div className="flex items-center gap-2 sm:gap-3">
                         {/* Avatar with initials */}
                         <div className="relative h-8 sm:h-10 w-8 sm:w-10 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-1 ring-border shadow-sm transition-transform hover:scale-105">
-                          <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-xs sm:text-sm tracking-wider">
+                          <div className="flex h-full w-full items-center justify-center bg-navy text-amber font-bold text-xs sm:text-sm tracking-wider">
                             {customer.name
                               .split(" ")
                               .map((n) => n[0])
