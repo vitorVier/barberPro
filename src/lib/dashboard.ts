@@ -20,26 +20,40 @@ function subDays(date: Date, days: number): Date {
   return d;
 }
 
+// Pre-compute the days-of-week labels once
+const DAYS_OF_WEEK = [
+  "Domingo",
+  "Segunda",
+  "Terça",
+  "Quarta",
+  "Quinta",
+  "Sexta",
+  "Sábado",
+] as const;
+
 // ─── Dashboard Queries ─────────────────────────────────────
 
+/** Single query: returns { active, total } counts for barbers */
 export async function getBarberStats() {
-  const [active, total] = await Promise.all([
-    prisma.barber.count({ where: { isActive: true } }),
-    prisma.barber.count(),
-  ]);
-  return { active, total };
+  const barbers = await prisma.barber.findMany({
+    select: { isActive: true },
+  });
+  return {
+    active: barbers.filter((b) => b.isActive).length,
+    total: barbers.length,
+  };
 }
 
 export async function getClientsCount() {
   return prisma.client.count();
 }
 
-export async function getTodayAppointments() {
+export async function getTodayStats() {
   const now = new Date();
   const start = startOfDay(now);
   const end = endOfDay(now);
 
-  return prisma.appointment.findMany({
+  const appointments = await prisma.appointment.findMany({
     where: {
       startsAt: { gte: start, lte: end },
     },
@@ -54,18 +68,16 @@ export async function getTodayAppointments() {
     },
     orderBy: { startsAt: "asc" },
   });
-}
 
-export async function getTodayStats() {
-  const appointments = await getTodayAppointments();
+  let completed = 0;
+  let estimatedRevenue = 0;
 
-  const completed = appointments.filter(
-    (a) => a.status === "COMPLETED"
-  ).length;
-
-  const estimatedRevenue = appointments
-    .filter((a) => a.status !== "CANCELLED" && a.status !== "NO_SHOW")
-    .reduce((sum, a) => sum + Number(a.barberService.price), 0);
+  for (const a of appointments) {
+    if (a.status === "COMPLETED") completed++;
+    if (a.status !== "CANCELLED" && a.status !== "NO_SHOW") {
+      estimatedRevenue += Number(a.barberService.price);
+    }
+  }
 
   return {
     appointments,
@@ -87,37 +99,30 @@ export async function getLast7DaysAppointments() {
     select: { startsAt: true },
   });
 
-  // Group by day of week
-  const daysOfWeek = [
-    "Domingo",
-    "Segunda",
-    "Terça",
-    "Quarta",
-    "Quinta",
-    "Sexta",
-    "Sábado",
-  ];
-
-  // Build array for last 7 days in order
-  const result: { day: string; count: number }[] = [];
-
+  // Pre-compute day boundaries once
+  const days: { label: string; start: number; end: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const date = subDays(now, i);
-    const dayStart = startOfDay(date);
-    const dayEnd = endOfDay(date);
-
-    const count = appointments.filter((a) => {
-      const t = new Date(a.startsAt).getTime();
-      return t >= dayStart.getTime() && t <= dayEnd.getTime();
-    }).length;
-
-    result.push({
-      day: daysOfWeek[date.getDay()],
-      count,
+    days.push({
+      label: DAYS_OF_WEEK[date.getDay()],
+      start: startOfDay(date).getTime(),
+      end: endOfDay(date).getTime(),
     });
   }
 
-  return result;
+  // Single pass through appointments to bucket them
+  const counts = new Array<number>(7).fill(0);
+  for (const a of appointments) {
+    const t = new Date(a.startsAt).getTime();
+    for (let j = 0; j < days.length; j++) {
+      if (t >= days[j].start && t <= days[j].end) {
+        counts[j]++;
+        break; // each appointment belongs to exactly one day
+      }
+    }
+  }
+
+  return days.map((d, i) => ({ day: d.label, count: counts[i] }));
 }
 
 export async function getRecentAppointments(limit = 5) {

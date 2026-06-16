@@ -70,6 +70,13 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
     },
   }));
 
+  // Serialize services for the client component
+  const serializedServices = allServices.map((s) => ({
+    ...s,
+    price: Number(s.price),
+    createdAt: s.createdAt.toISOString(),
+  }));
+
   return (
     <div className="flex flex-col h-dvh overflow-hidden">
       {/* Top Bar */}
@@ -96,7 +103,7 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
           <NewAppointmentWrapper
             barbers={barbers}
             clients={clients}
-            barberServices={allServices}
+            barberServices={serializedServices}
             currentDate={dateISO}
             currentBarberId={barberId}
           />

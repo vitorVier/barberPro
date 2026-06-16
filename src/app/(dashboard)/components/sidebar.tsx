@@ -42,6 +42,7 @@ export function Sidebar() {
             width={100}
             height={100}
             className="object-contain drop-shadow-2xl relative z-10"
+            style={{ width: "auto", height: "auto" }}
             priority
             quality={100}
           />
