@@ -52,89 +52,59 @@ export default async function DashboardPage() {
         {/* Section Header */}
         <div>
           <h2 className="text-lg sm:text-xl font-bold text-foreground">Visão Geral</h2>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">{today}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{today}</p>
         </div>
 
-        {/* Main Grid: Left Column and Right Column */}
-        <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-[1fr_340px]">
-          
-          {/* Left Column */}
-          <div className="space-y-4 sm:space-y-6">
-            {/* KPI Cards (3 columns) */}
-            <StatsCards
-              activeBarbers={barberStats.active}
-              totalBarbers={barberStats.total}
-              totalClients={totalClients}
-              todayAppointments={todayStats.total}
-              completedAppointments={todayStats.completed}
-            />
+        {/* Top Row: KPI Cards */}
+        <StatsCards
+          activeBarbers={barberStats.active}
+          totalBarbers={barberStats.total}
+          totalClients={totalClients}
+          todayAppointments={todayStats.total}
+          completedAppointments={todayStats.completed}
+          estimatedRevenue={todayStats.estimatedRevenue}
+        />
 
-            {/* Bar Chart */}
-            <Card className="border-none shadow-sm ring-0">
-              <CardHeader>
-                <CardTitle className="text-sm sm:text-base font-bold text-foreground">
-                  Agendamentos — Últimos 7 Dias
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <AppointmentsChart data={chartData} />
-              </CardContent>
-            </Card>
+        {/* Middle Row: Chart and Agenda */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-6">
+          {/* Bar Chart */}
+          <Card className="xl:col-span-9 border-none shadow-glass hover:shadow-soft transition-shadow ring-0">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-[13px] sm:text-sm font-bold text-foreground uppercase tracking-wide">
+                Agendamentos — Últimos 7 Dias
+              </CardTitle>
+            </CardHeader>
 
-            {/* Recent Appointments Table */}
-            <Card className="border-none shadow-sm ring-0">
-              <CardHeader>
-                <CardTitle className="text-sm sm:text-base font-bold text-foreground">
-                  Agendamentos Recentes
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RecentAppointments appointments={recentAppointments} />
-              </CardContent>
-            </Card>
-          </div>
+            <CardContent>
+              <AppointmentsChart data={chartData} />
+            </CardContent>
+          </Card>
 
-          {/* Right Column */}
-          <div className="flex flex-col gap-4 sm:gap-6">
-            {/* Receita Estimada */}
-            <Card className="border-none shadow-sm ring-0 bg-amber text-white">
-              <CardHeader>
-                <CardTitle className="text-xs font-semibold uppercase tracking-wider text-white/80">
-                  Receita Estimada Hoje
-                </CardTitle>
-                <CardAction>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                    <DollarSign className="h-4 w-4 text-white" />
-                  </div>
-                </CardAction>
-              </CardHeader>
-              <CardContent className="-mt-1">
-                <p className="text-2xl sm:text-3xl font-bold text-white">
-                  R${" "}
-                  {todayStats.estimatedRevenue.toLocaleString("pt-BR", {
-                    minimumFractionDigits: 2,
-                  })}
-                </p>
-                <CardDescription className="mt-1 text-xs text-white/70">
-                  serviços do dia
-                </CardDescription>
-              </CardContent>
-            </Card>
+          {/* Today Agenda */}
+          <Card className="xl:col-span-3 border-none shadow-glass hover:shadow-soft transition-shadow ring-0 flex flex-col h-[340px]">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-[13px] sm:text-sm font-bold text-foreground uppercase tracking-wide">
+                Agenda de Hoje
+              </CardTitle>
+            </CardHeader>
 
-            {/* Today Agenda */}
-            <Card className="border-none shadow-sm ring-0 flex flex-col flex-1">
-              <CardHeader>
-                <CardTitle className="text-sm sm:text-base font-bold text-foreground">
-                  Agenda de Hoje
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <TodayAgenda appointments={todayStats.appointments} />
-              </CardContent>
-            </Card>
-          </div>
-
+            <CardContent className="p-0 flex-1 overflow-hidden">
+              <TodayAgenda appointments={todayStats.appointments} />
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Bottom Row: Recent Appointments */}
+        <Card className="border-none shadow-glass hover:shadow-soft transition-shadow ring-0">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[13px] sm:text-sm font-bold text-foreground uppercase tracking-wide">
+              Agendamentos Recentes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RecentAppointments appointments={recentAppointments} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

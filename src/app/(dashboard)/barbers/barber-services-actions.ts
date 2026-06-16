@@ -20,7 +20,22 @@ export async function getBarberServicesAction(barberId: string) {
         createdAt: "desc",
       },
     });
-    return { success: true, data: barberServices };
+    
+    // Serialize Decimal and Date objects for the Client Component
+    const serializedData = barberServices.map((item) => ({
+      ...item,
+      price: Number(item.price),
+      createdAt: item.createdAt.toISOString(),
+      updatedAt: item.updatedAt.toISOString(),
+      service: {
+        ...item.service,
+        price: Number(item.service.price),
+        createdAt: item.service.createdAt.toISOString(),
+        updatedAt: item.service.updatedAt.toISOString(),
+      }
+    }));
+    
+    return { success: true, data: serializedData };
   } catch (error) {
     console.error("Error fetching barber services:", error);
     return { success: false, error: "Erro ao buscar serviços do barbeiro." };
@@ -51,7 +66,15 @@ export async function getAvailableServicesAction(barberId: string) {
       },
     });
 
-    return { success: true, data: availableServices };
+    // Serialize Decimal and Date objects for the Client Component
+    const serializedData = availableServices.map((item) => ({
+      ...item,
+      price: Number(item.price),
+      createdAt: item.createdAt.toISOString(),
+      updatedAt: item.updatedAt.toISOString(),
+    }));
+
+    return { success: true, data: serializedData };
   } catch (error) {
     console.error("Error fetching available services:", error);
     return { success: false, error: "Erro ao buscar serviços disponíveis." };

@@ -49,13 +49,18 @@
   /* BarberPro custom colors */
   --color-navy: #1B2138;
   --color-navy-light: #252d4a;
-  --color-navy-dark: #141929;
+  --color-navy-dark: #0f172a;
   --color-amber: #F59E0B;
   --color-amber-light: #FBBF24;
   --color-amber-dark: #D97706;
   --color-surface: #F8F9FB;
   --color-success: #10B981;
   --color-info: #3B82F6;
+
+  /* Premium Shadows */
+  --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.05);
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.02), 0 10px 20px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 10px 40px -10px rgba(245, 158, 11, 0.15);
 }
 
 :root {

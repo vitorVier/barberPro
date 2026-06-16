@@ -4,9 +4,8 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardAction,
 } from "@/components/ui/card";
-import { Scissors, Users, CalendarDays } from "lucide-react";
+import { Scissors, Users, CalendarDays, DollarSign } from "lucide-react";
 
 interface StatsCardsProps {
   activeBarbers: number;
@@ -14,6 +13,7 @@ interface StatsCardsProps {
   totalClients: number;
   todayAppointments: number;
   completedAppointments: number;
+  estimatedRevenue: number;
 }
 
 export function StatsCards({
@@ -22,72 +22,106 @@ export function StatsCards({
   totalClients,
   todayAppointments,
   completedAppointments,
+  estimatedRevenue,
 }: StatsCardsProps) {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {/* Barbeiros Ativos */}
-      <Card className="border-none shadow-sm ring-0">
-        <CardHeader>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Barbeiros */}
+      <Card className="border-0 border-t-4 border-t-amber-500 bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+        <CardHeader className="flex flex-row items-start justify-between pb-2">
           <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Barbeiros Ativos
           </CardTitle>
-          <CardAction>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber/10">
-              <Scissors className="h-4 w-4 text-amber" />
-            </div>
-          </CardAction>
+
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
+            <Scissors className="h-4 w-4 text-amber-600" />
+          </div>
         </CardHeader>
-        <CardContent className="-mt-1">
-          <p className="text-2xl sm:text-3xl font-bold text-foreground">{activeBarbers}</p>
+
+        <CardContent>
+          <p className="text-[28px] font-bold tracking-tight text-foreground leading-none">
+            {activeBarbers}
+          </p>
+
           <CardDescription className="mt-1 text-xs">
-            {totalBarbers} cadastrados no total
+            {totalBarbers} cadastrados
           </CardDescription>
         </CardContent>
       </Card>
 
       {/* Clientes */}
-      <Card className="border-none shadow-sm ring-0">
-        <CardHeader>
+      <Card className="border-0 border-t-4 border-t-blue-500 bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+        <CardHeader className="flex flex-row items-start justify-between pb-2">
           <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Clientes
           </CardTitle>
-          <CardAction>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-info/10">
-              <Users className="h-4 w-4 text-info" />
-            </div>
-          </CardAction>
+
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
+            <Users className="h-4 w-4 text-blue-600" />
+          </div>
         </CardHeader>
-        <CardContent className="-mt-1">
-          <p className="text-2xl sm:text-3xl font-bold text-foreground">{totalClients}</p>
+
+        <CardContent>
+          <p className="text-[28px] font-bold tracking-tight text-foreground leading-none">
+            {totalClients}
+          </p>
+
           <CardDescription className="mt-1 text-xs">
-            clientes cadastrados
+            Base cadastrada
           </CardDescription>
         </CardContent>
       </Card>
 
-      {/* Agendamentos Hoje */}
-      <Card className="border-none shadow-sm ring-0">
-        <CardHeader>
+      {/* Agendamentos */}
+      <Card className="border-0 border-t-4 border-t-green-500 bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+        <CardHeader className="flex flex-row items-start justify-between pb-2">
           <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Agendamentos Hoje
+            Agendamentos
           </CardTitle>
-          <CardAction>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10">
-              <CalendarDays className="h-4 w-4 text-success" />
-            </div>
-          </CardAction>
+
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
+            <CalendarDays className="h-4 w-4 text-green-600" />
+          </div>
         </CardHeader>
-        <CardContent className="-mt-1">
-          <p className="text-2xl sm:text-3xl font-bold text-foreground">
+
+        <CardContent>
+          <p className="text-[28px] font-bold tracking-tight text-foreground leading-none">
             {todayAppointments}
           </p>
+
           <CardDescription className="mt-1 text-xs">
             {completedAppointments} concluídos
           </CardDescription>
         </CardContent>
       </Card>
 
+      {/* Receita */}
+      <Card className="relative overflow-hidden border-0 border-t-4 border-t-amber-300 bg-linear-to-br from-amber-500 to-amber-600 text-white shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
 
+        <CardHeader className="flex flex-row items-start justify-between pb-2 relative z-10">
+          <CardTitle className="text-xs font-semibold uppercase tracking-wider text-white/90">
+            Receita Hoje
+          </CardTitle>
+
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+            <DollarSign className="h-4 w-4 text-white" />
+          </div>
+        </CardHeader>
+
+        <CardContent className="relative z-10">
+          <p className="text-[28px] font-bold tracking-tight text-white leading-none">
+            R${" "}
+            {estimatedRevenue.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+            })}
+          </p>
+
+          <CardDescription className="mt-1 text-xs text-white/75">
+            Estimativa total
+          </CardDescription>
+        </CardContent>
+      </Card>
     </div>
   );
 }

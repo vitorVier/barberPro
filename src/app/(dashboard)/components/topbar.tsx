@@ -7,10 +7,10 @@ interface HeaderProps {
 
 export function Header({ icon: Icon, span }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 flex h-16 sm:h-20 items-center justify-between border-b border-slate-200/60 bg-white/80 px-4 sm:px-6 lg:px-8 backdrop-blur-md shadow-sm">
+    <header className="sticky top-0 z-40 flex h-14 sm:h-16 items-center justify-between border-b border-slate-200/50 bg-white/70 px-4 sm:px-6 lg:px-8 backdrop-blur-xl shadow-glass transition-all">
       {/* Left side: Icon & Title */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="flex h-9 sm:h-11 w-9 sm:w-11 items-center justify-center rounded-xl bg-linear-to-br from-amber/10 to-amber/5 text-amber shadow-inner border border-amber/20">
+        <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-linear-to-br from-amber/10 to-amber/5 text-amber-dark shadow-inner border border-amber/20">
           <Icon className="h-4 sm:h-5 w-4 sm:w-5 drop-shadow-sm" />
         </div>
         <div className="flex flex-col justify-center">

@@ -96,37 +96,37 @@ export function RecentAppointments({
           return (
             <TableRow
               key={appointment.id}
-              className="border-b border-border/50 hover:bg-muted/30"
+              className="border-b border-border/40 hover:bg-slate-50 hover:shadow-soft transition-all duration-200 group"
             >
-              <TableCell>
+              <TableCell className="py-2.5">
                 <div>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-[13px] font-medium text-foreground">
                     {dateStr}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
                     {startTime} – {endTime}
                   </p>
                 </div>
               </TableCell>
-              <TableCell className="text-sm font-medium text-foreground">
+              <TableCell className="py-2.5 text-[13px] font-medium text-foreground">
                 {appointment.client.name}
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
+              <TableCell className="py-2.5 text-[13px] text-muted-foreground">
                 {appointment.barber.name}
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
+              <TableCell className="py-2.5 text-[13px] text-muted-foreground">
                 {appointment.barberService.service.name}
               </TableCell>
-              <TableCell className="text-sm font-medium text-foreground">
+              <TableCell className="py-2.5 text-[13px] font-semibold text-foreground">
                 R$ {price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
               </TableCell>
-              <TableCell>
+              <TableCell className="py-2.5">
                 <Badge
                   variant="outline"
-                  className="border-transparent bg-transparent text-xs font-medium"
+                  className="border-transparent bg-transparent text-[11px] font-medium px-0"
                 >
                   <span
-                    className={`inline-block h-2 w-2 rounded-full ${status.dotColor} mr-1.5`}
+                    className={`inline-block h-1.5 w-1.5 rounded-full ${status.dotColor} mr-1.5`}
                   />
                   {status.label}
                 </Badge>

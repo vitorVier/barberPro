@@ -255,8 +255,8 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
                       </h3>
                       <div className="flex items-center gap-2 mt-1.5">
                         <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${service.isActive
-                            ? "bg-success/10 text-success"
-                            : "bg-slate-100 text-slate-500"
+                          ? "bg-success/10 text-success"
+                          : "bg-slate-100 text-slate-500"
                           }`}>
                           <span className={`h-1.5 w-1.5 rounded-full ${service.isActive ? "bg-success" : "bg-slate-400"}`}></span>
                           {service.isActive ? "Ativo" : "Inativo"}
