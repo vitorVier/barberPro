@@ -18,3 +18,17 @@ export const AppointmentStatus = {
 } as const
 
 export type AppointmentStatus = (typeof AppointmentStatus)[keyof typeof AppointmentStatus]
+
+
+export const ServiceCategory = {
+  HAIRCUT: 'HAIRCUT',
+  BEARD: 'BEARD',
+  EYEBROW: 'EYEBROW',
+  HAIRCUT_BEARD: 'HAIRCUT_BEARD',
+  FULL_SERVICE: 'FULL_SERVICE',
+  HAIR_TREATMENT: 'HAIR_TREATMENT',
+  COLORING: 'COLORING',
+  OTHER: 'OTHER'
+} as const
+
+export type ServiceCategory = (typeof ServiceCategory)[keyof typeof ServiceCategory]

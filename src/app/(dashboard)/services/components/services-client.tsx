@@ -29,6 +29,7 @@ import { ModalFooter } from "@/components/ui/modal-footer";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StatusToggle } from "@/components/ui/status-toggle";
+import { getServiceIcon } from "@/utils/mapper-icons";
 
 export interface ServiceWithCounts {
   id: string;
@@ -37,6 +38,15 @@ export interface ServiceWithCounts {
   durationMinutes: string | null;
   price: number;
   isActive: boolean;
+  category:
+    | "HAIRCUT"
+    | "BEARD"
+    | "EYEBROW"
+    | "HAIRCUT_BEARD"
+    | "FULL_SERVICE"
+    | "HAIR_TREATMENT"
+    | "COLORING"
+    | "OTHER";
   _count: {
     barberServices: number;
   };
@@ -226,106 +236,109 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-          {filteredServices.map((service) => (
-            <div
-              key={service.id}
-              className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl overflow-hidden flex flex-col transition-all duration-300 ${!service.isActive ? "opacity-80 grayscale-30" : ""
-                }`}
-            >
-              {/* Top Accent Line */}
+          {filteredServices.map((service) => {
+            const ServiceIcon = getServiceIcon(service.category);
+            return (
               <div
-                className={`h-1 w-full transition-colors duration-300 ${service.isActive ? "bg-linear-to-r from-amber to-amber-light" : "bg-slate-200"
+                key={service.id}
+                className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl overflow-hidden flex flex-col transition-all duration-300 ${!service.isActive ? "opacity-80 grayscale-30" : ""
                   }`}
-              />
+              >
+                {/* Top Accent Line */}
+                <div
+                  className={`h-1 w-full transition-colors duration-300 ${service.isActive ? "bg-linear-to-r from-amber to-amber-light" : "bg-slate-200"
+                    }`}
+                />
 
-              {/* Card Main Content */}
-              <div className="p-5 flex flex-col flex-1">
-                {/* Header */}
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3.5">
-                    {/* Icon Box */}
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-amber/10 to-amber/5 text-amber border border-amber/20 shadow-inner group-hover:scale-105 transition-transform duration-300">
-                      <Store className="h-6 w-6 drop-shadow-sm" />
-                    </div>
+                {/* Card Main Content */}
+                <div className="p-5 flex flex-col flex-1">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      {/* Icon Box */}
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br bg-navy-light text-amber group-hover:scale-105 transition-transform duration-300">
+                        <ServiceIcon className="h-6 w-6 drop-shadow-sm" />
+                      </div>
 
-                    {/* Title and Status Badge */}
-                    <div>
-                      <h3 className="text-base font-bold text-slate-900 leading-tight truncate max-w-37.5 sm:max-w-45">
-                        {service.name}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${service.isActive
-                          ? "bg-success/10 text-success"
-                          : "bg-slate-100 text-slate-500"
-                          }`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${service.isActive ? "bg-success" : "bg-slate-400"}`}></span>
-                          {service.isActive ? "Ativo" : "Inativo"}
-                        </span>
+                      {/* Title and Status Badge */}
+                      <div>
+                        <h3 className="text-base font-bold text-slate-900 leading-tight truncate max-w-37.5 sm:max-w-45">
+                          {service.name}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${service.isActive
+                            ? "bg-success/10 text-success"
+                            : "bg-slate-100 text-slate-500"
+                            }`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${service.isActive ? "bg-success" : "bg-slate-400"}`}></span>
+                            {service.isActive ? "Ativo" : "Inativo"}
+                          </span>
+                        </div>
                       </div>
                     </div>
+
+                    {/* Quick Status Toggle */}
+                    <button
+                      type="button"
+                      onClick={() => handleSetStatus(service.id, service.isActive)}
+                      className="shrink-0 transition-transform active:scale-95"
+                      title={service.isActive ? "Desativar serviço" : "Ativar serviço"}
+                    >
+                      {service.isActive ? (
+                        <ToggleRight className="h-7 w-7 text-success transition-colors duration-300" />
+                      ) : (
+                        <ToggleLeft className="h-7 w-7 text-slate-300 hover:text-slate-400 transition-colors duration-300" />
+                      )}
+                    </button>
                   </div>
 
-                  {/* Quick Status Toggle */}
+                  {/* Description */}
+                  <p className="text-sm text-slate-500 mt-4 line-clamp-2 min-h-10 leading-relaxed">
+                    {service.description || "Nenhuma descrição fornecida para este serviço."}
+                  </p>
+
+                  {/* Info Tags / Pills */}
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 border border-slate-100 transition-colors group-hover:bg-amber-50/50 group-hover:border-amber/10">
+                      <Clock className="h-3.5 w-3.5 text-slate-400" />
+                      {service.durationMinutes ? `${service.durationMinutes} min` : "—"}
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 border border-slate-100 transition-colors group-hover:bg-amber-50/50 group-hover:border-amber/10">
+                      <DollarSign className="h-3.5 w-3.5 text-amber-dark" />
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(service.price)}
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 border border-slate-100 transition-colors group-hover:bg-amber-50/50 group-hover:border-amber/10" title="Barbeiros que oferecem este serviço">
+                      <Users className="h-3.5 w-3.5 text-blue-500" />
+                      {service._count.barberServices}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions Footer */}
+                <div className="px-5 py-3.5 border-t border-border/50 bg-slate-50/50 flex items-center justify-between gap-3 transition-colors duration-300 group-hover:bg-white">
                   <button
                     type="button"
-                    onClick={() => handleSetStatus(service.id, service.isActive)}
-                    className="shrink-0 transition-transform active:scale-95"
-                    title={service.isActive ? "Desativar serviço" : "Ativar serviço"}
+                    onClick={() => handleOpenModal(service)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold text-slate-600 hover:text-amber-dark bg-white border border-border hover:border-amber/30 rounded-xl transition-all shadow-sm hover:shadow-amber/10 hover:bg-amber-50/30"
                   >
-                    {service.isActive ? (
-                      <ToggleRight className="h-7 w-7 text-success transition-colors duration-300" />
-                    ) : (
-                      <ToggleLeft className="h-7 w-7 text-slate-300 hover:text-slate-400 transition-colors duration-300" />
-                    )}
+                    <Pencil className="h-4 w-4" />
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteService(service.id)}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 rounded-xl transition-colors border border-border hover:border-red-200 shadow-sm"
+                    title="Excluir serviço"
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-
-                {/* Description */}
-                <p className="text-sm text-slate-500 mt-4 line-clamp-2 min-h-10 leading-relaxed">
-                  {service.description || "Nenhuma descrição fornecida para este serviço."}
-                </p>
-
-                {/* Info Tags / Pills */}
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 border border-slate-100 transition-colors group-hover:bg-amber-50/50 group-hover:border-amber/10">
-                    <Clock className="h-3.5 w-3.5 text-slate-400" />
-                    {service.durationMinutes ? `${service.durationMinutes} min` : "—"}
-                  </div>
-                  <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 border border-slate-100 transition-colors group-hover:bg-amber-50/50 group-hover:border-amber/10">
-                    <DollarSign className="h-3.5 w-3.5 text-amber-dark" />
-                    {new Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(service.price)}
-                  </div>
-                  <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 border border-slate-100 transition-colors group-hover:bg-amber-50/50 group-hover:border-amber/10" title="Barbeiros que oferecem este serviço">
-                    <Users className="h-3.5 w-3.5 text-blue-500" />
-                    {service._count.barberServices}
-                  </div>
-                </div>
               </div>
-
-              {/* Actions Footer */}
-              <div className="px-5 py-3.5 border-t border-border/50 bg-slate-50/50 flex items-center justify-between gap-3 transition-colors duration-300 group-hover:bg-white">
-                <button
-                  type="button"
-                  onClick={() => handleOpenModal(service)}
-                  className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold text-slate-600 hover:text-amber-dark bg-white border border-border hover:border-amber/30 rounded-xl transition-all shadow-sm hover:shadow-amber/10 hover:bg-amber-50/30"
-                >
-                  <Pencil className="h-4 w-4" />
-                  Editar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDeleteService(service.id)}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 rounded-xl transition-colors border border-border hover:border-red-200 shadow-sm"
-                  title="Excluir serviço"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

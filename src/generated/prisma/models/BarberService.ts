@@ -228,9 +228,9 @@ export type BarberServiceWhereInput = {
   durationMinutes?: Prisma.IntFilter<"BarberService"> | number
   price?: Prisma.DecimalFilter<"BarberService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"BarberService"> | Date | string
+  appointments?: Prisma.AppointmentListRelationFilter
   barber?: Prisma.XOR<Prisma.BarberScalarRelationFilter, Prisma.BarberWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
-  appointments?: Prisma.AppointmentListRelationFilter
 }
 
 export type BarberServiceOrderByWithRelationInput = {
@@ -240,9 +240,9 @@ export type BarberServiceOrderByWithRelationInput = {
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  appointments?: Prisma.AppointmentOrderByRelationAggregateInput
   barber?: Prisma.BarberOrderByWithRelationInput
   service?: Prisma.ServiceOrderByWithRelationInput
-  appointments?: Prisma.AppointmentOrderByRelationAggregateInput
 }
 
 export type BarberServiceWhereUniqueInput = Prisma.AtLeast<{
@@ -256,9 +256,9 @@ export type BarberServiceWhereUniqueInput = Prisma.AtLeast<{
   durationMinutes?: Prisma.IntFilter<"BarberService"> | number
   price?: Prisma.DecimalFilter<"BarberService"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"BarberService"> | Date | string
+  appointments?: Prisma.AppointmentListRelationFilter
   barber?: Prisma.XOR<Prisma.BarberScalarRelationFilter, Prisma.BarberWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
-  appointments?: Prisma.AppointmentListRelationFilter
 }, "id" | "barberId_serviceId">
 
 export type BarberServiceOrderByWithAggregationInput = {
@@ -292,9 +292,9 @@ export type BarberServiceCreateInput = {
   durationMinutes: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
+  appointments?: Prisma.AppointmentCreateNestedManyWithoutBarberServiceInput
   barber: Prisma.BarberCreateNestedOneWithoutBarberServiceInput
   service: Prisma.ServiceCreateNestedOneWithoutBarberServicesInput
-  appointments?: Prisma.AppointmentCreateNestedManyWithoutBarberServiceInput
 }
 
 export type BarberServiceUncheckedCreateInput = {
@@ -312,9 +312,9 @@ export type BarberServiceUpdateInput = {
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  appointments?: Prisma.AppointmentUpdateManyWithoutBarberServiceNestedInput
   barber?: Prisma.BarberUpdateOneRequiredWithoutBarberServiceNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutBarberServicesNestedInput
-  appointments?: Prisma.AppointmentUpdateManyWithoutBarberServiceNestedInput
 }
 
 export type BarberServiceUncheckedUpdateInput = {
@@ -520,8 +520,8 @@ export type BarberServiceCreateWithoutBarberInput = {
   durationMinutes: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
-  service: Prisma.ServiceCreateNestedOneWithoutBarberServicesInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutBarberServiceInput
+  service: Prisma.ServiceCreateNestedOneWithoutBarberServicesInput
 }
 
 export type BarberServiceUncheckedCreateWithoutBarberInput = {
@@ -576,8 +576,8 @@ export type BarberServiceCreateWithoutServiceInput = {
   durationMinutes: number
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
-  barber: Prisma.BarberCreateNestedOneWithoutBarberServiceInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutBarberServiceInput
+  barber: Prisma.BarberCreateNestedOneWithoutBarberServiceInput
 }
 
 export type BarberServiceUncheckedCreateWithoutServiceInput = {
@@ -680,8 +680,8 @@ export type BarberServiceUpdateWithoutBarberInput = {
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  service?: Prisma.ServiceUpdateOneRequiredWithoutBarberServicesNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutBarberServiceNestedInput
+  service?: Prisma.ServiceUpdateOneRequiredWithoutBarberServicesNestedInput
 }
 
 export type BarberServiceUncheckedUpdateWithoutBarberInput = {
@@ -714,8 +714,8 @@ export type BarberServiceUpdateWithoutServiceInput = {
   durationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  barber?: Prisma.BarberUpdateOneRequiredWithoutBarberServiceNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutBarberServiceNestedInput
+  barber?: Prisma.BarberUpdateOneRequiredWithoutBarberServiceNestedInput
 }
 
 export type BarberServiceUncheckedUpdateWithoutServiceInput = {
@@ -773,9 +773,9 @@ export type BarberServiceSelect<ExtArgs extends runtime.Types.Extensions.Interna
   durationMinutes?: boolean
   price?: boolean
   createdAt?: boolean
+  appointments?: boolean | Prisma.BarberService$appointmentsArgs<ExtArgs>
   barber?: boolean | Prisma.BarberDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
-  appointments?: boolean | Prisma.BarberService$appointmentsArgs<ExtArgs>
   _count?: boolean | Prisma.BarberServiceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["barberService"]>
 
@@ -812,9 +812,9 @@ export type BarberServiceSelectScalar = {
 
 export type BarberServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "barberId" | "serviceId" | "durationMinutes" | "price" | "createdAt", ExtArgs["result"]["barberService"]>
 export type BarberServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  appointments?: boolean | Prisma.BarberService$appointmentsArgs<ExtArgs>
   barber?: boolean | Prisma.BarberDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
-  appointments?: boolean | Prisma.BarberService$appointmentsArgs<ExtArgs>
   _count?: boolean | Prisma.BarberServiceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BarberServiceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -829,9 +829,9 @@ export type BarberServiceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Type
 export type $BarberServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BarberService"
   objects: {
+    appointments: Prisma.$AppointmentPayload<ExtArgs>[]
     barber: Prisma.$BarberPayload<ExtArgs>
     service: Prisma.$ServicePayload<ExtArgs>
-    appointments: Prisma.$AppointmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1234,9 +1234,9 @@ readonly fields: BarberServiceFieldRefs;
  */
 export interface Prisma__BarberServiceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  appointments<T extends Prisma.BarberService$appointmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BarberService$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   barber<T extends Prisma.BarberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BarberDefaultArgs<ExtArgs>>): Prisma.Prisma__BarberClient<runtime.Types.Result.GetResult<Prisma.$BarberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   service<T extends Prisma.ServiceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceDefaultArgs<ExtArgs>>): Prisma.Prisma__ServiceClient<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  appointments<T extends Prisma.BarberService$appointmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BarberService$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

@@ -81,7 +81,7 @@ export default async function DashboardPage() {
           </Card>
 
           {/* Today Agenda */}
-          <Card className="xl:col-span-3 border-none shadow-glass hover:shadow-soft transition-shadow ring-0 flex flex-col h-[340px]">
+          <Card className="xl:col-span-3 border-none shadow-glass hover:shadow-soft transition-shadow ring-0 flex flex-col h-85">
             <CardHeader className="pb-2">
               <CardTitle className="text-[13px] sm:text-sm font-bold text-foreground uppercase tracking-wide">
                 Agenda de Hoje

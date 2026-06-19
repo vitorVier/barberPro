@@ -38,6 +38,7 @@ export type ServiceMinAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
+  category: $Enums.ServiceCategory | null
   durationMinutes: string | null
   price: runtime.Decimal | null
   isActive: boolean | null
@@ -49,6 +50,7 @@ export type ServiceMaxAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
+  category: $Enums.ServiceCategory | null
   durationMinutes: string | null
   price: runtime.Decimal | null
   isActive: boolean | null
@@ -60,6 +62,7 @@ export type ServiceCountAggregateOutputType = {
   id: number
   name: number
   description: number
+  category: number
   durationMinutes: number
   price: number
   isActive: number
@@ -81,6 +84,7 @@ export type ServiceMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  category?: true
   durationMinutes?: true
   price?: true
   isActive?: true
@@ -92,6 +96,7 @@ export type ServiceMaxAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  category?: true
   durationMinutes?: true
   price?: true
   isActive?: true
@@ -103,6 +108,7 @@ export type ServiceCountAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  category?: true
   durationMinutes?: true
   price?: true
   isActive?: true
@@ -201,6 +207,7 @@ export type ServiceGroupByOutputType = {
   id: string
   name: string
   description: string | null
+  category: $Enums.ServiceCategory
   durationMinutes: string | null
   price: runtime.Decimal
   isActive: boolean
@@ -235,6 +242,7 @@ export type ServiceWhereInput = {
   id?: Prisma.StringFilter<"Service"> | string
   name?: Prisma.StringFilter<"Service"> | string
   description?: Prisma.StringNullableFilter<"Service"> | string | null
+  category?: Prisma.EnumServiceCategoryFilter<"Service"> | $Enums.ServiceCategory
   durationMinutes?: Prisma.StringNullableFilter<"Service"> | string | null
   price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFilter<"Service"> | boolean
@@ -247,6 +255,7 @@ export type ServiceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -262,6 +271,7 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   name?: Prisma.StringFilter<"Service"> | string
   description?: Prisma.StringNullableFilter<"Service"> | string | null
+  category?: Prisma.EnumServiceCategoryFilter<"Service"> | $Enums.ServiceCategory
   durationMinutes?: Prisma.StringNullableFilter<"Service"> | string | null
   price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFilter<"Service"> | boolean
@@ -274,6 +284,7 @@ export type ServiceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -293,6 +304,7 @@ export type ServiceScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Service"> | string
   name?: Prisma.StringWithAggregatesFilter<"Service"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
+  category?: Prisma.EnumServiceCategoryWithAggregatesFilter<"Service"> | $Enums.ServiceCategory
   durationMinutes?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
   price?: Prisma.DecimalWithAggregatesFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolWithAggregatesFilter<"Service"> | boolean
@@ -304,6 +316,7 @@ export type ServiceCreateInput = {
   id?: string
   name: string
   description?: string | null
+  category?: $Enums.ServiceCategory
   durationMinutes?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
@@ -316,6 +329,7 @@ export type ServiceUncheckedCreateInput = {
   id?: string
   name: string
   description?: string | null
+  category?: $Enums.ServiceCategory
   durationMinutes?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
@@ -328,6 +342,7 @@ export type ServiceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumServiceCategoryFieldUpdateOperationsInput | $Enums.ServiceCategory
   durationMinutes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -340,6 +355,7 @@ export type ServiceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumServiceCategoryFieldUpdateOperationsInput | $Enums.ServiceCategory
   durationMinutes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -352,6 +368,7 @@ export type ServiceCreateManyInput = {
   id?: string
   name: string
   description?: string | null
+  category?: $Enums.ServiceCategory
   durationMinutes?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
@@ -363,6 +380,7 @@ export type ServiceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumServiceCategoryFieldUpdateOperationsInput | $Enums.ServiceCategory
   durationMinutes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -374,6 +392,7 @@ export type ServiceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumServiceCategoryFieldUpdateOperationsInput | $Enums.ServiceCategory
   durationMinutes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -385,6 +404,7 @@ export type ServiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -400,6 +420,7 @@ export type ServiceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -411,6 +432,7 @@ export type ServiceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   durationMinutes?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -425,6 +447,10 @@ export type ServiceSumOrderByAggregateInput = {
 export type ServiceScalarRelationFilter = {
   is?: Prisma.ServiceWhereInput
   isNot?: Prisma.ServiceWhereInput
+}
+
+export type EnumServiceCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.ServiceCategory
 }
 
 export type DecimalFieldUpdateOperationsInput = {
@@ -453,6 +479,7 @@ export type ServiceCreateWithoutBarberServicesInput = {
   id?: string
   name: string
   description?: string | null
+  category?: $Enums.ServiceCategory
   durationMinutes?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
@@ -464,6 +491,7 @@ export type ServiceUncheckedCreateWithoutBarberServicesInput = {
   id?: string
   name: string
   description?: string | null
+  category?: $Enums.ServiceCategory
   durationMinutes?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
@@ -491,6 +519,7 @@ export type ServiceUpdateWithoutBarberServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumServiceCategoryFieldUpdateOperationsInput | $Enums.ServiceCategory
   durationMinutes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -502,6 +531,7 @@ export type ServiceUncheckedUpdateWithoutBarberServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumServiceCategoryFieldUpdateOperationsInput | $Enums.ServiceCategory
   durationMinutes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -544,6 +574,7 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   durationMinutes?: boolean
   price?: boolean
   isActive?: boolean
@@ -557,6 +588,7 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   durationMinutes?: boolean
   price?: boolean
   isActive?: boolean
@@ -568,6 +600,7 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   durationMinutes?: boolean
   price?: boolean
   isActive?: boolean
@@ -579,6 +612,7 @@ export type ServiceSelectScalar = {
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   durationMinutes?: boolean
   price?: boolean
   isActive?: boolean
@@ -586,7 +620,7 @@ export type ServiceSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "durationMinutes" | "price" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "durationMinutes" | "price" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   barberServices?: boolean | Prisma.Service$barberServicesArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
@@ -603,6 +637,7 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     name: string
     description: string | null
+    category: $Enums.ServiceCategory
     durationMinutes: string | null
     price: runtime.Decimal
     isActive: boolean
@@ -1035,6 +1070,7 @@ export interface ServiceFieldRefs {
   readonly id: Prisma.FieldRef<"Service", 'String'>
   readonly name: Prisma.FieldRef<"Service", 'String'>
   readonly description: Prisma.FieldRef<"Service", 'String'>
+  readonly category: Prisma.FieldRef<"Service", 'ServiceCategory'>
   readonly durationMinutes: Prisma.FieldRef<"Service", 'String'>
   readonly price: Prisma.FieldRef<"Service", 'Decimal'>
   readonly isActive: Prisma.FieldRef<"Service", 'Boolean'>
