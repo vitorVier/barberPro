@@ -29,7 +29,14 @@ import { ModalFooter } from "@/components/ui/modal-footer";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StatusToggle } from "@/components/ui/status-toggle";
-import { getServiceIcon } from "@/utils/mapper-icons";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getServiceIcon, SERVICE_CATEGORY_LABELS, type ServiceCategory } from "@/utils/mapper-icons";
 
 export interface ServiceWithCounts {
   id: string;
@@ -38,15 +45,7 @@ export interface ServiceWithCounts {
   durationMinutes: string | null;
   price: number;
   isActive: boolean;
-  category:
-    | "HAIRCUT"
-    | "BEARD"
-    | "EYEBROW"
-    | "HAIRCUT_BEARD"
-    | "FULL_SERVICE"
-    | "HAIR_TREATMENT"
-    | "COLORING"
-    | "OTHER";
+  category: ServiceCategory;
   _count: {
     barberServices: number;
   };
@@ -74,6 +73,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
   const [durationMinutes, setDurationMinutes] = useState("");
   const [price, setPrice] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [category, setCategory] = useState<ServiceCategory>("OTHER");
 
   // Open modal for creating or editing
   const handleOpenModal = (service?: ServiceWithCounts) => {
@@ -84,6 +84,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
       setDurationMinutes(service.durationMinutes || "");
       setPrice(service.price.toString());
       setIsActive(service.isActive);
+      setCategory(service.category);
     } else {
       setEditingId(null);
       setName("");
@@ -91,6 +92,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
       setDurationMinutes("");
       setPrice("");
       setIsActive(true);
+      setCategory("OTHER");
     }
     setError(null);
     setIsModalOpen(true);
@@ -127,6 +129,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
         durationMinutes,
         price: priceNum,
         isActive,
+        category,
       };
 
       if (editingId) {
@@ -266,6 +269,9 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
                           {service.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-1.5">
+                          <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-50 text-amber-dark">
+                            {SERVICE_CATEGORY_LABELS[service.category]}
+                          </span>
                           <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${service.isActive
                             ? "bg-success/10 text-success"
                             : "bg-slate-100 text-slate-500"
@@ -370,6 +376,29 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
               onChange={(e) => setName(e.target.value)}
               disabled={isPending}
             />
+          </div>
+
+          {/* Categoria */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-slate-800">Categoria</label>
+            <Select
+              value={category}
+              onValueChange={(value) => setCategory(value as ServiceCategory)}
+              disabled={isPending}
+            >
+              <SelectTrigger className="w-full rounded-lg border-slate-200 bg-white h-[42px] px-3 text-sm focus:ring-1 focus:ring-amber focus:border-amber transition-all disabled:opacity-50">
+                <SelectValue placeholder="Selecione a categoria">
+                  {category ? SERVICE_CATEGORY_LABELS[category] : undefined}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(SERVICE_CATEGORY_LABELS).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Description */}

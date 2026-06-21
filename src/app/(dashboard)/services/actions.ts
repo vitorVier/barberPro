@@ -14,6 +14,7 @@ interface CreateServiceInput {
   durationMinutes?: string;
   price: number;
   isActive: boolean;
+  category: string;
 }
 
 export interface UpdateServiceInput extends CreateServiceInput {
@@ -36,6 +37,7 @@ export async function createServiceAction(data: CreateServiceInput): Promise<Act
         durationMinutes: data.durationMinutes?.trim() || null,
         price: data.price,
         isActive: data.isActive,
+        category: data.category as any,
       },
     });
 
@@ -66,6 +68,7 @@ export async function updateServiceAction(data: UpdateServiceInput): Promise<Act
         durationMinutes: data.durationMinutes?.trim() || null,
         price: data.price,
         isActive: data.isActive,
+        category: data.category as any,
       },
     });
 

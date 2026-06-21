@@ -2,13 +2,20 @@
 
 import React, { useState, useEffect, useTransition } from "react";
 import { Scissors, X, Plus, Pencil, Trash2, Clock, DollarSign, Save } from "lucide-react";
-import { 
-  getBarberServicesAction, 
-  getAvailableServicesAction, 
-  allocateServiceAction, 
-  updateAllocatedServiceAction, 
-  removeAllocatedServiceAction 
+import {
+  getBarberServicesAction,
+  getAvailableServicesAction,
+  allocateServiceAction,
+  updateAllocatedServiceAction,
+  removeAllocatedServiceAction
 } from "../barber-services-actions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface BarberInfo {
   id: string;
@@ -51,7 +58,7 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
   const fetchData = async () => {
     if (!barber) return;
     setIsLoading(true);
-    
+
     const [allocatedRes, availableRes] = await Promise.all([
       getBarberServicesAction(barber.id),
       getAvailableServicesAction(barber.id)
@@ -60,11 +67,11 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
     if (allocatedRes.success && allocatedRes.data) {
       setAllocatedServices(allocatedRes.data);
     }
-    
+
     if (availableRes.success && availableRes.data) {
       setAvailableServices(availableRes.data);
     }
-    
+
     setIsLoading(false);
   };
 
@@ -75,7 +82,7 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
       setNewDuration("");
       return;
     }
-    
+
     const service = availableServices.find(s => s.id === serviceId);
     if (service) {
       setNewPrice(Number(service.price).toFixed(2));
@@ -85,10 +92,10 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
 
   const handleAddService = () => {
     if (!barber || !selectedServiceId) return;
-    
+
     const price = parseFloat(newPrice);
     const durationMinutes = parseInt(newDuration, 10);
-    
+
     if (isNaN(price) || price < 0 || isNaN(durationMinutes) || durationMinutes <= 0) {
       setError("Preço e duração devem ser válidos.");
       return;
@@ -122,7 +129,7 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
   const handleSaveEdit = (id: string) => {
     const price = parseFloat(editPrice);
     const durationMinutes = parseInt(editDuration, 10);
-    
+
     if (isNaN(price) || price < 0 || isNaN(durationMinutes) || durationMinutes <= 0) {
       setError("Preço e duração devem ser válidos.");
       return;
@@ -163,7 +170,7 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-      <div 
+      <div
         className="w-full max-w-lg bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
@@ -218,29 +225,29 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
                         <div className="grid grid-cols-2 gap-3">
                           <div>
                             <label className="text-[10px] font-bold text-slate-500 uppercase">Preço (R$)</label>
-                            <input 
-                              type="number" step="0.01" 
+                            <input
+                              type="number" step="0.01"
                               className="w-full h-9 px-3 rounded-lg border border-slate-300 text-sm focus:border-amber focus:ring-1 focus:ring-amber outline-none transition-all"
                               value={editPrice} onChange={e => setEditPrice(e.target.value)} disabled={isPending}
                             />
                           </div>
                           <div>
                             <label className="text-[10px] font-bold text-slate-500 uppercase">Duração (Min)</label>
-                            <input 
-                              type="number" 
+                            <input
+                              type="number"
                               className="w-full h-9 px-3 rounded-lg border border-slate-300 text-sm focus:border-amber focus:ring-1 focus:ring-amber outline-none transition-all"
                               value={editDuration} onChange={e => setEditDuration(e.target.value)} disabled={isPending}
                             />
                           </div>
                         </div>
                         <div className="flex gap-2 pt-1">
-                          <button 
+                          <button
                             className="flex-1 h-9 rounded-lg bg-amber text-white font-semibold text-sm hover:bg-amber-dark transition-colors flex items-center justify-center disabled:opacity-50"
                             onClick={() => handleSaveEdit(item.id)} disabled={isPending}
                           >
                             Salvar
                           </button>
-                          <button 
+                          <button
                             className="flex-1 h-9 rounded-lg bg-slate-100 text-slate-600 font-semibold text-sm hover:bg-slate-200 transition-colors flex items-center justify-center disabled:opacity-50"
                             onClick={() => setEditingId(null)} disabled={isPending}
                           >
@@ -265,13 +272,13 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
                           </div>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button 
+                          <button
                             className="p-1.5 text-slate-400 hover:text-amber hover:bg-amber/10 rounded-md transition-colors"
                             onClick={() => handleStartEdit(item)} disabled={isPending} title="Editar"
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
-                          <button 
+                          <button
                             className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
                             onClick={() => handleDelete(item.id)} disabled={isPending} title="Remover"
                           >
@@ -292,8 +299,8 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-slate-300 text-sm font-semibold text-slate-500 hover:border-amber hover:text-amber hover:bg-amber/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Plus className="h-4 w-4" />
-                  {availableServices.length === 0 
-                    ? "Todos os serviços já foram alocados" 
+                  {availableServices.length === 0
+                    ? "Todos os serviços já foram alocados"
                     : "Adicionar Serviço"
                   }
                 </button>
@@ -301,33 +308,40 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
                 <div className="rounded-xl border border-amber bg-amber/5 p-4 shadow-sm space-y-3">
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 uppercase">Selecione o Serviço</label>
-                    <select
-                      className="w-full h-9 px-3 rounded-lg border border-slate-300 text-sm focus:border-amber focus:ring-1 focus:ring-amber outline-none transition-all bg-white"
+                    <Select
                       value={selectedServiceId}
-                      onChange={(e) => handleSelectServiceToAdd(e.target.value)}
+                      onValueChange={(v) => handleSelectServiceToAdd(v || "")}
                       disabled={isPending}
                     >
-                      <option value="">-- Escolha um serviço --</option>
-                      {availableServices.map(s => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                    </select>
+                      <SelectTrigger className="w-full h-9 rounded-lg bg-white border-slate-300">
+                        <SelectValue placeholder="-- Escolha um serviço --">
+                          {availableServices.find((s) => s.id === selectedServiceId)?.name}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableServices.map((s) => (
+                          <SelectItem key={s.id} value={s.id}>
+                            {s.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {selectedServiceId && (
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="text-[10px] font-bold text-slate-500 uppercase">Preço (R$)</label>
-                        <input 
-                          type="number" step="0.01" 
+                        <input
+                          type="number" step="0.01"
                           className="w-full h-9 px-3 rounded-lg border border-slate-300 text-sm focus:border-amber focus:ring-1 focus:ring-amber outline-none transition-all bg-white"
                           value={newPrice} onChange={e => setNewPrice(e.target.value)} disabled={isPending}
                         />
                       </div>
                       <div>
                         <label className="text-[10px] font-bold text-slate-500 uppercase">Duração (Min)</label>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="w-full h-9 px-3 rounded-lg border border-slate-300 text-sm focus:border-amber focus:ring-1 focus:ring-amber outline-none transition-all bg-white"
                           value={newDuration} onChange={e => setNewDuration(e.target.value)} disabled={isPending}
                         />
@@ -336,16 +350,16 @@ export function ModalBarberServices({ isOpen, onClose, barber }: ModalBarberServ
                   )}
 
                   <div className="flex gap-2 pt-1">
-                    <button 
+                    <button
                       className="flex-1 h-9 rounded-lg bg-amber text-white font-semibold text-sm hover:bg-amber-dark transition-colors flex items-center justify-center disabled:opacity-50"
-                      onClick={handleAddService} 
+                      onClick={handleAddService}
                       disabled={isPending || !selectedServiceId}
                     >
                       Salvar Serviço
                     </button>
-                    <button 
+                    <button
                       className="flex-1 h-9 rounded-lg bg-white border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors flex items-center justify-center disabled:opacity-50"
-                      onClick={() => { setIsAdding(false); setSelectedServiceId(""); }} 
+                      onClick={() => { setIsAdding(false); setSelectedServiceId(""); }}
                       disabled={isPending}
                     >
                       Cancelar

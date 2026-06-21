@@ -8,7 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ModalFooter } from "@/components/ui/modal-footer";
 import { SearchableSelect } from "@/components/ui/searchable-select";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 interface ModalNewAppointmentProps {
   isOpen: boolean;
   onClose: () => void;
@@ -34,10 +40,10 @@ export function ModalNewAppointment({
   const [barberId, setBarberId] = useState(defaultBarberId || "");
   const [clientId, setClientId] = useState("");
   const [serviceId, setServiceId] = useState("");
-  
+
   // Store the initial date from the agenda context
   const [dateStr, setDateStr] = useState("");
-  
+
   // Format incoming YYYY-MM-DD to DD/MM/YYYY and sync when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -81,13 +87,13 @@ export function ModalNewAppointment({
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value.length > 8) value = value.slice(0, 8);
-    
+
     if (value.length >= 5) {
       value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
     } else if (value.length >= 3) {
       value = `${value.slice(0, 2)}/${value.slice(2)}`;
     }
-    
+
     setDateStr(value);
   };
 
@@ -137,8 +143,6 @@ export function ModalNewAppointment({
     });
   };
 
-  const selectClass =
-    "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_0.5rem_center] bg-no-repeat";
 
   return (
     <ModalBarber
@@ -159,45 +163,49 @@ export function ModalNewAppointment({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="space-y-1.5">
               <Label htmlFor="barber">Barbeiro *</Label>
-              <select
-                id="barber"
+              <Select
                 value={barberId}
-                onChange={(e) => {
-                  setBarberId(e.target.value);
+                onValueChange={(value) => {
+                  setBarberId(value || "");
                   setServiceId("");
                 }}
-                className={selectClass}
-                required
+                disabled={isPending}
               >
-                <option value="" disabled>
-                  Selecione...
-                </option>
-                {barbers.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id="barber" className="w-full h-10">
+                  <SelectValue placeholder="Selecione...">
+                    {barbers.find((b) => b.id === barberId)?.name}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {barbers.map((b) => (
+                    <SelectItem key={b.id} value={b.id}>
+                      {b.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="client">Cliente *</Label>
-              <select
-                id="client"
+              <Select
                 value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
-                className={selectClass}
-                required
+                onValueChange={(value) => setClientId(value || "")}
+                disabled={isPending}
               >
-                <option value="" disabled>
-                  Selecione...
-                </option>
-                {clients.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id="client" className="w-full h-10">
+                  <SelectValue placeholder="Selecione...">
+                    {clients.find((c) => c.id === clientId)?.name}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {clients.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -232,7 +240,7 @@ export function ModalNewAppointment({
                 value={dateStr}
                 onChange={handleDateChange}
                 className="bg-amber/5 border-amber/30 focus:bg-white focus:border-amber transition-colors"
-                 title="Data selecionada na agenda. Você pode alterar se necessário."
+                title="Data selecionada na agenda. Você pode alterar se necessário."
                 required
               />
             </div>
@@ -240,32 +248,32 @@ export function ModalNewAppointment({
             <div className="space-y-1.5">
               <Label>Horário de Início *</Label>
               <div className="flex gap-2">
-                <select
-                  value={hour}
-                  onChange={(e) => setHour(e.target.value)}
-                  className={selectClass}
-                  required
-                >
-                  {Array.from({ length: 13 }).map((_, i) => {
-                    const h = (i + 8).toString().padStart(2, "0");
-                    return (
-                      <option key={h} value={h}>
-                        {h}
-                      </option>
-                    );
-                  })}
-                </select>
-                <select
-                  value={minute}
-                  onChange={(e) => setMinute(e.target.value)}
-                  className={selectClass}
-                  required
-                >
-                  <option value="00">00</option>
-                  <option value="15">15</option>
-                  <option value="30">30</option>
-                  <option value="45">45</option>
-                </select>
+                <Select value={hour} onValueChange={(v) => setHour(v || "")} disabled={isPending}>
+                  <SelectTrigger className="w-full h-10">
+                    <SelectValue placeholder="Hora" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 13 }).map((_, i) => {
+                      const h = (i + 8).toString().padStart(2, "0");
+                      return (
+                        <SelectItem key={h} value={h}>
+                          {h}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <Select value={minute} onValueChange={(v) => setMinute(v || "")} disabled={isPending}>
+                  <SelectTrigger className="w-full h-10">
+                    <SelectValue placeholder="Minuto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="00">00</SelectItem>
+                    <SelectItem value="15">15</SelectItem>
+                    <SelectItem value="30">30</SelectItem>
+                    <SelectItem value="45">45</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>

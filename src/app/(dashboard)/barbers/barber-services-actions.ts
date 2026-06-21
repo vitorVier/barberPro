@@ -26,7 +26,6 @@ export async function getBarberServicesAction(barberId: string) {
       ...item,
       price: Number(item.price),
       createdAt: item.createdAt.toISOString(),
-      updatedAt: item.updatedAt.toISOString(),
       service: {
         ...item.service,
         price: Number(item.service.price),
