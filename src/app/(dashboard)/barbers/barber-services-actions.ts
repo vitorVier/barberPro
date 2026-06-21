@@ -20,7 +20,7 @@ export async function getBarberServicesAction(barberId: string) {
         createdAt: "desc",
       },
     });
-    
+
     // Serialize Decimal and Date objects for the Client Component
     const serializedData = barberServices.map((item) => ({
       ...item,
@@ -33,7 +33,7 @@ export async function getBarberServicesAction(barberId: string) {
         updatedAt: item.service.updatedAt.toISOString(),
       }
     }));
-    
+
     return { success: true, data: serializedData };
   } catch (error) {
     console.error("Error fetching barber services:", error);
@@ -110,11 +110,11 @@ export async function allocateServiceAction(data: AllocateServiceInput): Promise
     return { success: true };
   } catch (error: any) {
     console.error("Error allocating service:", error);
-    
+
     if (error.code === 'P2002') {
       return { success: false, error: "Este serviço já está alocado para este barbeiro." };
     }
-    
+
     return { success: false, error: "Erro interno ao alocar serviço." };
   }
 }

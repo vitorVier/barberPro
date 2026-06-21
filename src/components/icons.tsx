@@ -3,6 +3,7 @@ import haircutBeard from '@/assets/haircut-beard.png'
 import beard from '@/assets/beard.png'
 import hair from '@/assets/hair.png'
 import eyeBrow from '@/assets/eyebrow.png'
+import hairTreatment from '@/assets/hairTreatment.png'
 
 interface ServiceImageIconProps {
   className?: string;
@@ -56,6 +57,19 @@ export function EyebrowIcon({
       alt="Barba"
       width={35}
       height={40}
+    />
+  );
+}
+
+export function hairTreatmentIcon({
+  className,
+}: ServiceImageIconProps) {
+  return (
+    <Image
+      src={hairTreatment}
+      alt="Barba"
+      width={16}
+      height={16}
     />
   );
 }

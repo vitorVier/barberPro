@@ -1,13 +1,9 @@
-import { BeardIcon, EyebrowIcon, HaircutBeardIcon, HairIcon } from "@/components/icons";
-import { 
-  TbScissors, 
-  TbMoustache, 
-  TbEye, 
-  TbRazor, 
-  TbVip, 
-  TbBottle, 
-  TbPalette, 
-  TbDots 
+import { BeardIcon, EyebrowIcon, HaircutBeardIcon, HairIcon, hairTreatmentIcon } from "@/components/icons";
+import {
+  TbVip,
+  TbBottle,
+  TbPalette,
+  TbDots
 } from "react-icons/tb";
 import type { ServiceCategory } from "@/generated/prisma/enums";
 
@@ -30,7 +26,7 @@ export const SERVICE_ICONS = {
   EYEBROW: EyebrowIcon,
   HAIRCUT_BEARD: HaircutBeardIcon,
   FULL_SERVICE: TbVip,
-  HAIR_TREATMENT: TbBottle,
+  HAIR_TREATMENT: hairTreatmentIcon,
   COLORING: TbPalette,
   OTHER: TbDots,
 } as const;

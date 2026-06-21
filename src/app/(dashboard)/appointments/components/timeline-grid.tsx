@@ -40,8 +40,8 @@ const SLOT_MINUTES = 60;
 
 export function TimelineGrid({
   appointments,
-  startHour = 8,
-  endHour = 20,
+  startHour = 7,
+  endHour = 23,
 }: TimelineGridProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -104,7 +104,7 @@ export function TimelineGrid({
       >
         {/* Time labels column */}
         <div className="sticky left-0 z-10 w-18 shrink-0 bg-white border-r border-slate-100">
-          <div className="relative" style={{ height: `${hours.length * HOUR_HEIGHT}px` }}>
+          <div className="relative mt-4 mb-4" style={{ height: `${hours.length * HOUR_HEIGHT}px` }}>
             {hours.map((hour) => {
               const top = (hour - startHour) * HOUR_HEIGHT;
               return (
@@ -126,7 +126,7 @@ export function TimelineGrid({
         <div className="relative flex-1 min-w-0">
           {/* Hour lines */}
           <div
-            className="relative"
+            className="relative mt-4 mb-4"
             style={{ height: `${hours.length * HOUR_HEIGHT}px` }}
           >
             {hours.map((hour) => {
@@ -183,7 +183,7 @@ export function TimelineGrid({
                 const start = new Date(appt.startsAt);
                 const end = new Date(appt.endsAt);
                 const durationMins = (end.getTime() - start.getTime()) / 60000;
-                const isCompact = durationMins <= 30; // Use compact mode for short appointments
+                const isCompact = durationMins <= 45; // Use compact mode for appointments 45m or less to prevent overlap
 
                 return (
                   <button
@@ -205,8 +205,8 @@ export function TimelineGrid({
                       <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-linear-to-r from-transparent to-white/20`} />
 
                       {isCompact ? (
-                        <p className={`text-xs font-semibold ${statusCfg.textColor} truncate w-full flex items-center gap-1.5 z-10`}>
-                          <span className="shrink-0">{startTime}</span>
+                        <p className={`text-[11px] font-medium ${statusCfg.textColor} truncate w-full flex items-center gap-1.5 z-10`}>
+                          <span className="shrink-0 font-semibold">{startTime}</span>
                           <span className="opacity-40 font-normal shrink-0">|</span>
                           <span className="truncate">
                             {appt.client.name} <span className="opacity-70 font-normal ml-1">- {appt.barberService.service.name}</span>
@@ -214,13 +214,13 @@ export function TimelineGrid({
                         </p>
                       ) : (
                         <>
-                          <p className={`text-sm font-bold ${statusCfg.textColor} truncate leading-tight w-full z-10 pr-4`}>
+                          <p className={`text-sm font-semibold ${statusCfg.textColor} truncate leading-tight w-full z-10 pr-4`}>
                             {appt.client.name}
                           </p>
-                          <p className={`text-xs ${statusCfg.textColor} opacity-80 truncate mt-0.5 w-full z-10`}>
+                          <p className={`text-[11px] ${statusCfg.textColor} opacity-80 truncate mt-0.5 w-full z-10`}>
                             {appt.barberService.service.name}
                           </p>
-                          <p className={`text-[11px] ${statusCfg.textColor} opacity-70 font-medium mt-auto w-full tabular-nums z-10`}>
+                          <p className={`text-[10px] ${statusCfg.textColor} opacity-70 font-medium mt-auto w-full tabular-nums z-10`}>
                             {startTime} – {endTime}
                           </p>
                         </>
