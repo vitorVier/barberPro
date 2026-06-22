@@ -107,7 +107,7 @@ export function DateNavigator({ currentDate }: DateNavigatorProps) {
               onClick={goToToday}
               className="inline-flex items-center rounded-md bg-amber/10 px-2.5 py-0.5 text-[11px] font-bold text-amber-dark ring-1 ring-inset ring-amber/30 transition-all hover:bg-amber/20 cursor-pointer"
             >
-              Hoje
+              Voltar para hoje
             </button>
           )}
 

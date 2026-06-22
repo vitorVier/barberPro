@@ -4,10 +4,8 @@ import React, { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Scissors,
-  Plus,
   Pencil,
   Trash2,
-  Loader2,
   ToggleLeft,
   ToggleRight,
   Store,
@@ -386,7 +384,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
               onValueChange={(value) => setCategory(value as ServiceCategory)}
               disabled={isPending}
             >
-              <SelectTrigger className="w-full rounded-lg border-slate-200 bg-white h-[42px] px-3 text-sm focus:ring-1 focus:ring-amber focus:border-amber transition-all disabled:opacity-50">
+              <SelectTrigger className="w-full rounded-lg border-slate-200 bg-white h-10.5 px-3 text-sm focus:ring-1 focus:ring-amber focus:border-amber transition-all disabled:opacity-50">
                 <SelectValue placeholder="Selecione a categoria">
                   {category ? SERVICE_CATEGORY_LABELS[category] : undefined}
                 </SelectValue>
