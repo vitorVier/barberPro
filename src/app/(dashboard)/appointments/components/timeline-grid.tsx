@@ -1,18 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import {
-  Clock,
-  User,
-  Scissors,
-  Phone,
   MoreHorizontal,
-  X,
 } from "lucide-react";
 import {
   STATUS_CONFIG,
-  type AppointmentStatusKey,
 } from "./status-legend";
+import { ModalAppointmentDetail } from "./modal-appointment-detail";
 
 interface Appointment {
   id: string;
@@ -44,21 +39,7 @@ export function TimelineGrid({
   endHour = 23,
 }: TimelineGridProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const detailRef = useRef<HTMLDivElement>(null);
-
-  // Close popover on outside click
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (detailRef.current && !detailRef.current.contains(e.target as Node)) {
-        setSelectedId(null);
-      }
-    }
-    if (selectedId) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [selectedId]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Generate time slots
   const hours: number[] = [];
@@ -87,6 +68,16 @@ export function TimelineGrid({
 
   const selectedAppointment = appointments.find((a) => a.id === selectedId);
 
+  function handleOpenDetail(apptId: string) {
+    setSelectedId(apptId);
+    setIsModalOpen(true);
+  }
+
+  function handleCloseDetail() {
+    setIsModalOpen(false);
+    setSelectedId(null);
+  }
+
   // Current time indicator
   const now = new Date();
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -99,7 +90,6 @@ export function TimelineGrid({
     <div className="relative flex flex-col flex-1 min-h-0 w-full h-full">
       {/* Timeline container */}
       <div
-        ref={timelineRef}
         className="relative flex flex-1 min-h-0 overflow-y-auto custom-scrollbar"
       >
         {/* Time labels column */}
@@ -167,7 +157,7 @@ export function TimelineGrid({
             <div className="absolute inset-0 px-2 sm:px-3">
               {appointments.map((appt) => {
                 const style = getBlockStyle(appt);
-                const statusKey = appt.status as AppointmentStatusKey;
+                const statusKey = appt.status as keyof typeof STATUS_CONFIG;
                 const statusCfg = STATUS_CONFIG[statusKey] ?? STATUS_CONFIG.SCHEDULED;
                 const isSelected = selectedId === appt.id;
 
@@ -189,7 +179,7 @@ export function TimelineGrid({
                   <button
                     key={appt.id}
                     id={`appointment-block-${appt.id}`}
-                    onClick={() => setSelectedId(isSelected ? null : appt.id)}
+                    onClick={() => handleOpenDetail(appt.id)}
                     className={`
                         absolute left-2 right-2 sm:left-3 sm:right-3 rounded-lg border-l-[3px] 
                         text-left transition-all duration-200 cursor-pointer group overflow-hidden
@@ -206,7 +196,7 @@ export function TimelineGrid({
 
                       {isCompact ? (
                         <p className={`text-[11px] font-medium ${statusCfg.textColor} truncate w-full flex items-center gap-1.5 z-10`}>
-                          <span className="shrink-0 font-semibold">{startTime}</span>
+                          <span className="shrink-0 font-semibold">{startTime} - {endTime}</span>
                           <span className="opacity-40 font-normal shrink-0">|</span>
                           <span className="truncate">
                             {appt.client.name} <span className="opacity-70 font-normal ml-1">- {appt.barberService.service.name}</span>
@@ -241,139 +231,12 @@ export function TimelineGrid({
         </div>
       </div>
 
-      {/* Detail Popover / Slide Panel */}
-      {selectedAppointment && (
-        <div
-          ref={detailRef}
-          className="absolute right-4 top-4 z-30 w-85 rounded-2xl bg-white border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden animate-in slide-in-from-right-4 fade-in duration-200"
-        >
-          {/* Header */}
-          <div className="relative px-4 pt-4 pb-3 border-b border-slate-100">
-            <button
-              id="close-appointment-detail"
-              onClick={() => setSelectedId(null)}
-              className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors cursor-pointer"
-            >
-              <X className="h-4 w-4" />
-            </button>
-
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-linear-to-br from-amber/15 to-amber/5 text-amber font-bold text-xs border border-amber/20">
-                {selectedAppointment.client.name
-                  .split(" ")
-                  .map((w) => w[0])
-                  .join("")
-                  .toUpperCase()
-                  .slice(0, 2)}
-              </div>
-              <div>
-                <p className="text-sm font-bold text-navy">
-                  {selectedAppointment.client.name}
-                </p>
-                {selectedAppointment.client.phone && (
-                  <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                    <Phone className="h-3 w-3" />
-                    {selectedAppointment.client.phone}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Status badge */}
-            {(() => {
-              const sk = selectedAppointment.status as AppointmentStatusKey;
-              const sc = STATUS_CONFIG[sk] ?? STATUS_CONFIG.SCHEDULED;
-              return (
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold ${sc.colorLight} ${sc.textColor} ring-1 ring-inset ${sc.borderColor}`}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${sc.color}`} />
-                  {sc.label}
-                </span>
-              );
-            })()}
-          </div>
-
-          {/* Details */}
-          <div className="px-4 py-3 space-y-2.5">
-            <DetailRow
-              icon={Clock}
-              label="Horário"
-              value={`${new Date(
-                selectedAppointment.startsAt
-              ).toLocaleTimeString("pt-BR", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })} – ${new Date(selectedAppointment.endsAt).toLocaleTimeString(
-                "pt-BR",
-                { hour: "2-digit", minute: "2-digit" }
-              )}`}
-            />
-            <DetailRow
-              icon={Scissors}
-              label="Serviço"
-              value={selectedAppointment.barberService.service.name}
-            />
-            <DetailRow
-              icon={User}
-              label="Barbeiro"
-              value={selectedAppointment.barber.name}
-            />
-
-            {/* Price */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                Valor
-              </span>
-              <span className="text-base font-bold text-navy">
-                R${" "}
-                {Number(selectedAppointment.barberService.price).toLocaleString(
-                  "pt-BR",
-                  { minimumFractionDigits: 2 }
-                )}
-              </span>
-            </div>
-
-            {/* Notes */}
-            {selectedAppointment.notes && (
-              <div className="rounded-lg bg-slate-50 p-3 mt-2">
-                <p className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider mb-1">
-                  Observações
-                </p>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {selectedAppointment.notes}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Sub-component ──────────────────────────────────────────
-
-function DetailRow({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-400">
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider">
-          {label}
-        </p>
-        <p className="text-sm font-medium text-navy truncate">{value}</p>
-      </div>
+      {/* Appointment Detail Modal */}
+      <ModalAppointmentDetail
+        isOpen={isModalOpen}
+        onClose={handleCloseDetail}
+        appointment={selectedAppointment ?? null}
+      />
     </div>
   );
 }

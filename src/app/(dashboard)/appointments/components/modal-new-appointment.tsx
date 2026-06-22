@@ -15,6 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Clock } from "lucide-react";
+
 interface ModalNewAppointmentProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,6 +26,46 @@ interface ModalNewAppointmentProps {
   defaultDate?: string;
   defaultBarberId?: string;
 }
+
+// ─── helpers ────────────────────────────────────────────────
+
+/** Add `minutesToAdd` to hh:mm and return new { hour, minute } */
+function addMinutes(
+  hour: string,
+  minute: string,
+  minutesToAdd: number
+): { hour: string; minute: string } {
+  const total = parseInt(hour, 10) * 60 + parseInt(minute, 10) + minutesToAdd;
+  const clampedTotal = Math.min(total, 23 * 60 + 59); // cap at 23:59
+  const h = Math.floor(clampedTotal / 60)
+    .toString()
+    .padStart(2, "0");
+  const m = (clampedTotal % 60).toString().padStart(2, "0");
+  return { hour: h, minute: m };
+}
+
+/** Returns the duration label (e.g. "1h 30min" or "45 min") */
+function formatDuration(startH: string, startM: string, endH: string, endM: string): string | null {
+  const startTotal = parseInt(startH, 10) * 60 + parseInt(startM, 10);
+  const endTotal = parseInt(endH, 10) * 60 + parseInt(endM, 10);
+  const diff = endTotal - startTotal;
+  if (diff <= 0) return null;
+  const hours = Math.floor(diff / 60);
+  const mins = diff % 60;
+  if (hours === 0) return `${mins} min`;
+  if (mins === 0) return `${hours}h`;
+  return `${hours}h ${mins} min`;
+}
+
+// ─── constants ──────────────────────────────────────────────
+
+const HOUR_OPTIONS = Array.from({ length: 16 }, (_, i) =>
+  (i + 7).toString().padStart(2, "0")
+); // 07 → 22
+
+const MINUTE_OPTIONS = ["00", "15", "30", "45"];
+
+// ─── component ──────────────────────────────────────────────
 
 export function ModalNewAppointment({
   isOpen,
@@ -41,10 +83,21 @@ export function ModalNewAppointment({
   const [clientId, setClientId] = useState("");
   const [serviceId, setServiceId] = useState("");
 
-  // Store the initial date from the agenda context
+  // Date as DD/MM/YYYY
   const [dateStr, setDateStr] = useState("");
 
-  // Format incoming YYYY-MM-DD to DD/MM/YYYY and sync when modal opens
+  // Start time
+  const [startHour, setStartHour] = useState("09");
+  const [startMinute, setStartMinute] = useState("00");
+
+  // End time (auto-filled from service duration, freely editable)
+  const [endHour, setEndHour] = useState("09");
+  const [endMinute, setEndMinute] = useState("30");
+
+  const [notes, setNotes] = useState("");
+  const [error, setError] = useState("");
+
+  // ── Sync date when modal opens ────────────────────────────
   useEffect(() => {
     if (isOpen) {
       if (defaultDate) {
@@ -53,7 +106,6 @@ export function ModalNewAppointment({
           setDateStr(`${parts[2]}/${parts[1]}/${parts[0]}`);
         }
       } else {
-        // Fallback to today if no date provided
         const today = new Date();
         const day = String(today.getDate()).padStart(2, "0");
         const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -63,37 +115,83 @@ export function ModalNewAppointment({
     }
   }, [isOpen, defaultDate]);
 
-  const [hour, setHour] = useState("09");
-  const [minute, setMinute] = useState("00");
-  const [notes, setNotes] = useState("");
-
-  const [error, setError] = useState("");
-
+  // ── Derived ───────────────────────────────────────────────
   const availableServices = barberServices.filter(
     (bs) => bs.barberId === barberId
   );
 
+  const selectedService = availableServices.find((bs) => bs.id === serviceId);
+
+  const durationLabel = formatDuration(startHour, startMinute, endHour, endMinute);
+  const isEndBeforeStart =
+    parseInt(endHour, 10) * 60 + parseInt(endMinute, 10) <=
+    parseInt(startHour, 10) * 60 + parseInt(startMinute, 10);
+
+  // ── Handlers ─────────────────────────────────────────────
+
+  /** When a service is selected, auto-fill the end time from its default duration */
+  function handleServiceChange(id: string) {
+    setServiceId(id);
+    if (!id) return;
+    const svc = availableServices.find((bs) => bs.id === id);
+    if (svc?.durationMinutes) {
+      const { hour: eh, minute: em } = addMinutes(
+        startHour,
+        startMinute,
+        Number(svc.durationMinutes)
+      );
+      setEndHour(eh);
+      setEndMinute(em);
+    }
+  }
+
+  /** When start time changes, shift the end time to keep the same duration */
+  function handleStartHourChange(val: string | null) {
+    if (!val) return;
+    const oldStart = parseInt(startHour, 10) * 60 + parseInt(startMinute, 10);
+    const oldEnd = parseInt(endHour, 10) * 60 + parseInt(endMinute, 10);
+    const currentDuration = Math.max(oldEnd - oldStart, 0);
+
+    setStartHour(val);
+
+    if (currentDuration > 0) {
+      const { hour: eh, minute: em } = addMinutes(val, startMinute, currentDuration);
+      setEndHour(eh);
+      setEndMinute(em);
+    }
+  }
+
+  function handleStartMinuteChange(val: string | null) {
+    if (!val) return;
+    const oldStart = parseInt(startHour, 10) * 60 + parseInt(startMinute, 10);
+    const oldEnd = parseInt(endHour, 10) * 60 + parseInt(endMinute, 10);
+    const currentDuration = Math.max(oldEnd - oldStart, 0);
+
+    setStartMinute(val);
+
+    if (currentDuration > 0) {
+      const { hour: eh, minute: em } = addMinutes(startHour, val, currentDuration);
+      setEndHour(eh);
+      setEndMinute(em);
+    }
+  }
+
   const handleCloseModal = () => {
-    // Reset form fields when closing without saving
-    // This ensures the agenda date context is preserved
     setClientId("");
     setServiceId("");
     setNotes("");
     setError("");
-    // Note: barberId is kept if pre-selected from current barber filter
     onClose();
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value.length > 8) value = value.slice(0, 8);
-
     if (value.length >= 5) {
       value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
     } else if (value.length >= 3) {
       value = `${value.slice(0, 2)}/${value.slice(2)}`;
     }
-
     setDateStr(value);
   };
 
@@ -101,7 +199,7 @@ export function ModalNewAppointment({
     e.preventDefault();
     setError("");
 
-    if (!barberId || !clientId || !serviceId || !dateStr || !hour || !minute) {
+    if (!barberId || !clientId || !serviceId || !dateStr) {
       setError("Preencha todos os campos obrigatórios.");
       return;
     }
@@ -111,10 +209,14 @@ export function ModalNewAppointment({
       return;
     }
 
+    if (isEndBeforeStart) {
+      setError("O horário de término deve ser posterior ao de início.");
+      return;
+    }
+
     const [day, month, year] = dateStr.split("/");
     const isoDate = `${year}-${month}-${day}`;
 
-    // Basic date validation
     const parsedDate = new Date(`${isoDate}T00:00:00`);
     if (isNaN(parsedDate.getTime())) {
       setError("Data inválida. Verifique os valores inseridos.");
@@ -127,8 +229,10 @@ export function ModalNewAppointment({
         clientId,
         barberServiceId: serviceId,
         date: isoDate,
-        startHour: parseInt(hour, 10),
-        startMinute: parseInt(minute, 10),
+        startHour: parseInt(startHour, 10),
+        startMinute: parseInt(startMinute, 10),
+        endHour: parseInt(endHour, 10),
+        endMinute: parseInt(endMinute, 10),
         notes,
       });
 
@@ -137,12 +241,12 @@ export function ModalNewAppointment({
         setServiceId("");
         setNotes("");
         handleCloseModal();
+        router.refresh();
       } else {
         setError(res.error || "Ocorreu um erro ao criar o agendamento.");
       }
     });
   };
-
 
   return (
     <ModalBarber
@@ -222,63 +326,137 @@ export function ModalNewAppointment({
                 value: bs.service.name,
               }))}
               value={serviceId}
-              onChange={setServiceId}
+              onChange={handleServiceChange}
               placeholder="Selecione um serviço..."
               disabled={!barberId}
               required
             />
+            {selectedService && (
+              <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                Duração padrão: {selectedService.durationMinutes} min — ajuste os horários abaixo se necessário
+              </p>
+            )}
           </div>
 
-          {/* Row 3: Date & Time */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="space-y-1.5">
-              <Label htmlFor="date">Data *</Label>
-              <Input
-                id="date"
-                type="text"
-                placeholder="DD/MM/AAAA"
-                value={dateStr}
-                onChange={handleDateChange}
-                className="bg-amber/5 border-amber/30 focus:bg-white focus:border-amber transition-colors"
-                title="Data selecionada na agenda. Você pode alterar se necessário."
-                required
-              />
-            </div>
+          {/* Row 3: Date */}
+          <div className="space-y-1.5">
+            <Label htmlFor="date">Data *</Label>
+            <Input
+              id="date"
+              type="text"
+              placeholder="DD/MM/AAAA"
+              value={dateStr}
+              onChange={handleDateChange}
+              className="bg-amber/5 border-amber/30 focus:bg-white focus:border-amber transition-colors"
+              title="Data selecionada na agenda. Você pode alterar se necessário."
+              required
+            />
+          </div>
 
-            <div className="space-y-1.5">
-              <Label>Horário de Início *</Label>
-              <div className="flex gap-2">
-                <Select value={hour} onValueChange={(v) => setHour(v || "")} disabled={isPending}>
-                  <SelectTrigger className="w-full h-10">
-                    <SelectValue placeholder="Hora" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 13 }).map((_, i) => {
-                      const h = (i + 8).toString().padStart(2, "0");
-                      return (
-                        <SelectItem key={h} value={h}>
-                          {h}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                <Select value={minute} onValueChange={(v) => setMinute(v || "")} disabled={isPending}>
-                  <SelectTrigger className="w-full h-10">
-                    <SelectValue placeholder="Minuto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="00">00</SelectItem>
-                    <SelectItem value="15">15</SelectItem>
-                    <SelectItem value="30">30</SelectItem>
-                    <SelectItem value="45">45</SelectItem>
-                  </SelectContent>
-                </Select>
+          {/* Row 4: Start & End time side-by-side with duration badge */}
+          <div className="space-y-1.5">
+            <Label>Horário *</Label>
+            <div className="flex items-center gap-3">
+              {/* Start time */}
+              <div className="flex-1 space-y-1">
+                <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Início</p>
+                <div className="flex gap-1.5">
+                  <Select
+                    value={startHour}
+                    onValueChange={handleStartHourChange}
+                    disabled={isPending}
+                  >
+                    <SelectTrigger id="start-hour" className="w-full h-10">
+                      <SelectValue placeholder="Hora" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {HOUR_OPTIONS.map((h) => (
+                        <SelectItem key={h} value={h}>{h}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={startMinute}
+                    onValueChange={handleStartMinuteChange}
+                    disabled={isPending}
+                  >
+                    <SelectTrigger id="start-minute" className="w-full h-10">
+                      <SelectValue placeholder="Min" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MINUTE_OPTIONS.map((m) => (
+                        <SelectItem key={m} value={m}>{m}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Duration badge */}
+              <div className="flex flex-col items-center gap-0.5 shrink-0 mt-5">
+                <div className="h-px w-4 bg-slate-200" />
+                {durationLabel && !isEndBeforeStart ? (
+                  <span className="text-[10px] font-semibold text-amber-dark bg-amber/10 border border-amber/20 rounded-md px-1.5 py-0.5 whitespace-nowrap">
+                    {durationLabel}
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-slate-300 whitespace-nowrap">até</span>
+                )}
+                <div className="h-px w-4 bg-slate-200" />
+              </div>
+
+              {/* End time */}
+              <div className="flex-1 space-y-1">
+                <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Término</p>
+                <div className="flex gap-1.5">
+                  <Select
+                    value={endHour}
+                    onValueChange={(v) => { if (v) setEndHour(v); }}
+                    disabled={isPending}
+                  >
+                    <SelectTrigger
+                      id="end-hour"
+                      className={`w-full h-10 ${isEndBeforeStart ? "border-red-300 focus:ring-red-300" : ""}`}
+                    >
+                      <SelectValue placeholder="Hora" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {HOUR_OPTIONS.map((h) => (
+                        <SelectItem key={h} value={h}>{h}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={endMinute}
+                    onValueChange={(v) => { if (v) setEndMinute(v); }}
+                    disabled={isPending}
+                  >
+                    <SelectTrigger
+                      id="end-minute"
+                      className={`w-full h-10 ${isEndBeforeStart ? "border-red-300 focus:ring-red-300" : ""}`}
+                    >
+                      <SelectValue placeholder="Min" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MINUTE_OPTIONS.map((m) => (
+                        <SelectItem key={m} value={m}>{m}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
+
+            {/* Inline validation hint */}
+            {isEndBeforeStart && (
+              <p className="text-[11px] text-red-500 mt-1">
+                O horário de término deve ser posterior ao de início.
+              </p>
+            )}
           </div>
 
-          {/* Row 4: Notes */}
+          {/* Row 5: Notes */}
           <div className="space-y-1.5">
             <Label htmlFor="notes">Observações</Label>
             <Input

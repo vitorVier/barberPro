@@ -15,6 +15,8 @@ interface CreateAppointmentInput {
   date: string; // ISO date string (YYYY-MM-DD)
   startHour: number;
   startMinute: number;
+  endHour: number;
+  endMinute: number;
   notes?: string;
 }
 
@@ -36,7 +38,16 @@ export async function createAppointmentAction(
       return { success: false, error: "Informe a data do agendamento." };
     }
 
-    // ── Resolve BarberService for duration ───────────────────
+    const startTotalMins = data.startHour * 60 + data.startMinute;
+    const endTotalMins = data.endHour * 60 + data.endMinute;
+    if (endTotalMins <= startTotalMins) {
+      return {
+        success: false,
+        error: "O horário de término deve ser posterior ao de início.",
+      };
+    }
+
+    // ── Resolve BarberService (for conflict check) ────────────
     const barberService = await prisma.barberService.findUnique({
       where: { id: data.barberServiceId },
     });
@@ -53,12 +64,12 @@ export async function createAppointmentAction(
       };
     }
 
-    // ── Build startsAt / endsAt ─────────────────────────────
+    // ── Build startsAt / endsAt from explicit times ──────────
     const startsAt = new Date(`${data.date}T00:00:00`);
     startsAt.setHours(data.startHour, data.startMinute, 0, 0);
 
-    const endsAt = new Date(startsAt);
-    endsAt.setMinutes(endsAt.getMinutes() + barberService.durationMinutes);
+    const endsAt = new Date(`${data.date}T00:00:00`);
+    endsAt.setHours(data.endHour, data.endMinute, 0, 0);
 
     // Sanity: ensure date is not in the distant past
     const now = new Date();
@@ -112,6 +123,63 @@ export async function createAppointmentAction(
     return {
       success: false,
       error: "Erro interno ao criar o agendamento. Tente novamente.",
+    };
+  }
+}
+
+export type AppointmentStatus =
+  | "SCHEDULED"
+  | "CONFIRMED"
+  | "COMPLETED"
+  | "CANCELLED"
+  | "NO_SHOW";
+
+export async function updateAppointmentStatusAction(
+  appointmentId: string,
+  status: AppointmentStatus
+): Promise<ActionResponse> {
+  try {
+    if (!appointmentId?.trim()) {
+      return { success: false, error: "ID do agendamento inválido." };
+    }
+
+    await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { status },
+    });
+
+    revalidatePath("/appointments");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Error updating appointment status:", error);
+    return {
+      success: false,
+      error: "Erro interno ao atualizar o status. Tente novamente.",
+    };
+  }
+}
+
+export async function deleteAppointmentAction(
+  appointmentId: string
+): Promise<ActionResponse> {
+  try {
+    if (!appointmentId?.trim()) {
+      return { success: false, error: "ID do agendamento inválido." };
+    }
+
+    await prisma.appointment.delete({
+      where: { id: appointmentId },
+    });
+
+    revalidatePath("/appointments");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Error deleting appointment:", error);
+    return {
+      success: false,
+      error: "Erro interno ao remover o agendamento. Tente novamente.",
     };
   }
 }
