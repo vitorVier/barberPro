@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Calendar } from "lucide-react";
 
 interface Appointment {
   id: string;
@@ -41,8 +42,9 @@ interface TodayAgendaProps {
 export function TodayAgenda({ appointments }: TodayAgendaProps) {
   if (appointments.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center py-8 text-sm text-muted-foreground">
-        Nenhum agendamento para hoje.
+      <div className="flex h-full flex-col items-center justify-center gap-2 pb-10 text-sm text-muted-foreground">
+        <Calendar size={45}/>
+        <span>Nenhum agendamento para hoje.</span>
       </div>
     );
   }
