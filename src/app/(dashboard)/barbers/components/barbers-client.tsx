@@ -16,6 +16,7 @@ import {
   Image as ImageIcon,
   Upload,
   Search,
+  CalendarDays,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -243,9 +244,9 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
         </ActionButton>
       </PageHeader>
 
-      {/* Barbers Card / Table */}
-      <div className="rounded-xl border border-border bg-white shadow-sm overflow-hidden">
-        {initialBarbers.length === 0 ? (
+      {/* Barbers Grid */}
+      {initialBarbers.length === 0 ? (
+        <div className="rounded-xl border border-border bg-white shadow-sm overflow-hidden">
           <EmptyState
             icon={Scissors}
             title="Nenhum barbeiro cadastrado"
@@ -255,143 +256,136 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
               Cadastrar Primeiro Barbeiro
             </ActionButton>
           </EmptyState>
-        ) : filteredBarbers.length === 0 ? (
+        </div>
+      ) : filteredBarbers.length === 0 ? (
+        <div className="rounded-xl border border-border bg-white shadow-sm overflow-hidden">
           <EmptyState
             icon={Search}
             title="Nenhum resultado encontrado"
             description={`Não encontramos barbeiros com o termo "${searchQuery}". Tente uma busca diferente.`}
           />
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-200 border-collapse text-left">
-              <thead>
-                <tr className="border-b border-border bg-slate-50/50">
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Barbeiro</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Contato</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Serviços</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Agendamentos</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Status</th>
-                  <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-3.5 text-right"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filteredBarbers.map((barber) => (
-                  <tr key={barber.id} className="hover:bg-slate-50/30 transition-colors">
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          {filteredBarbers.map((barber) => (
+            <div
+              key={barber.id}
+              className={`group relative rounded-2xl border border-border bg-white shadow-sm hover:shadow-xl overflow-hidden flex flex-col transition-all duration-300 ${!barber.isActive ? "opacity-80 grayscale-30" : ""}`}
+            >
+              {/* Top Accent Line */}
+              <div className={`h-1 w-full transition-colors duration-300 ${barber.isActive ? "bg-linear-to-r from-amber to-amber-light" : "bg-slate-200"}`} />
 
-                    {/* BARBEIRO */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-                      <div className="flex items-center gap-2 sm:gap-3">
+              {/* Status Toggle — Top Right */}
+              <button
+                type="button"
+                onClick={() => handleSetStatus(barber.id, barber.isActive)}
+                className="absolute top-4 right-4 z-10 shrink-0 transition-transform active:scale-95"
+                title={barber.isActive ? "Desativar barbeiro" : "Ativar barbeiro"}
+              >
+                {barber.isActive ? (
+                  <ToggleRight className="h-7 w-7 text-success transition-colors duration-300" />
+                ) : (
+                  <ToggleLeft className="h-7 w-7 text-slate-300 hover:text-slate-400 transition-colors duration-300" />
+                )}
+              </button>
 
-                        {/* CONTAINER DO AVATAR */}
-                        <div className="relative h-8 sm:h-10 w-8 sm:w-10 shrink-0 rounded-full overflow-hidden bg-slate-100 ring-1 ring-border shadow-sm transition-transform hover:scale-105">
-                          {barber.avatarUrl ? (
-                            <img
-                              src={barber.avatarUrl}
-                              alt={barber.name}
-                              className="h-full w-full object-cover object-center select-none"
-                              style={{ imageRendering: "auto" }}
-                            />
-                          ) : (
-                            /* PLACEHOLDER HUMANIZADO (Iniciais em vez de ícone rígido) */
-                            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-600 font-bold text-xs sm:text-sm tracking-wider">
-                              {barber.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-                            </div>
-                          )}
-                        </div>
+              {/* Card Content */}
+              <div className="px-5 pt-6 pb-5 flex flex-col flex-1 items-center text-center">
 
-                        {/* INFORMAÇÕES DO TEXTO */}
-                        <div className="flex flex-col justify-center">
-                          <span className="text-xs sm:text-sm font-bold text-slate-950 tracking-tight leading-none">
-                            {barber.name}
-                          </span>
-                          {/* Opcional: Você pode trazer o e-mail ou cargo para baixo do nome para criar um bloco rico */}
-                          <span className="text-xs text-slate-400 mt-0.5 hidden sm:inline">
-                            {barber.email}
-                          </span>
-                        </div>
+                {/* Large Centered Avatar */}
+                <div className="h-20 w-20 rounded-full overflow-hidden bg-slate-100 ring-4 ring-slate-50 shadow-md transition-transform duration-300 group-hover:scale-105 mb-4">
+                  {barber.avatarUrl ? (
+                    <img
+                      src={barber.avatarUrl}
+                      alt={barber.name}
+                      className="h-full w-full object-cover object-center select-none"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-navy-light to-navy text-amber font-bold text-xl tracking-wider">
+                      {barber.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </div>
 
+                {/* Name */}
+                <h3 className="text-base font-bold text-slate-900 leading-tight">{barber.name}</h3>
+
+                {/* Status Badge */}
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider mt-2 ${barber.isActive
+                  ? "bg-success/10 text-success"
+                  : "bg-slate-100 text-slate-500"
+                }`}>
+                  <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${barber.isActive ? "bg-success" : "bg-slate-400"}`}></span>
+                  {barber.isActive ? "Ativo" : "Inativo"}
+                </span>
+
+                {/* Contact Info */}
+                <div className="mt-5 w-full space-y-2 text-left">
+                  <div className="flex items-center gap-2.5 text-[13px] text-slate-500 hover:text-slate-700 transition-colors">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                      <Mail className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="truncate">{barber.email}</span>
+                  </div>
+                  {barber.phone && (
+                    <div className="flex items-center gap-2.5 text-[13px] text-slate-500 hover:text-slate-700 transition-colors">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                        <Phone className="h-3.5 w-3.5" />
                       </div>
-                    </td>
+                      <span>{formatPhone(barber.phone)}</span>
+                    </div>
+                  )}
+                </div>
 
-                    {/* CONTATO */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-                      <div className="flex flex-col">
-                        <span className="text-[13px] text-slate-600">{barber.email}</span>
-                        {barber.phone && (
-                          <span className="text-[11px] text-slate-400 mt-0.5">{formatPhone(barber.phone)}</span>
-                        )}
-                      </div>
-                    </td>
+                {/* Stats */}
+                <div className="mt-auto pt-4 w-full grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => handleOpenServicesModal(barber)}
+                    className="flex flex-col items-center gap-0.5 rounded-xl bg-slate-50 border border-slate-100 py-2.5 px-2 transition-colors hover:bg-amber-50 hover:border-amber/20 cursor-pointer group/stat"
+                    title="Gerenciar serviços"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Scissors className="h-3.5 w-3.5 text-amber" />
+                      <span className="text-lg font-bold text-slate-800 group-hover/stat:text-amber-dark">{barber._count.barberService}</span>
+                    </div>
+                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Serviços</span>
+                  </button>
+                  <div
+                    className="flex flex-col items-center gap-0.5 rounded-xl bg-slate-50 border border-slate-100 py-2.5 px-2"
+                    title="Total de agendamentos"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <CalendarDays className="h-3.5 w-3.5 text-blue-500" />
+                      <span className="text-lg font-bold text-slate-800">{barber._count.appointments}</span>
+                    </div>
+                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Agendamentos</span>
+                  </div>
+                </div>
+              </div>
 
-                    {/* SERVIÇOS */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-                      <button
-                        onClick={() => handleOpenServicesModal(barber)}
-                        className="inline-flex items-center text-xs sm:text-sm font-medium text-amber hover:text-amber-dark transition-colors"
-                        title="Gerenciar serviços do barbeiro"
-                      >
-                        {barber._count.barberService}{" "}
-                        {barber._count.barberService === 1 ? "serviço" : "serviços"}{" "}
-                        <Pencil className="ml-1.5 h-3 w-3 opacity-70" />
-                      </button>
-                    </td>
-
-                    {/* AGENDAMENTOS */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-                      <span className="text-[13px] font-medium text-slate-700">
-                        {barber._count.appointments}
-                      </span>
-                    </td>
-
-                    {/* STATUS */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
-                      <div
-                        onClick={() => handleSetStatus(barber.id, barber.isActive)}
-                        title={barber.isActive ? "Clique para desativar" : "Clique para ativar"}
-                        className="inline-flex items-center gap-1.5 cursor-pointer group select-none transition-opacity duration-150 active:opacity-75"
-                      >
-                        {barber.isActive ? (
-                          <div className="flex items-center gap-1 sm:gap-1.5 text-success transition-colors duration-200 group-hover:text-emerald-600">
-                            <ToggleRight className="h-4 sm:h-5 w-4 sm:w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-105 ease-linear" />
-                            <span className="text-xs sm:text-sm font-medium hidden sm:inline">Ativo</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-1 sm:gap-1.5 text-slate-400 transition-colors duration-200 group-hover:text-slate-500">
-                            <ToggleLeft className="h-4 sm:h-5 w-4 sm:w-5 stroke-[1.75] transition-transform duration-200 group-hover:scale-105 ease-linear" />
-                            <span className="text-xs sm:text-sm font-medium hidden sm:inline">Inativo</span>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* ACTIONS */}
-                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5 sm:gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenModal(barber)}
-                          className="p-1 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-                          title="Editar barbeiro"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          className="p-1 text-red-400 hover:text-red-600 transition-colors cursor-pointer"
-                          title="Excluir barbeiro"
-                          onClick={() => handleDeleteBarber(barber.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              {/* Actions Footer */}
+              <div className="px-5 py-3.5 border-t border-border/50 bg-slate-50/50 flex items-center gap-2 transition-colors duration-300 group-hover:bg-white mt-auto">
+                <button
+                  type="button"
+                  onClick={() => handleOpenModal(barber)}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold text-slate-600 hover:text-amber-dark bg-white border border-border hover:border-amber/30 rounded-xl transition-all shadow-sm hover:shadow-amber/10 hover:bg-amber-50/30"
+                >
+                  <Pencil className="h-4 w-4" />
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteBarber(barber.id)}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 rounded-xl transition-colors border border-border hover:border-red-200 shadow-sm"
+                  title="Excluir barbeiro"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal Dinâmico (Criação / Edição) */}
       <ModalBarber

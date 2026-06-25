@@ -58,30 +58,60 @@ export async function getTodayStats() {
       startsAt: { gte: start, lte: end },
     },
     include: {
-      barber: { select: { name: true } },
-      client: { select: { name: true } },
+      barber: {
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+        },
+      },
+      client: {
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+        },
+      },
       barberService: {
         include: {
-          service: { select: { name: true } },
+          service: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
     },
-    orderBy: { startsAt: "asc" },
+    orderBy: {
+      startsAt: "asc",
+    },
   });
+
+  const serializedAppointments = appointments.map((appointment) => ({
+    ...appointment,
+    barberService: {
+      ...appointment.barberService,
+      price: Number(appointment.barberService.price),
+    },
+  }));
 
   let completed = 0;
   let estimatedRevenue = 0;
 
-  for (const a of appointments) {
+  for (const a of serializedAppointments) {
     if (a.status === "COMPLETED") completed++;
-    if (a.status !== "CANCELLED" && a.status !== "NO_SHOW") {
-      estimatedRevenue += Number(a.barberService.price);
+
+    if (
+      a.status !== "CANCELLED" &&
+      a.status !== "NO_SHOW"
+    ) {
+      estimatedRevenue += a.barberService.price;
     }
   }
 
   return {
-    appointments,
-    total: appointments.length,
+    appointments: serializedAppointments,
+    total: serializedAppointments.length,
     completed,
     estimatedRevenue,
   };
