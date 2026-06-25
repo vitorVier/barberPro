@@ -55,6 +55,33 @@ export async function getAppointmentsByDate(date: Date, barberId?: string) {
   });
 }
 
+export async function getAppointmentsByDateRange(startDate: Date, endDate: Date, barberId?: string) {
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
+
+  const where: Record<string, unknown> = {
+    startsAt: { gte: start, lte: end },
+  };
+
+  if (barberId) {
+    where.barberId = barberId;
+  }
+
+  return prisma.appointment.findMany({
+    where,
+    include: {
+      barber: { select: { id: true, name: true, avatarUrl: true } },
+      client: { select: { id: true, name: true, phone: true } },
+      barberService: {
+        include: {
+          service: { select: { name: true } },
+        },
+      },
+    },
+    orderBy: { startsAt: "asc" },
+  });
+}
+
 export async function getAppointmentsCountByDate(date: Date) {
   const start = startOfDay(date);
   const end = endOfDay(date);

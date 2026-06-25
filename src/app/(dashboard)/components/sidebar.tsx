@@ -7,6 +7,7 @@ import {
   Scissors,
   Users,
   CalendarDays,
+  CalendarRange,
   Contact,
   ChevronRight
 } from "lucide-react";
@@ -16,6 +17,7 @@ import logoImg from "@/assets/logoImg2.png";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/agenda", label: "Agenda", icon: CalendarRange },
   { href: "/appointments", label: "Agendamentos", icon: CalendarDays },
   { href: "/customers", label: "Clientes", icon: Users },
   { href: "/barbers", label: "Barbeiros", icon: Contact },

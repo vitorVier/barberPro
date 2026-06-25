@@ -255,26 +255,26 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
                 <div className="p-5 flex flex-col flex-1">
                   {/* Header */}
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3.5">
+                    <div className="flex items-center gap-3.5 min-w-0">
                       {/* Icon Box */}
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br bg-navy-light text-amber group-hover:scale-105 transition-transform duration-300">
                         <ServiceIcon className="h-6 w-6 drop-shadow-sm" />
                       </div>
 
                       {/* Title and Status Badge */}
-                      <div>
-                        <h3 className="text-base font-bold text-slate-900 leading-tight truncate max-w-37.5 sm:max-w-45">
+                      <div className="min-w-0">
+                        <h3 className="text-base font-bold text-slate-900 leading-tight truncate">
                           {service.name}
                         </h3>
-                        <div className="flex items-center gap-2 mt-1.5">
-                          <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-50 text-amber-dark">
+                        <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                          <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-50 text-amber-dark whitespace-nowrap">
                             {SERVICE_CATEGORY_LABELS[service.category]}
                           </span>
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${service.isActive
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider whitespace-nowrap ${service.isActive
                             ? "bg-success/10 text-success"
                             : "bg-slate-100 text-slate-500"
                             }`}>
-                            <span className={`h-1.5 w-1.5 rounded-full ${service.isActive ? "bg-success" : "bg-slate-400"}`}></span>
+                            <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${service.isActive ? "bg-success" : "bg-slate-400"}`}></span>
                             {service.isActive ? "Ativo" : "Inativo"}
                           </span>
                         </div>
