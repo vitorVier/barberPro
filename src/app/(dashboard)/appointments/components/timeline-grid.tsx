@@ -7,7 +7,7 @@ import {
 import {
   STATUS_CONFIG,
 } from "./status-legend";
-import { ModalAppointmentDetail } from "./modal-appointment-detail";
+import { AppointmentModalManager } from "./appointment-modal-manager";
 
 interface Appointment {
   id: string;
@@ -73,7 +73,7 @@ export function TimelineGrid({
     setIsModalOpen(true);
   }
 
-  function handleCloseDetail() {
+  function handleCloseModal() {
     setIsModalOpen(false);
     setSelectedId(null);
   }
@@ -231,10 +231,10 @@ export function TimelineGrid({
         </div>
       </div>
 
-      {/* Appointment Detail Modal */}
-      <ModalAppointmentDetail
+      {/* Appointment Detail & Edit Modal Manager */}
+      <AppointmentModalManager
         isOpen={isModalOpen}
-        onClose={handleCloseDetail}
+        onClose={handleCloseModal}
         appointment={selectedAppointment ?? null}
       />
     </div>

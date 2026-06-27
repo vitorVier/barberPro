@@ -25,6 +25,7 @@ interface ModalNewAppointmentProps {
   barberServices: any[];
   defaultDate?: string;
   defaultBarberId?: string;
+  appointmentToEdit?: any;
 }
 
 // ─── helpers ────────────────────────────────────────────────
@@ -75,6 +76,7 @@ export function ModalNewAppointment({
   barberServices,
   defaultDate,
   defaultBarberId,
+  appointmentToEdit,
 }: ModalNewAppointmentProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -100,20 +102,41 @@ export function ModalNewAppointment({
   // ── Sync date when modal opens ────────────────────────────
   useEffect(() => {
     if (isOpen) {
-      if (defaultDate) {
-        const parts = defaultDate.split("-");
-        if (parts.length === 3) {
-          setDateStr(`${parts[2]}/${parts[1]}/${parts[0]}`);
-        }
-      } else {
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, "0");
-        const month = String(today.getMonth() + 1).padStart(2, "0");
-        const year = today.getFullYear();
+      if (appointmentToEdit) {
+        setBarberId(appointmentToEdit.barberId || appointmentToEdit.barber.id);
+        setClientId(appointmentToEdit.clientId || appointmentToEdit.client.id);
+        setServiceId(appointmentToEdit.barberServiceId);
+        setNotes(appointmentToEdit.notes || "");
+        
+        const start = new Date(appointmentToEdit.startsAt);
+        const end = new Date(appointmentToEdit.endsAt);
+        
+        const day = String(start.getDate()).padStart(2, "0");
+        const month = String(start.getMonth() + 1).padStart(2, "0");
+        const year = start.getFullYear();
         setDateStr(`${day}/${month}/${year}`);
+        
+        setStartHour(String(start.getHours()).padStart(2, "0"));
+        setStartMinute(String(start.getMinutes()).padStart(2, "0"));
+        
+        setEndHour(String(end.getHours()).padStart(2, "0"));
+        setEndMinute(String(end.getMinutes()).padStart(2, "0"));
+      } else {
+        if (defaultDate) {
+          const parts = defaultDate.split("-");
+          if (parts.length === 3) {
+            setDateStr(`${parts[2]}/${parts[1]}/${parts[0]}`);
+          }
+        } else {
+          const today = new Date();
+          const day = String(today.getDate()).padStart(2, "0");
+          const month = String(today.getMonth() + 1).padStart(2, "0");
+          const year = today.getFullYear();
+          setDateStr(`${day}/${month}/${year}`);
+        }
       }
     }
-  }, [isOpen, defaultDate]);
+  }, [isOpen, defaultDate, appointmentToEdit]);
 
   // ── Derived ───────────────────────────────────────────────
   const availableServices = barberServices.filter(
@@ -224,7 +247,7 @@ export function ModalNewAppointment({
     }
 
     startTransition(async () => {
-      const res = await createAppointmentAction({
+      const data = {
         barberId,
         clientId,
         barberServiceId: serviceId,
@@ -234,7 +257,17 @@ export function ModalNewAppointment({
         endHour: parseInt(endHour, 10),
         endMinute: parseInt(endMinute, 10),
         notes,
-      });
+      };
+      
+      let res;
+      if (appointmentToEdit) {
+        // We need to import updateAppointmentAction dynamically or add it to imports
+        // Actually it's better to import it at the top
+        const { updateAppointmentAction } = await import("../actions");
+        res = await updateAppointmentAction(appointmentToEdit.id, data);
+      } else {
+        res = await createAppointmentAction(data);
+      }
 
       if (res.success) {
         setClientId("");
@@ -243,7 +276,7 @@ export function ModalNewAppointment({
         handleCloseModal();
         router.refresh();
       } else {
-        setError(res.error || "Ocorreu um erro ao criar o agendamento.");
+        setError(res.error || "Ocorreu um erro ao salvar o agendamento.");
       }
     });
   };
@@ -252,7 +285,7 @@ export function ModalNewAppointment({
     <ModalBarber
       isOpen={isOpen}
       onClose={onClose}
-      title="Novo Agendamento"
+      title={appointmentToEdit ? "Editar Agendamento" : "Novo Agendamento"}
       maxWidthClass="max-w-2xl"
     >
       <form onSubmit={handleSubmit} className="flex flex-col">
@@ -474,7 +507,7 @@ export function ModalNewAppointment({
         <ModalFooter
           onCancel={handleCloseModal}
           isPending={isPending}
-          submitLabel="Agendar"
+          submitLabel={appointmentToEdit ? "Salvar Alterações" : "Agendar"}
           cancelLabel="Cancelar"
           className="px-6 pb-4 bg-transparent border-t-0 mt-0"
         />

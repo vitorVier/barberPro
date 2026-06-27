@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { StatusLegend } from "@/app/(dashboard)/appointments/components/status-legend";
 import { WeekGrid } from "./week-grid";
 import { MonthGrid } from "./month-grid";
-import { ModalAppointmentDetail } from "@/app/(dashboard)/appointments/components/modal-appointment-detail";
+import { AppointmentModalManager } from "@/app/(dashboard)/appointments/components/appointment-modal-manager";
 import { BarberTabs } from "@/app/(dashboard)/appointments/components/barber-tabs";
 
 interface Barber {
@@ -45,6 +45,7 @@ export function AgendaClient({
   initialViewMode,
 }: AgendaClientProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
@@ -133,6 +134,18 @@ export function AgendaClient({
 
   const selectedAppointment = appointments.find(a => a.id === selectedAppointmentId) ?? null;
 
+  // check date
+  const date = new Date(currentDate + "T12:00:00");
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  const isToday = date.toDateString() === today.toDateString();
+
+  const goToToday = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("date");
+    router.push(`${pathname}?${params.toString()}`);
+  }, [pathname, router, searchParams]);
+
   return (
     <div className="flex flex-col h-full gap-4 sm:gap-5 p-3 sm:p-4 md:p-6 lg:p-8 bg-slate-50/30">
       {/* Page Header Row */}
@@ -180,12 +193,21 @@ export function AgendaClient({
             >
               <ChevronLeft className="h-4 sm:h-4.5 w-4 sm:w-4.5" />
             </button>
-            <button
-              onClick={handleToday}
-              className="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-colors"
-            >
-              Hoje
-            </button>
+
+            {isToday ? (
+              <span className="inline-flex items-center rounded-md bg-emerald-50 px-4.25 py-1.75 text-[12px] font-bold text-emerald-600 ring-1 ring-inset ring-emerald-200">
+                Hoje
+              </span>
+            ) : (
+              <button
+                id="date-nav-today"
+                onClick={goToToday}
+                className="inline-flex items-center rounded-md bg-amber/10 px-4.25 py-1.75 text-[12px] font-bold text-amber-dark ring-1 ring-inset ring-amber/30 transition-all hover:bg-amber/20 cursor-pointer"
+              >
+                Voltar para hoje
+              </button>
+            )}
+
             <button
               onClick={() => navigateDate('next')}
               className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-colors"
@@ -232,10 +254,10 @@ export function AgendaClient({
       </div>
 
       {/* Shared Detail Modal */}
-      <ModalAppointmentDetail
+      <AppointmentModalManager
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        appointment={selectedAppointment}
+        appointment={selectedAppointment as any}
       />
     </div>
   );

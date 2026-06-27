@@ -11,6 +11,7 @@ import {
   FileText,
   Trash2,
   Loader2,
+  Edit2,
 } from "lucide-react";
 import { ModalBarber } from "@/app/(dashboard)/components/modal-barber";
 import {
@@ -42,6 +43,8 @@ interface ModalAppointmentDetailProps {
   isOpen: boolean;
   onClose: () => void;
   appointment: Appointment | null;
+  onEdit?: () => void;
+  isFetchingEdit?: boolean;
 }
 
 const STATUS_OPTIONS: { key: AppointmentStatus; label: string }[] = [
@@ -56,6 +59,8 @@ export function ModalAppointmentDetail({
   isOpen,
   onClose,
   appointment,
+  onEdit,
+  isFetchingEdit = false,
 }: ModalAppointmentDetailProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -235,10 +240,9 @@ export function ModalAppointmentDetail({
                     className={`
                       inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold
                       border transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed
-                      ${
-                        isActive
-                          ? `${cfg.colorLight} ${cfg.textColor} ${cfg.borderColor} ring-1 ring-inset ${cfg.ringColor} shadow-sm`
-                          : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                      ${isActive
+                        ? `${cfg.colorLight} ${cfg.textColor} ${cfg.borderColor} ring-1 ring-inset ${cfg.ringColor} shadow-sm`
+                        : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                       }
                     `}
                   >
@@ -254,14 +258,14 @@ export function ModalAppointmentDetail({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 pb-5 pt-2 border-t border-border mt-1">
-          {/* Remove */}
+        <div className="flex items-center justify-between px-6 py-4 bg-slate-50/50 border-t border-slate-100 mt-2">
+          {/* Delete (Left Side) */}
           <button
             type="button"
             id="btn-delete-appointment"
             disabled={isPending}
             onClick={handleDelete}
-            className="flex items-center gap-1.5 text-sm font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 hover:bg-red-100 px-3 py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -271,16 +275,25 @@ export function ModalAppointmentDetail({
             Remover
           </button>
 
-          {/* Close */}
-          <button
-            type="button"
-            id="btn-close-appointment-detail"
-            disabled={isPending}
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all cursor-pointer disabled:opacity-50"
-          >
-            Fechar
-          </button>
+          {/* Right Actions */}
+          <div className="flex items-center gap-3">
+            {onEdit && (
+              <button
+                type="button"
+                id="btn-edit-appointment"
+                disabled={isPending || isFetchingEdit}
+                onClick={onEdit}
+                className="px-4 py-2 text-sm font-bold text-navy-dark bg-linear-to-r from-amber to-amber-light hover:brightness-110 rounded-lg transition-all flex items-center gap-2 justify-center cursor-pointer shadow-sm disabled:opacity-50"
+              >
+                {isFetchingEdit ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Edit2 className="h-4 w-4" />
+                )}
+                Editar
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </ModalBarber>

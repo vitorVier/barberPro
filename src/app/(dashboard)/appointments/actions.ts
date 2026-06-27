@@ -127,6 +127,99 @@ export async function createAppointmentAction(
   }
 }
 
+export async function updateAppointmentAction(
+  appointmentId: string,
+  data: CreateAppointmentInput
+): Promise<ActionResponse> {
+  try {
+    if (!appointmentId?.trim()) {
+      return { success: false, error: "ID do agendamento inválido." };
+    }
+    if (!data.barberId?.trim()) {
+      return { success: false, error: "Selecione um barbeiro." };
+    }
+    if (!data.clientId?.trim()) {
+      return { success: false, error: "Selecione um cliente." };
+    }
+    if (!data.barberServiceId?.trim()) {
+      return { success: false, error: "Selecione um serviço." };
+    }
+    if (!data.date) {
+      return { success: false, error: "Informe a data do agendamento." };
+    }
+
+    const startTotalMins = data.startHour * 60 + data.startMinute;
+    const endTotalMins = data.endHour * 60 + data.endMinute;
+    if (endTotalMins <= startTotalMins) {
+      return {
+        success: false,
+        error: "O horário de término deve ser posterior ao de início.",
+      };
+    }
+
+    const barberService = await prisma.barberService.findUnique({
+      where: { id: data.barberServiceId },
+    });
+
+    if (!barberService) {
+      return { success: false, error: "Serviço não encontrado." };
+    }
+
+    if (barberService.barberId !== data.barberId) {
+      return {
+        success: false,
+        error: "Este serviço não pertence ao barbeiro selecionado.",
+      };
+    }
+
+    const startsAt = new Date(`${data.date}T00:00:00`);
+    startsAt.setHours(data.startHour, data.startMinute, 0, 0);
+
+    const endsAt = new Date(`${data.date}T00:00:00`);
+    endsAt.setHours(data.endHour, data.endMinute, 0, 0);
+
+    const conflicting = await prisma.appointment.findFirst({
+      where: {
+        id: { not: appointmentId },
+        barberId: data.barberId,
+        status: { notIn: ["CANCELLED"] },
+        startsAt: { lt: endsAt },
+        endsAt: { gt: startsAt },
+      },
+    });
+
+    if (conflicting) {
+      return {
+        success: false,
+        error: "Já existe um agendamento nesse horário para este barbeiro.",
+      };
+    }
+
+    await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        barberId: data.barberId,
+        clientId: data.clientId,
+        barberServiceId: data.barberServiceId,
+        startsAt,
+        endsAt,
+        notes: data.notes?.trim() || null,
+      },
+    });
+
+    revalidatePath("/appointments");
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (error: unknown) {
+    console.error("Error updating appointment:", error);
+    return {
+      success: false,
+      error: "Erro interno ao atualizar o agendamento. Tente novamente.",
+    };
+  }
+}
+
 export type AppointmentStatus =
   | "SCHEDULED"
   | "CONFIRMED"
@@ -180,6 +273,39 @@ export async function deleteAppointmentAction(
     return {
       success: false,
       error: "Erro interno ao remover o agendamento. Tente novamente.",
+    };
+  }
+}
+
+export async function getAppointmentFormDataAction() {
+  try {
+    const { getActiveBarbers, getAllClients, getAllBarberServices } = await import("@/lib/appointments");
+    const [barbers, clients, allServices] = await Promise.all([
+      getActiveBarbers(),
+      getAllClients(),
+      getAllBarberServices(),
+    ]);
+
+    // Serialize services to avoid Date objects in Client Components
+    const serializedServices = allServices.map((s) => ({
+      ...s,
+      price: Number(s.price),
+      createdAt: s.createdAt.toISOString(),
+    }));
+
+    return {
+      success: true,
+      data: {
+        barbers,
+        clients,
+        barberServices: serializedServices,
+      },
+    };
+  } catch (error: unknown) {
+    console.error("Error fetching form data:", error);
+    return {
+      success: false,
+      error: "Erro ao carregar os dados para edição.",
     };
   }
 }

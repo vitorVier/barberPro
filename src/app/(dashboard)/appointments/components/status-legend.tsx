@@ -19,10 +19,10 @@ export const STATUS_CONFIG = {
   },
   COMPLETED: {
     label: "Concluído",
-    color: "bg-slate-400",
+    color: "bg-teal-400",
     colorLight: "bg-slate-50",
-    textColor: "text-slate-600",
-    borderColor: "border-slate-200",
+    textColor: "text-teal-700",
+    borderColor: "border-teal-400",
     ringColor: "ring-slate-400/20",
     bgAccent: "bg-slate-400/8",
   },

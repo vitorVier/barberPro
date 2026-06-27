@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
 import { ModalAppointmentDetail } from "@/app/(dashboard)/appointments/components/modal-appointment-detail";
+import { AppointmentModalManager } from "../appointments/components/appointment-modal-manager";
 
 interface Appointment {
   id: string;
@@ -93,7 +94,7 @@ export function TodayAgenda({ appointments }: TodayAgendaProps) {
               className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/50 cursor-pointer"
             >
               {/* Time */}
-              <span className="w-12 shrink-0 text-sm font-semibold text-muted-foreground tabular-nums">
+              <span className="w-12 shrink-0 text-sm font-semibold  tabular-nums">
                 {time}
               </span>
 
@@ -119,10 +120,11 @@ export function TodayAgenda({ appointments }: TodayAgendaProps) {
         })}
       </div>
 
-      <ModalAppointmentDetail
+      {/* Shared Detail Modal */}
+      <AppointmentModalManager
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        appointment={selectedAppointment}
+        appointment={selectedAppointment as any}
       />
     </>
   );

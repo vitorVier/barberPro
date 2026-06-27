@@ -37,7 +37,7 @@ export function ModalBarber({
             type="button"
             onClick={onClose}
             disabled={disabled}
-            className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer disabled:opacity-50"
+            className="text-slate-500 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-100 transition-colors cursor-pointer disabled:opacity-50"
           >
             <X className="h-5 w-5" />
           </button>

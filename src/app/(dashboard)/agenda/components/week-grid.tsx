@@ -29,8 +29,8 @@ export function WeekGrid({
   startDate,
   appointments,
   onAppointmentClick,
-  startHour = 8,
-  endHour = 20,
+  startHour = 7,
+  endHour = 23,
 }: WeekGridProps) {
   // Generate days of the week
   const days = useMemo(() => {
@@ -100,7 +100,7 @@ export function WeekGrid({
       <div className="flex-1 overflow-x-auto overflow-y-hidden flex flex-col custom-scrollbar">
 
         {/* Header (Days) */}
-        <div className="flex border-b border-slate-100 bg-white shrink-0 pl-16 min-w-[840px]">
+        <div className="flex border-b border-slate-100 bg-white shrink-0 pl-16 min-w-210">
           {days.map((day, i) => {
             const today = isToday(day);
             return (
@@ -118,7 +118,7 @@ export function WeekGrid({
         </div>
 
         {/* Grid Body */}
-        <div className="flex flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 relative min-w-[840px]">
+        <div className="flex flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 relative min-w-210">
 
           {/* Time Labels Column */}
           <div className="w-16 shrink-0 bg-white border-r border-slate-100 sticky left-0 z-20">
@@ -175,28 +175,99 @@ export function WeekGrid({
               return (
                 <div key={i} className="flex-1 relative border-l border-slate-100 first:border-l-0">
                   <div className="relative w-full h-full mt-4 mb-4">
-                    {dayAppointments.map(appt => {
+                    {dayAppointments.map((appt) => {
                       const style = getBlockStyle(appt);
-                      const statusKey = appt.status as keyof typeof STATUS_CONFIG;
-                      const statusCfg = STATUS_CONFIG[statusKey] ?? STATUS_CONFIG.SCHEDULED;
 
-                      const startTime = new Date(appt.startsAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+                      const height = parseFloat(style.height);
+
+                      const veryCompact = height < 30;
+                      const compact = height < 46;
+                      const showService = height >= 30;
+
+                      const statusKey = appt.status as keyof typeof STATUS_CONFIG;
+                      const statusCfg =
+                        STATUS_CONFIG[statusKey] ?? STATUS_CONFIG.SCHEDULED;
+
+                      const startTime = new Date(appt.startsAt).toLocaleTimeString(
+                        "pt-BR",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      );
 
                       return (
                         <button
                           key={appt.id}
                           onClick={() => onAppointmentClick(appt.id)}
-                          className={`
-                          absolute left-1 right-1 rounded-md text-left transition-all duration-200 cursor-pointer overflow-hidden p-1.5
-                          ${statusCfg.colorLight} ${statusCfg.textColor} border-l-[3px] ${statusCfg.borderColor} 
-                          hover:shadow-md hover:brightness-95 hover:z-10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]
-                        `}
                           style={style}
+                          className={`
+                            absolute left-1 right-1 rounded-md
+                            text-left overflow-hidden
+                            transition-all duration-200
+                            cursor-pointer
+
+                            ${compact ? "p-1" : "p-1.5"}
+
+                            ${statusCfg.colorLight}
+                            ${statusCfg.textColor}
+                            border-l-[3px]
+                            ${statusCfg.borderColor}
+
+                            hover:shadow-md
+                            hover:brightness-95
+                            hover:z-10
+
+                            shadow-[0_1px_2px_rgba(0,0,0,0.05)]
+                          `}
                         >
-                          <div className="w-full h-full flex flex-col justify-start">
-                            <p className="text-[11px] font-semibold truncate leading-tight">{appt.client.name}</p>
-                            <p className="text-[10px] opacity-80 truncate leading-tight mt-0.5">{appt.barberService.service.name}</p>
-                            <p className="text-[9px] font-medium opacity-70 mt-auto">{startTime}</p>
+                          <div
+                            className={`
+                              flex h-full overflow-hidden
+
+                              ${veryCompact
+                                ? "flex-row items-center gap-1 whitespace-nowrap"
+                                : "flex-col justify-center"
+                              }
+                            `}
+                          >
+                            <p
+                              className={`
+                                font-semibold
+                                leading-tight
+                                truncate
+                                whitespace-nowrap
+
+                                ${veryCompact ? "text-[10px]" : compact ? "text-[11px]" : "text-[12px]"}
+                              `}
+                            >
+                              {appt.client.name}
+                            </p>
+
+                            <p
+                              className={`
+                                truncate
+                                whitespace-nowrap
+                                opacity-75
+                                leading-tight
+
+                                ${veryCompact ? "text-[10px]" : compact ? "text-[9px]" : "text-[10px]"}
+                              `}
+                            >
+                              {veryCompact ? (
+                                <>- {startTime}</>
+                              ) : (
+                                <>
+                                  {showService && (
+                                    <>
+                                      {appt.barberService.service.name}
+                                      {" • "}
+                                    </>
+                                  )}
+                                  {startTime}
+                                </>
+                              )}
+                            </p>
                           </div>
                         </button>
                       );
@@ -206,7 +277,6 @@ export function WeekGrid({
               );
             })}
           </div>
-
         </div>
       </div>
     </div>

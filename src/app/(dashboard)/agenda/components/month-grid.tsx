@@ -111,7 +111,7 @@ export function MonthGrid({
             <div 
               key={i} 
               onClick={() => onDayClick?.(day)}
-              className={`bg-white min-h-[100px] p-1 flex flex-col transition-colors hover:bg-slate-50/50 cursor-pointer ${!currentMonth ? 'opacity-50' : ''}`}
+              className={`bg-white min-h-25 p-1 flex flex-col transition-colors hover:bg-slate-50/50 cursor-pointer ${!currentMonth ? 'opacity-50' : ''}`}
             >
               <div className="flex items-center justify-center mb-1">
                 <div className={`w-6 h-6 flex items-center justify-center rounded-full text-[11px] font-bold ${
