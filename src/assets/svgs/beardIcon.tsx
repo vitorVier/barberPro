@@ -1,5 +1,3 @@
-import { IconProps } from "../../utils/types";
-
 export function HaircutIcon({
   className,
 }: {

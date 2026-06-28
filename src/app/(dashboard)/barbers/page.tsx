@@ -9,7 +9,11 @@ async function getBarbers() {
       _count: {
         select: {
           barberService: true,
-          appointments: true,
+          appointments: {
+            where: {
+              status: { notIn: ['COMPLETED', 'NO_SHOW', 'CANCELLED']},
+            }
+          }
         },
       },
     },
