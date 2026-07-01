@@ -1,4 +1,4 @@
-import { LayoutDashboard, DollarSign } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -43,6 +43,16 @@ export default async function DashboardPage() {
   });
 
   const serializedTodayAppointments = todayAppointments.map((appointment) => ({
+    ...appointment,
+    startsAt: appointment.startsAt.toISOString(),
+    endsAt: appointment.endsAt.toISOString(),
+    barberService: {
+      ...appointment.barberService,
+      price: Number(appointment.barberService.price),
+    },
+  }));
+
+  const serializedRecentAppointments = recentAppointments.map((appointment) => ({
     ...appointment,
     startsAt: appointment.startsAt.toISOString(),
     endsAt: appointment.endsAt.toISOString(),
@@ -112,7 +122,7 @@ export default async function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RecentAppointments appointments={recentAppointments} />
+            <RecentAppointments appointments={serializedRecentAppointments} />
           </CardContent>
         </Card>
       </div>

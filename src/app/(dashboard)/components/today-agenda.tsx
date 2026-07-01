@@ -5,20 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
 import { AppointmentModalManager } from "../appointments/components/appointment-modal-manager";
 
-interface Appointment {
-  id: string;
-  startsAt: string;
-  endsAt: string;
-  status: string;
-  notes: string | null;
-  client: { id: string; name: string; phone: string | null };
-  barber: { id: string; name: string; avatarUrl: string | null };
-  barberService: {
-    price: unknown;
-    durationMinutes: number;
-    service: { name: string };
-  };
-}
+import { Appointment } from "@/utils/types";
 
 const statusConfig: Record<string, { label: string; className: string }> = {
   CONFIRMED: {

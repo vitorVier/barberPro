@@ -9,20 +9,7 @@ import {
 } from "./status-legend";
 import { AppointmentModalManager } from "./appointment-modal-manager";
 
-interface Appointment {
-  id: string;
-  startsAt: string;
-  endsAt: string;
-  status: string;
-  notes: string | null;
-  barber: { id: string; name: string; avatarUrl: string | null };
-  client: { id: string; name: string; phone: string | null };
-  barberService: {
-    price: unknown;
-    durationMinutes: number;
-    service: { name: string };
-  };
-}
+import { Appointment } from "@/utils/types";
 
 interface TimelineGridProps {
   appointments: Appointment[];

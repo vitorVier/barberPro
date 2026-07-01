@@ -5,20 +5,7 @@ import { ModalAppointmentDetail } from "./modal-appointment-detail";
 import { ModalNewAppointment } from "./modal-new-appointment";
 import { getAppointmentFormDataAction } from "../actions";
 
-interface Appointment {
-  id: string;
-  startsAt: string | Date;
-  endsAt: string | Date;
-  status: string;
-  notes: string | null;
-  barber: { id: string; name: string; avatarUrl: string | null };
-  client: { id: string; name: string; phone: string | null };
-  barberService: {
-    price: unknown;
-    durationMinutes: number;
-    service: { name: string };
-  };
-}
+import { Appointment } from "@/utils/types";
 
 interface AppointmentModalManagerProps {
   isOpen: boolean;

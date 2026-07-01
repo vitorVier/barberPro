@@ -3,16 +3,7 @@
 import { useMemo } from "react";
 import { STATUS_CONFIG } from "@/app/(dashboard)/appointments/components/status-legend";
 
-interface Appointment {
-  id: string;
-  startsAt: string;
-  endsAt: string;
-  status: string;
-  client: { name: string };
-  barberService: {
-    service: { name: string };
-  };
-}
+import { Appointment } from "@/utils/types";
 
 interface WeekGridProps {
   startDate: Date; // Sunday
