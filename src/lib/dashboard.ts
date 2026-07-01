@@ -155,18 +155,37 @@ export async function getLast7DaysAppointments() {
   return days.map((d, i) => ({ day: d.label, count: counts[i] }));
 }
 
-export async function getRecentAppointments(limit = 5) {
+export async function getRecentAppointments(limit = 10) {
   return prisma.appointment.findMany({
     include: {
-      barber: { select: { name: true } },
-      client: { select: { name: true } },
+      barber: {
+        select: {
+          name: true,
+        },
+      },
+
+      client: {
+        select: {
+          name: true,
+        },
+      },
+
       barberService: {
         include: {
-          service: { select: { name: true } },
+          service: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
     },
-    orderBy: { startsAt: "desc" },
+
+    // Últimos agendamentos criados
+    orderBy: {
+      createdAt: "desc",
+    },
+
     take: limit,
   });
 }

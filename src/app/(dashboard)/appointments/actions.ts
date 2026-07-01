@@ -305,3 +305,110 @@ export async function getAppointmentFormDataAction() {
     };
   }
 }
+
+export type RecentPeriod =
+  | "this_week"
+  | "last_week"
+  | "last_7_days"
+  | "last_3_days"
+  | "today"
+  | "yesterday";
+
+function getDateRangeForPeriod(period: RecentPeriod): { start: Date; end: Date } {
+  const now = new Date();
+
+  function startOfDay(d: Date) {
+    const c = new Date(d);
+    c.setHours(0, 0, 0, 0);
+    return c;
+  }
+  function endOfDay(d: Date) {
+    const c = new Date(d);
+    c.setHours(23, 59, 59, 999);
+    return c;
+  }
+
+  switch (period) {
+    case "today":
+      return { start: startOfDay(now), end: endOfDay(now) };
+
+    case "yesterday": {
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      return { start: startOfDay(yesterday), end: endOfDay(yesterday) };
+    }
+
+    case "last_3_days": {
+      const d = new Date(now);
+      d.setDate(now.getDate() - 2);
+      return { start: startOfDay(d), end: endOfDay(now) };
+    }
+
+    case "last_7_days": {
+      const d = new Date(now);
+      d.setDate(now.getDate() - 6);
+      return { start: startOfDay(d), end: endOfDay(now) };
+    }
+
+    case "this_week": {
+      const day = now.getDay(); // 0 = Sunday
+      const monday = new Date(now);
+      monday.setDate(now.getDate() - ((day + 6) % 7));
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      return { start: startOfDay(monday), end: endOfDay(sunday) };
+    }
+
+    case "last_week": {
+      const day = now.getDay();
+      const thisMonday = new Date(now);
+      thisMonday.setDate(now.getDate() - ((day + 6) % 7));
+      const lastMonday = new Date(thisMonday);
+      lastMonday.setDate(thisMonday.getDate() - 7);
+      const lastSunday = new Date(thisMonday);
+      lastSunday.setDate(thisMonday.getDate() - 1);
+      return { start: startOfDay(lastMonday), end: endOfDay(lastSunday) };
+    }
+  }
+}
+
+export async function getRecentAppointmentsByPeriodAction(period: RecentPeriod) {
+  try {
+    const { start, end } = getDateRangeForPeriod(period);
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        startsAt: { gte: start, lte: end },
+      },
+      include: {
+        barber: { select: { name: true } },
+        client: { select: { name: true } },
+        barberService: {
+          include: {
+            service: { select: { name: true } },
+          },
+        },
+      },
+      orderBy: { startsAt: "desc" },
+    });
+
+    const serialized = appointments.map((a) => ({
+      ...a,
+      startsAt: a.startsAt.toISOString(),
+      endsAt: a.endsAt.toISOString(),
+      createdAt: a.createdAt.toISOString(),
+      updatedAt: a.updatedAt.toISOString(),
+      barberService: {
+        ...a.barberService,
+        price: Number(a.barberService.price),
+        createdAt: a.barberService.createdAt.toISOString(),
+        service: a.barberService.service,
+      },
+    }));
+
+    return { success: true, data: serialized };
+  } catch (error: unknown) {
+    console.error("Error fetching appointments by period:", error);
+    return { success: false, error: "Erro ao carregar os agendamentos." };
+  }
+}
