@@ -4,12 +4,10 @@ import React, { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Scissors,
-  Plus,
   ToggleLeft,
   ToggleRight,
   Pencil,
   Trash2,
-  Loader2,
   Mail,
   Phone,
   User,
@@ -18,7 +16,6 @@ import {
   Search,
   CalendarDays,
 } from "lucide-react";
-import Link from "next/link";
 import {
   createBarberAction,
   deleteBarberAction,

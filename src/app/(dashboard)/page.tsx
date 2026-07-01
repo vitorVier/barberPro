@@ -4,8 +4,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardAction,
 } from "@/components/ui/card";
 
 import { Header } from "@/app/(dashboard)/components/topbar";
@@ -22,14 +20,16 @@ import { StatsCards } from "./components/stats-cards";
 import { AppointmentsChart } from "./components/appointments-chart";
 import { TodayAgenda } from "./components/today-agenda";
 import { RecentAppointments } from "./components/recent-appointments";
+import { getAppointmentsByDate } from "@/lib/appointments";
 
 export default async function DashboardPage() {
   // Fetch all data in parallel
-  const [barberStats, totalClients, todayStats, chartData, recentAppointments] =
+  const [barberStats, totalClients, todayStats, todayAppointments, chartData, recentAppointments] =
     await Promise.all([
       getBarberStats(),
       getClientsCount(),
       getTodayStats(),
+      getAppointmentsByDate(new Date()),
       getLast7DaysAppointments(),
       getRecentAppointments(5),
     ]);
@@ -41,6 +41,16 @@ export default async function DashboardPage() {
     month: "long",
     year: "numeric",
   });
+
+  const serializedTodayAppointments = todayAppointments.map((appointment) => ({
+    ...appointment,
+    startsAt: appointment.startsAt.toISOString(),
+    endsAt: appointment.endsAt.toISOString(),
+    barberService: {
+      ...appointment.barberService,
+      price: Number(appointment.barberService.price),
+    },
+  }));
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -89,7 +99,7 @@ export default async function DashboardPage() {
             </CardHeader>
 
             <CardContent className="p-0 flex-1 overflow-hidden">
-              <TodayAgenda appointments={todayStats.appointments} />
+              <TodayAgenda appointments={serializedTodayAppointments} />
             </CardContent>
           </Card>
         </div>

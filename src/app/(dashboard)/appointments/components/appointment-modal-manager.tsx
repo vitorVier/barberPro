@@ -4,7 +4,6 @@ import { useState, useTransition, useEffect } from "react";
 import { ModalAppointmentDetail } from "./modal-appointment-detail";
 import { ModalNewAppointment } from "./modal-new-appointment";
 import { getAppointmentFormDataAction } from "../actions";
-import { Loader2 } from "lucide-react";
 
 interface Appointment {
   id: string;

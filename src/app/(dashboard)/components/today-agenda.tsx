@@ -3,13 +3,12 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
-import { ModalAppointmentDetail } from "@/app/(dashboard)/appointments/components/modal-appointment-detail";
 import { AppointmentModalManager } from "../appointments/components/appointment-modal-manager";
 
 interface Appointment {
   id: string;
-  startsAt: Date;
-  endsAt: Date;
+  startsAt: string;
+  endsAt: string;
   status: string;
   notes: string | null;
   client: { id: string; name: string; phone: string | null };
@@ -64,8 +63,8 @@ export function TodayAgenda({ appointments }: TodayAgendaProps) {
   const handleOpenModal = (appointment: Appointment) => {
     setSelectedAppointment({
       ...appointment,
-      startsAt: appointment.startsAt.toISOString(),
-      endsAt: appointment.endsAt.toISOString(),
+      startsAt: appointment.startsAt,
+      endsAt: appointment.endsAt,
     });
     setIsModalOpen(true);
   };

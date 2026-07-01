@@ -9,9 +9,7 @@ interface ServiceImageIconProps {
   className?: string;
 }
 
-export function HairIcon({
-  className,
-}: ServiceImageIconProps) {
+export function HairIcon({}: ServiceImageIconProps) {
   return (
     <Image
       src={hair}
@@ -22,9 +20,7 @@ export function HairIcon({
   );
 }
 
-export function BeardIcon({
-  className,
-}: ServiceImageIconProps) {
+export function BeardIcon({}: ServiceImageIconProps) {
   return (
     <Image
       src={beard}
@@ -35,9 +31,7 @@ export function BeardIcon({
   );
 }
 
-export function HaircutBeardIcon({
-  className,
-}: ServiceImageIconProps) {
+export function HaircutBeardIcon({}: ServiceImageIconProps) {
   return (
     <Image
       src={haircutBeard}
@@ -48,9 +42,7 @@ export function HaircutBeardIcon({
   );
 }
 
-export function EyebrowIcon({
-  className,
-}: ServiceImageIconProps) {
+export function EyebrowIcon({}: ServiceImageIconProps) {
   return (
     <Image
       src={eyeBrow}
@@ -61,9 +53,7 @@ export function EyebrowIcon({
   );
 }
 
-export function hairTreatmentIcon({
-  className,
-}: ServiceImageIconProps) {
+export function hairTreatmentIcon({}: ServiceImageIconProps) {
   return (
     <Image
       src={hairTreatment}

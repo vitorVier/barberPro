@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useTransition } from "react";
-import { Scissors, X, Plus, Pencil, Trash2, Clock, DollarSign, Save } from "lucide-react";
+import { Scissors, X, Plus, Pencil, Trash2, Clock, DollarSign } from "lucide-react";
 import {
   getBarberServicesAction,
   getAvailableServicesAction,
