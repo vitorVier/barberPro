@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "recharts";
 
-interface AppointmentsChartProps {
+export interface AppointmentsChartProps {
   data: { day: string; count: number }[];
 }
 

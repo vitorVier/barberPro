@@ -1,4 +1,5 @@
 "use client"
+import { formatCurrency } from "@/utils/formaters";
 import {
   Table,
   TableHeader,
@@ -28,22 +29,20 @@ export function RecentAppointments({
   function handleOpenModal(appointment: Appointment) {
     setSelectedAppointment({
       ...appointment,
-
-      startsAt: new Date(
-        appointment.startsAt
-      ).toISOString(),
-
-      endsAt: new Date(
-        appointment.endsAt
-      ).toISOString(),
-
-      barberService:{
+      startsAt: new Date(appointment.startsAt).toISOString(),
+      endsAt: new Date(appointment.endsAt).toISOString(),
+      barberService: {
         ...appointment.barberService,
-        price:Number(appointment.barberService.price)
+        price: Number(appointment.barberService.price)
       }
-
     });
     setIsModalOpen(true);
+  }
+
+  function handleStatusChange(_id: string, newStatus: string) {
+    setSelectedAppointment((prev: any) =>
+      prev ? { ...prev, status: newStatus } : prev
+    );
   }
 
   if (appointments.length === 0) {
@@ -110,7 +109,7 @@ export function RecentAppointments({
               <TableRow
                 key={appointment.id}
                 onClick={() => handleOpenModal(appointment)}
-                className="border-b border-border/40 hover:bg-slate-50 hover:shadow-soft transition-all duration-200 group"
+                className="border-b border-border/40 hover:bg-slate-50 hover:shadow-soft transition-all duration-200 group cursor-pointer"
               >
                 <TableCell className="py-2.5">
                   <div>
@@ -132,7 +131,7 @@ export function RecentAppointments({
                   {appointment.barberService.service.name}
                 </TableCell>
                 <TableCell className="py-2.5 text-[13px] font-semibold text-foreground">
-                  R$ {price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  {formatCurrency(price)}
                 </TableCell>
                 <TableCell className="py-2.5">
                   <Badge
@@ -156,6 +155,7 @@ export function RecentAppointments({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         appointment={selectedAppointment as any}
+        onStatusChange={handleStatusChange}
       />
     </>
   )

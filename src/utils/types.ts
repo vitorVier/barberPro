@@ -9,6 +9,9 @@ export interface Appointment {
   endsAt: string | Date;
   status: string;
   notes?: string | null;
+  barberId?: string;
+  clientId?: string;
+  barberServiceId?: string;
   client: { 
     id?: string;
     name: string; 
@@ -25,3 +28,31 @@ export interface Appointment {
     service: { name: string };
   };
 }
+
+export interface Barber {
+  id: string;
+  name: string;
+  avatarUrl?: string | null;
+}
+
+export interface ClientBasic {
+  id: string;
+  name: string;
+  phone?: string | null;
+}
+
+export interface BarberServiceBasic {
+  id: string;
+  price: number;
+  durationMinutes: number;
+  barberId: string;
+  service: {
+    id: string;
+    name: string;
+  };
+}
+
+export type ActionResponse = {
+  success: boolean;
+  error?: string;
+};

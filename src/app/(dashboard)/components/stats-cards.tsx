@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/utils/formaters";
 import {
   Card,
   CardContent,
@@ -111,10 +112,7 @@ export function StatsCards({
 
         <CardContent className="relative z-10">
           <p className="text-[28px] font-bold tracking-tight text-white leading-none">
-            R${" "}
-            {estimatedRevenue.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-            })}
+            {formatCurrency(estimatedRevenue)}
           </p>
 
           <CardDescription className="mt-1 text-xs text-white/75">

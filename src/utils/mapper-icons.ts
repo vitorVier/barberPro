@@ -1,7 +1,6 @@
 import { BeardIcon, EyebrowIcon, HaircutBeardIcon, HairIcon, hairTreatmentIcon } from "@/components/icons";
 import {
   TbVip,
-  TbBottle,
   TbPalette,
   TbDots
 } from "react-icons/tb";

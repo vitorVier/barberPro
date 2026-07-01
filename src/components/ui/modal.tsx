@@ -11,7 +11,7 @@ interface ModalProps {
   maxWidthClass?: string;
 }
 
-export function ModalBarber({
+export function Modal({
   isOpen,
   onClose,
   title,

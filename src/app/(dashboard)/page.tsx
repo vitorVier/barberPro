@@ -21,6 +21,7 @@ import { AppointmentsChart } from "./components/appointments-chart";
 import { TodayAgenda } from "./components/today-agenda";
 import { RecentAppointments } from "./components/recent-appointments";
 import { getAppointmentsByDate } from "@/lib/appointments";
+import { serializeAppointment } from "@/utils/serializers";
 
 export default async function DashboardPage() {
   // Fetch all data in parallel
@@ -42,25 +43,8 @@ export default async function DashboardPage() {
     year: "numeric",
   });
 
-  const serializedTodayAppointments = todayAppointments.map((appointment) => ({
-    ...appointment,
-    startsAt: appointment.startsAt.toISOString(),
-    endsAt: appointment.endsAt.toISOString(),
-    barberService: {
-      ...appointment.barberService,
-      price: Number(appointment.barberService.price),
-    },
-  }));
-
-  const serializedRecentAppointments = recentAppointments.map((appointment) => ({
-    ...appointment,
-    startsAt: appointment.startsAt.toISOString(),
-    endsAt: appointment.endsAt.toISOString(),
-    barberService: {
-      ...appointment.barberService,
-      price: Number(appointment.barberService.price),
-    },
-  }));
+  const serializedTodayAppointments = todayAppointments.map(serializeAppointment);
+  const serializedRecentAppointments = recentAppointments.map(serializeAppointment);
 
   return (
     <div className="flex flex-col min-h-screen">

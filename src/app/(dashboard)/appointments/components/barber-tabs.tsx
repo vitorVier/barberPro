@@ -3,11 +3,7 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback } from "react";
 
-interface Barber {
-  id: string;
-  name: string;
-  avatarUrl: string | null;
-}
+import { Barber } from "@/utils/types";
 
 interface BarberTabsProps {
   barbers: Barber[];

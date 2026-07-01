@@ -9,12 +9,7 @@ import { MonthGrid } from "./month-grid";
 import { AppointmentModalManager } from "@/app/(dashboard)/appointments/components/appointment-modal-manager";
 import { BarberTabs } from "@/app/(dashboard)/appointments/components/barber-tabs";
 
-interface Barber {
-  id: string;
-  name: string;
-}
-
-import { Appointment } from "@/utils/types";
+import { Appointment, Barber } from "@/utils/types";
 
 interface AgendaClientProps {
   barbers: Barber[];

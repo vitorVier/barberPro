@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { ModalNewAppointment } from "./modal-new-appointment";
 import { ActionButton } from "@/components/ui/action-button";
+import { Barber, ClientBasic, BarberServiceBasic } from "@/utils/types";
 
 interface NewAppointmentWrapperProps {
-  barbers: any[];
-  clients: any[];
-  barberServices: any[];
+  barbers: Barber[];
+  clients: ClientBasic[];
+  barberServices: BarberServiceBasic[];
   currentDate: string;
   currentBarberId?: string;
 }

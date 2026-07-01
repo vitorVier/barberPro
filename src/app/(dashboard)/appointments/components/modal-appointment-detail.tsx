@@ -1,5 +1,6 @@
 "use client";
 
+import { formatCurrency } from "@/utils/formaters";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -13,7 +14,7 @@ import {
   Loader2,
   Edit2,
 } from "lucide-react";
-import { ModalBarber } from "@/app/(dashboard)/components/modal-barber";
+import { Modal } from "@/components/ui/modal";
 import {
   updateAppointmentStatusAction,
   deleteAppointmentAction,
@@ -32,6 +33,7 @@ interface ModalAppointmentDetailProps {
   appointment: Appointment | null;
   onEdit?: () => void;
   isFetchingEdit?: boolean;
+  onStatusChange?: (id: string, newStatus: string) => void;
 }
 
 const STATUS_OPTIONS: { key: AppointmentStatus; label: string }[] = [
@@ -48,6 +50,7 @@ export function ModalAppointmentDetail({
   appointment,
   onEdit,
   isFetchingEdit = false,
+  onStatusChange,
 }: ModalAppointmentDetailProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -91,6 +94,7 @@ export function ModalAppointmentDetail({
     startTransition(async () => {
       const res = await updateAppointmentStatusAction(appt.id, newStatus);
       if (res.success) {
+        onStatusChange?.(appt.id, newStatus);
         router.refresh();
       } else {
         setError(res.error || "Erro ao atualizar o status.");
@@ -117,7 +121,7 @@ export function ModalAppointmentDetail({
   }
 
   return (
-    <ModalBarber
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
       title="Detalhe do Agendamento"
@@ -185,10 +189,7 @@ export function ModalAppointmentDetail({
           <DetailRow
             icon={DollarSign}
             label="Valor"
-            value={`R$ ${Number(appt.barberService.price).toLocaleString(
-              "pt-BR",
-              { minimumFractionDigits: 2 }
-            )}`}
+            value={formatCurrency(appt.barberService.price)}
           />
 
           {/* Notes */}
@@ -283,7 +284,7 @@ export function ModalAppointmentDetail({
           </div>
         </div>
       </div>
-    </ModalBarber>
+    </Modal>
   );
 }
 

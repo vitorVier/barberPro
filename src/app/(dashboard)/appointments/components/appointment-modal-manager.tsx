@@ -11,12 +11,14 @@ interface AppointmentModalManagerProps {
   isOpen: boolean;
   onClose: () => void;
   appointment: Appointment | null;
+  onStatusChange?: (id: string, newStatus: string) => void;
 }
 
 export function AppointmentModalManager({
   isOpen,
   onClose,
   appointment,
+  onStatusChange,
 }: AppointmentModalManagerProps) {
   const [mode, setMode] = useState<"detail" | "edit">("detail");
   const [isPending, startTransition] = useTransition();
@@ -68,6 +70,7 @@ export function AppointmentModalManager({
         appointment={appointment as any}
         onEdit={handleEditClick}
         isFetchingEdit={isPending}
+        onStatusChange={onStatusChange}
       />
 
       {/* Edit Modal */}

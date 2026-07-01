@@ -22,8 +22,8 @@ import {
   setBarberStatusAction,
   updateBarberAction
 } from "../actions";
-import { FormInput } from "../../components/input";
-import { ModalBarber } from "../../components/modal-barber";
+import { FormInput } from "@/components/ui/form-input";
+import { Modal } from "@/components/ui/modal";
 import { ModalBarberServices } from "./modal-barber-services";
 import { formatPhone } from "@/utils/formaters";
 import { ActionButton } from "@/components/ui/action-button";
@@ -385,7 +385,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
       )}
 
       {/* Modal Dinâmico (Criação / Edição) */}
-      <ModalBarber
+      <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={modalTitle}
@@ -513,7 +513,7 @@ export function BarbersClient({ initialBarbers }: BarbersClientProps) {
             cancelLabel="Cancelar"
           />
         </form>
-      </ModalBarber>
+      </Modal>
 
       {/* Modal de Serviços do Barbeiro */}
       <ModalBarberServices

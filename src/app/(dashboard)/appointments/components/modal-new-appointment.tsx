@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
-import { ModalBarber } from "@/app/(dashboard)/components/modal-barber";
+import { formatCurrency } from "@/utils/formaters";
+import { useState, useTransition, useEffect, useMemo } from "react";
+import { Modal } from "@/components/ui/modal";
 import { createAppointmentAction } from "../actions";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -16,16 +17,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Clock } from "lucide-react";
+import { Barber, ClientBasic, BarberServiceBasic, Appointment } from "@/utils/types";
 
 interface ModalNewAppointmentProps {
   isOpen: boolean;
   onClose: () => void;
-  barbers: any[];
-  clients: any[];
-  barberServices: any[];
+  barbers: Barber[];
+  clients: ClientBasic[];
+  barberServices: BarberServiceBasic[];
   defaultDate?: string;
   defaultBarberId?: string;
-  appointmentToEdit?: any;
+  appointmentToEdit?: Appointment;
 }
 
 // ─── helpers ────────────────────────────────────────────────
@@ -103,9 +105,9 @@ export function ModalNewAppointment({
   useEffect(() => {
     if (isOpen) {
       if (appointmentToEdit) {
-        setBarberId(appointmentToEdit.barberId || appointmentToEdit.barber.id);
-        setClientId(appointmentToEdit.clientId || appointmentToEdit.client.id);
-        setServiceId(appointmentToEdit.barberServiceId);
+        setBarberId(appointmentToEdit.barberId || appointmentToEdit.barber?.id || "");
+        setClientId(appointmentToEdit.clientId || appointmentToEdit.client?.id || "");
+        setServiceId(appointmentToEdit.barberServiceId || "");
         setNotes(appointmentToEdit.notes || "");
         
         const start = new Date(appointmentToEdit.startsAt);
@@ -282,7 +284,7 @@ export function ModalNewAppointment({
   };
 
   return (
-    <ModalBarber
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
       title={appointmentToEdit ? "Editar Agendamento" : "Novo Agendamento"}
@@ -353,9 +355,7 @@ export function ModalNewAppointment({
               id="service"
               options={availableServices.map((bs) => ({
                 id: bs.id,
-                label: `${bs.service.name} (R$ ${Number(bs.price).toLocaleString("pt-BR", {
-                  minimumFractionDigits: 2,
-                })})`,
+                label: `${bs.service.name} (${formatCurrency(bs.price)})`,
                 value: bs.service.name,
               }))}
               value={serviceId}
@@ -512,6 +512,6 @@ export function ModalNewAppointment({
           className="px-6 pb-4 bg-transparent border-t-0 mt-0"
         />
       </form>
-    </ModalBarber>
+    </Modal>
   );
 }

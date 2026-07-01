@@ -16,9 +16,7 @@ const AppointmentsChartInner = dynamic(
   }
 );
 
-interface AppointmentsChartProps {
-  data: { day: string; count: number }[];
-}
+import { AppointmentsChartProps } from "./appointments-chart-inner";
 
 export function AppointmentsChart({ data }: AppointmentsChartProps) {
   return <AppointmentsChartInner data={data} />;

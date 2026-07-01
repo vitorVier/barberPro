@@ -16,8 +16,8 @@ import {
   deleteCustomerAction,
   updateCustomerAction,
 } from "../actions";
-import { FormInput } from "../../components/input";
-import { ModalBarber } from "../../components/modal-barber";
+import { FormInput } from "@/components/ui/form-input";
+import { Modal } from "@/components/ui/modal";
 import { formatDate, formatPhone } from "@/utils/formaters";
 import { ActionButton } from "@/components/ui/action-button";
 import { ModalFooter } from "@/components/ui/modal-footer";
@@ -319,7 +319,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
       </div>
 
       {/* Modal (Create / Edit) */}
-      <ModalBarber
+      <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={modalTitle}
@@ -385,7 +385,7 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
             cancelLabel="Cancelar"
           />
         </form>
-      </ModalBarber>
+      </Modal>
     </main>
   );
 }

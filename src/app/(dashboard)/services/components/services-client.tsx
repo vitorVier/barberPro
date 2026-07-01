@@ -20,8 +20,8 @@ import {
   updateServiceAction,
   setServiceStatusAction,
 } from "../actions";
-import { FormInput } from "../../components/input";
-import { ModalBarber } from "../../components/modal-barber";
+import { FormInput } from "@/components/ui/form-input";
+import { Modal } from "@/components/ui/modal";
 import { ActionButton } from "@/components/ui/action-button";
 import { ModalFooter } from "@/components/ui/modal-footer";
 import { PageHeader } from "@/components/ui/page-header";
@@ -347,7 +347,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
       )}
 
       {/* Modal (Create / Edit) */}
-      <ModalBarber
+      <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={modalTitle}
@@ -467,7 +467,7 @@ export function ServicesClient({ initialServices }: ServicesClientProps) {
             cancelLabel="Cancelar"
           />
         </form>
-      </ModalBarber>
+      </Modal>
     </main>
   );
 }

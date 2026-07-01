@@ -7,28 +7,7 @@ import { AppointmentModalManager } from "../appointments/components/appointment-
 
 import { Appointment } from "@/utils/types";
 
-const statusConfig: Record<string, { label: string; className: string }> = {
-  CONFIRMED: {
-    label: "Confirmado",
-    className: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  },
-  SCHEDULED: {
-    label: "Agendado",
-    className: "bg-amber-100 text-amber-700 border-amber-200",
-  },
-  COMPLETED: {
-    label: "Concluído",
-    className: "bg-slate-100 text-slate-600 border-slate-200",
-  },
-  CANCELLED: {
-    label: "Cancelado",
-    className: "bg-red-100 text-red-600 border-red-200",
-  },
-  NO_SHOW: {
-    label: "Não compareceu",
-    className: "bg-red-50 text-red-500 border-red-100",
-  },
-};
+import { STATUS_CONFIG, type AppointmentStatusKey } from "../appointments/components/status-legend";
 
 interface TodayAgendaProps {
   appointments: Appointment[];
@@ -56,6 +35,12 @@ export function TodayAgenda({ appointments }: TodayAgendaProps) {
     setIsModalOpen(true);
   };
 
+  const handleStatusChange = (_id: string, newStatus: string) => {
+    setSelectedAppointment((prev: any) =>
+      prev ? { ...prev, status: newStatus } : prev
+    );
+  };
+
   return (
     <>
       <div className="space-y-0 max-h-65 overflow-y-auto pr-1 custom-scrollbar">
@@ -68,9 +53,11 @@ export function TodayAgenda({ appointments }: TodayAgendaProps) {
             }
           );
 
-          const status = statusConfig[appointment.status] ?? {
+          const status = STATUS_CONFIG[appointment.status as AppointmentStatusKey] ?? {
             label: appointment.status,
-            className: "bg-gray-100 text-gray-600",
+            colorLight: "bg-gray-100",
+            textColor: "text-gray-600",
+            borderColor: "border-gray-200"
           };
 
           return (
@@ -97,7 +84,7 @@ export function TodayAgenda({ appointments }: TodayAgendaProps) {
               {/* Status */}
               <Badge
                 variant="outline"
-                className={`shrink-0 text-[11px] font-medium ${status.className}`}
+                className={`shrink-0 text-[11px] font-medium border ${status.colorLight} ${status.textColor} ${status.borderColor}`}
               >
                 {status.label}
               </Badge>
@@ -111,6 +98,7 @@ export function TodayAgenda({ appointments }: TodayAgendaProps) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         appointment={selectedAppointment as any}
+        onStatusChange={handleStatusChange}
       />
     </>
   );

@@ -2,11 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-
-export type ActionResponse = {
-  success: boolean;
-  error?: string;
-};
+import { ActionResponse } from "@/utils/types";
 
 interface CreateBarberInput {
   name: string;
