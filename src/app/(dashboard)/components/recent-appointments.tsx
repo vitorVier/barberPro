@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
+import { STATUS_CONFIG } from "../appointments/components/status-legend";
+
 interface Appointment {
   id: string;
   startsAt: Date;
@@ -20,14 +22,6 @@ interface Appointment {
     service: { name: string };
   };
 }
-
-const statusConfig: Record<string, { label: string; dotColor: string }> = {
-  CONFIRMED: { label: "Confirmado", dotColor: "bg-emerald-500" },
-  SCHEDULED: { label: "Agendado", dotColor: "bg-amber-500" },
-  COMPLETED: { label: "Concluído", dotColor: "bg-slate-400" },
-  CANCELLED: { label: "Cancelado", dotColor: "bg-red-500" },
-  NO_SHOW: { label: "Não compareceu", dotColor: "bg-red-400" },
-};
 
 interface RecentAppointmentsProps {
   appointments: Appointment[];
@@ -88,9 +82,11 @@ export function RecentAppointments({
           });
 
           const price = Number(appointment.barberService.price);
-          const status = statusConfig[appointment.status] ?? {
+          const status = STATUS_CONFIG[appointment.status as keyof typeof STATUS_CONFIG] ?? {
             label: appointment.status,
-            dotColor: "bg-gray-400",
+            color: "bg-gray-400",
+            textColor: "text-gray-600",
+            borderColor: "border-gray-200",
           };
 
           return (
@@ -126,7 +122,7 @@ export function RecentAppointments({
                   className="border-transparent bg-transparent text-[11px] font-medium px-0"
                 >
                   <span
-                    className={`inline-block h-1.5 w-1.5 rounded-full ${status.dotColor} mr-1.5`}
+                    className={`inline-block h-1.5 w-1.5 rounded-full ${status.color} mr-1.5`}
                   />
                   {status.label}
                 </Badge>
