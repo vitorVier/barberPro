@@ -3,13 +3,14 @@
 import { useState } from "react";
 import {
   MoreHorizontal,
+  AlertTriangle,
 } from "lucide-react";
 import {
   STATUS_CONFIG,
 } from "./status-legend";
 import { AppointmentModalManager } from "./appointment-modal-manager";
-
 import { Appointment } from "@/utils/types";
+import { isAppointmentOverdue } from "@/utils/formaters";
 
 interface TimelineGridProps {
   appointments: Appointment[];
@@ -147,6 +148,7 @@ export function TimelineGrid({
                 const statusKey = appt.status as keyof typeof STATUS_CONFIG;
                 const statusCfg = STATUS_CONFIG[statusKey] ?? STATUS_CONFIG.SCHEDULED;
                 const isSelected = selectedId === appt.id;
+                const overdue = isAppointmentOverdue(appt);
 
                 const startTime = new Date(appt.startsAt).toLocaleTimeString(
                   "pt-BR",
@@ -170,9 +172,12 @@ export function TimelineGrid({
                     className={`
                         absolute left-2 right-2 sm:left-3 sm:right-3 rounded-lg border-l-[3px] 
                         text-left transition-all duration-200 cursor-pointer group overflow-hidden
-                        ${statusCfg.borderColor} ${statusCfg.colorLight}
+                        ${overdue
+                          ? "border-orange-400 bg-orange-50/80"
+                          : `${statusCfg.borderColor} ${statusCfg.colorLight}`
+                        }
                         ${isSelected
-                        ? `shadow-md shadow-slate-200/50 ring-1 ${statusCfg.ringColor} z-10`
+                        ? `shadow-md shadow-slate-200/50 ring-1 ${overdue ? "ring-orange-300/50" : statusCfg.ringColor} z-10`
                         : `hover:shadow-sm hover:z-10`
                       }
                       `}
@@ -181,8 +186,14 @@ export function TimelineGrid({
                     <div className={`flex w-full h-full ${isCompact ? 'flex-row items-center px-3' : 'flex-col items-start px-3 py-2'} gap-1 relative`}>
                       <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-linear-to-r from-transparent to-white/20`} />
 
+                      {overdue && (
+                        <div className="absolute top-1 right-1 z-10">
+                          <AlertTriangle className="h-3 w-3 text-orange-500" />
+                        </div>
+                      )}
+
                       {isCompact ? (
-                        <p className={`text-[11px] font-medium ${statusCfg.textColor} truncate w-full flex items-center gap-1.5 z-10`}>
+                        <p className={`text-[11px] font-medium ${overdue ? "text-orange-700" : statusCfg.textColor} truncate w-full flex items-center gap-1.5 z-10`}>
                           <span className="shrink-0 font-semibold">{startTime} - {endTime}</span>
                           <span className="opacity-40 font-normal shrink-0">|</span>
                           <span className="truncate">
@@ -191,22 +202,29 @@ export function TimelineGrid({
                         </p>
                       ) : (
                         <>
-                          <p className={`text-sm font-semibold ${statusCfg.textColor} truncate leading-tight w-full z-10 pr-4`}>
+                          <p className={`text-sm font-semibold ${overdue ? "text-orange-700" : statusCfg.textColor} truncate leading-tight w-full z-10 pr-4`}>
                             {appt.client.name}
                           </p>
-                          <p className={`text-[11px] ${statusCfg.textColor} opacity-80 truncate mt-0.5 w-full z-10`}>
+                          <p className={`text-[11px] ${overdue ? "text-orange-600" : statusCfg.textColor} opacity-80 truncate mt-0.5 w-full z-10`}>
                             {appt.barberService.service.name}
                           </p>
-                          <p className={`text-[10px] ${statusCfg.textColor} opacity-70 font-medium mt-auto w-full tabular-nums z-10`}>
-                            {startTime} – {endTime}
-                          </p>
+                          {overdue ? (
+                            <p className="text-[10px] text-orange-500 font-semibold mt-auto w-full z-10 flex items-center gap-1">
+                              <AlertTriangle className="h-2.5 w-2.5" />
+                              Aguardando baixa
+                            </p>
+                          ) : (
+                            <p className={`text-[10px] ${statusCfg.textColor} opacity-70 font-medium mt-auto w-full tabular-nums z-10`}>
+                              {startTime} – {endTime}
+                            </p>
+                          )}
                         </>
                       )}
 
                       {/* More button (only in normal mode to save space) */}
                       {!isCompact && (
                         <div className="absolute top-2 right-2 shrink-0 z-10">
-                          <MoreHorizontal className={`h-4 w-4 ${statusCfg.textColor} opacity-0 group-hover:opacity-50 transition-opacity`} />
+                          <MoreHorizontal className={`h-4 w-4 ${overdue ? "text-orange-500" : statusCfg.textColor} opacity-0 group-hover:opacity-50 transition-opacity`} />
                         </div>
                       )}
                     </div>

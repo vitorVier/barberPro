@@ -46,3 +46,12 @@ export function formatPhone(phone: string | null) {
   // Se tiver outro tamanho (ex: internacional diferente ou incompleto), retorna o original
   return phone;
 }
+
+export function isAppointmentOverdue(appointment: { status: string; endsAt: string | Date }) {
+  if (appointment.status !== "SCHEDULED" && appointment.status !== "CONFIRMED") {
+    return false;
+  }
+  const now = new Date();
+  const endTime = new Date(appointment.endsAt);
+  return now > endTime;
+}

@@ -1,5 +1,5 @@
 "use client"
-import { formatCurrency } from "@/utils/formaters";
+import { formatCurrency, isAppointmentOverdue } from "@/utils/formaters";
 import {
   Table,
   TableHeader,
@@ -12,19 +12,23 @@ import { Badge } from "@/components/ui/badge";
 
 import { STATUS_CONFIG } from "../appointments/components/status-legend";
 import { AppointmentModalManager } from "../appointments/components/appointment-modal-manager";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Appointment } from "@/utils/types";
+import { CheckCircle2, UserX, AlertTriangle } from "lucide-react";
+import { updateAppointmentStatusAction } from "../appointments/actions";
 
 interface RecentAppointmentsProps {
   appointments: Appointment[];
 }
 
 export function RecentAppointments({
-  appointments,
+  appointments: initialAppointments,
 }: RecentAppointmentsProps) {
+  const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   function handleOpenModal(appointment: Appointment) {
     setSelectedAppointment({
@@ -39,10 +43,23 @@ export function RecentAppointments({
     setIsModalOpen(true);
   }
 
-  function handleStatusChange(_id: string, newStatus: string) {
+  function handleStatusChange(id: string, newStatus: string) {
+    setAppointments((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a))
+    );
     setSelectedAppointment((prev: any) =>
       prev ? { ...prev, status: newStatus } : prev
     );
+  }
+
+  function handleQuickAction(e: React.MouseEvent, appointment: Appointment, status: "COMPLETED" | "NO_SHOW") {
+    e.stopPropagation();
+    startTransition(async () => {
+      const result = await updateAppointmentStatusAction(appointment.id, status);
+      if (result.success) {
+        handleStatusChange(appointment.id, status);
+      }
+    });
   }
 
   if (appointments.length === 0) {
@@ -104,12 +121,17 @@ export function RecentAppointments({
               textColor: "text-gray-600",
               borderColor: "border-gray-200",
             };
+            const overdue = isAppointmentOverdue(appointment);
 
             return (
               <TableRow
                 key={appointment.id}
                 onClick={() => handleOpenModal(appointment)}
-                className="border-b border-border/40 hover:bg-slate-50 hover:shadow-soft transition-all duration-200 group cursor-pointer"
+                className={`border-b border-border/40 transition-all duration-200 group cursor-pointer ${
+                  overdue
+                    ? "bg-orange-50/50 hover:bg-orange-50"
+                    : "hover:bg-slate-50 hover:shadow-soft"
+                }`}
               >
                 <TableCell className="py-2.5">
                   <div>
@@ -121,7 +143,7 @@ export function RecentAppointments({
                     </p>
                   </div>
                 </TableCell>
-                <TableCell className="py-2.5 text-[13px] font-medium text-foreground">
+                <TableCell className={`py-2.5 text-[13px] font-medium ${overdue ? "text-orange-700" : "text-foreground"}`}>
                   {appointment.client.name}
                 </TableCell>
                 <TableCell className="py-2.5 text-[13px] text-muted-foreground">
@@ -134,15 +156,39 @@ export function RecentAppointments({
                   {formatCurrency(price)}
                 </TableCell>
                 <TableCell className="py-2.5">
-                  <Badge
-                    variant="outline"
-                    className="border-transparent bg-transparent text-[11px] font-medium px-0"
-                  >
-                    <span
-                      className={`inline-block h-1.5 w-1.5 rounded-full ${status.color} mr-1.5`}
-                    />
-                    {status.label}
-                  </Badge>
+                  {overdue ? (
+                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <AlertTriangle className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                      <button
+                        title="Marcar como Concluído"
+                        disabled={isPending}
+                        onClick={(e) => handleQuickAction(e, appointment, "COMPLETED")}
+                        className="flex items-center gap-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-2 py-1 text-[11px] font-medium transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        <CheckCircle2 className="h-3 w-3" />
+                        Concluído
+                      </button>
+                      <button
+                        title="Marcar como Não Compareceu"
+                        disabled={isPending}
+                        onClick={(e) => handleQuickAction(e, appointment, "NO_SHOW")}
+                        className="flex items-center gap-1 rounded-md bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-2 py-1 text-[11px] font-medium transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        <UserX className="h-3 w-3" />
+                        Faltou
+                      </button>
+                    </div>
+                  ) : (
+                    <Badge
+                      variant="outline"
+                      className="border-transparent bg-transparent text-[11px] font-medium px-0"
+                    >
+                      <span
+                        className={`inline-block h-1.5 w-1.5 rounded-full ${status.color} mr-1.5`}
+                      />
+                      {status.label}
+                    </Badge>
+                  )}
                 </TableCell>
               </TableRow>
             );
